@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= evento.nombre %></title>
+    <link rel = "stylesheet" href="/css/trovaCliente.css">
+</head>
+<body>
+    <!-- Mensaje para usuarios sin JavaScript habilitado -->
+    <div class="centrar">
+        <noscript>
+            <p style="text-align: center; color: red;">Este sitio requiere JavaScript para funcionar correctamente.</p>
+        </noscript>
+
+        <!-- Título principal -->
+        <h1><%= evento.nombre %></h1>
+
+        <table id="tablaPrecios">
+            <thead>
+            <tr>
+                <th>Tipo de Mesa</th>
+                <th>Precio</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Se llenará con JS -->
+            </tbody>
+        </table>
+
+        <div class="main-container">
+            <!-- Escenario -->
+            <!-- Sección General Izquierda -->
+            <div class="general izq">
+                <h2 style="grid-column: 1 / -1; text-align: center;">General Izquierda</h2>
+            </div>
+
+            <!-- Sección VIP -->
+            <div class="centro">
+                <div class="titulos">
+                    <p class="escenario" style="text-align: center; top: 0;">Escenario Musical</p> 
+                    <h2 style="text-align: center;"></h2>
+                </div>         
+
+                <div class ="centro-mesas"></div>
+            </div>
+
+            <!-- Sección General Derecha -->
+            <div class="general der">
+                <h2 style="grid-column: 1 / -1; text-align: center;">General Derecha</h2>
+            </div>
+
+            <!-- Footer con zonas adicionales -->
+            <div class="footer">
+                <div class="footer-izq">
+                </div>
+                <div class="footer-der">
+                </div>
+            </div>
+
+            <button id = 'inicio' type="button">
+                <span>volver al inicio</span>
+            </button>
+            <button id="btnReabrirModal" onclick="abrirModalBoletos()">
+                <span>Editar Cantidad de Boletos </span>
+            </button>
+            <button class = 'compra'>
+                <span>comprar</span>
+            </button>
+        </div>
+
+        
+
+        <!-- sillas seleccionadas -->
+        <div class = "fondo-compra hidden">
+            <div class="confirma-compra">
+            </div>
+            <!-- Para el envio de los datos -->
+            <form id="jsonform" method="POST" style="display:none;">
+                <input type="hidden" id="jsonData" name="jsonData">
+                <input type="submit">
+            </form>
+        </div>
+    </div>
+
+    <div id="cantidadBoletos" class="cantidadBoletos">
+        <div class="contenido">
+            <h3>🎟️ Selecciona la Cantidad de Boletos</h3>
+            <p>Por favor, ingresa el número entero de boletos que deseas comprar.</p>
+            <input type="number" id="inputBoletos" min="1" value="1" placeholder="Ej. 2">
+            <button onclick="seleccionarBoletos()">Continuar</button>
+        </div>
+    </div>
+
+    <script>
+        window.evento = <%- JSON.stringify(evento) %>;
+    </script>
+    <script src="/js/trovaCliente.js"></script>  
+</body>
+</html>
+

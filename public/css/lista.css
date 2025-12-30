@@ -1,0 +1,109 @@
+/* declaracion de fuentes */
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Light.ttf') format('truetype');
+    font-weight: 300; /* Light */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Regular.ttf') format('truetype');
+    font-weight: 400; /* Regular */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Medium.ttf') format('truetype');
+    font-weight: 500; /* Medium */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Semibold.ttf') format('truetype');
+    font-weight: 600; /* SemiBold */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Bold.ttf') format('truetype');
+    font-weight: 700; /* Bold */
+    font-style: normal;
+}
+
+body {
+    font-family: 'Hind', sans-serif;
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px 8px;
+}
+
+tbody tr + tr {
+  border-top: 1px solid #ddd; /* solo separaciones entre filas */
+}
+
+th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+}
+
+a {
+  display: inline-block;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #007BFF;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.ver:hover,
+.descargar:hover{
+  cursor: pointer;
+}
+
+.btn-excel {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background-color: #217346;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
+    box-shadow: 0 4px 8px rgba(33, 115, 70, 0.3);
+}
+
+.btn-excel:hover {
+    background-color: #2e8b57;
+}
+
+.btn-excel:active {
+    background-color: #1a5c38;
+    transform: scale(0.97);
+    box-shadow: 0 2px 4px rgba(33, 115, 70, 0.4);
+}

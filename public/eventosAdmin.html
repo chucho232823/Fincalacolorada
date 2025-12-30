@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <h1 class="cabeceras">Eventos Trova</h1>
+  <div class="principal trova">
+    <div class = "contA">
+        <div class="Anadir">
+          <div class="evento" id="espacio">
+              <span id="Agregar">AÑADIR<img src="ico/añadir.png" class="ico" alt=""></span>
+          </div>
+        </div>  
+    </div>
+    
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+
+      </div>
+      <!-- Flechas -->
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+  </div>
+  <h1 class="cabeceras">Eventos Baile</h1>
+  <div class="principal baile">
+    <div class = "contA">
+      <div class="Anadir">
+        <div class="evento" id="espacio">
+          <span id="Agregar">AÑADIR<img src="ico/añadir.png" class="ico" alt=""></span>
+        </div>
+      </div>  
+    </div>
+    
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+
+      </div>
+      <!-- Flechas -->
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+  </div>
+
+  <form id="jsonform" method="POST" style="display:none;">
+    <input type="hidden" name="data" id="jsonData">
+  </form>
+
+
+  <div id = "botones">
+    <button type="button" id="eventosPasados"> Eventos Pasados </button>
+  </div>
+
+  <div class = "modal">  
+      <form action="#" id="Modal-Trova">
+          <button type="button" class="cerrar-modal tro" 
+          onclick="document.querySelector('.modal').style.display='none';
+          document.querySelector('#Modal-Trova').style.display = 'none'
+          document.getElementById('Modal-Trova').reset();">
+            ✖
+          </button>
+          <div class="datosEvento">
+              <span>Evento Nuevo </span><span></span>
+              <span>Nombre del evento: </span><input type="text" name="nombre" placeholder="Escribe el nombre del evento" maxlength="40" autocomplete="off" required>
+              <span>Subtitulo: </span><input type="text" name="subtitulo" placeholder="subtitulo" maxlength="50" autocomplete="off" required>
+              <span>Fecha:</span><input type="date" name="fecha" required>
+              <span>Fecha Preventa:</span><input type="date" name="fechap" required>
+              <span>Hora: </span><input type="time" name="hora" required>
+              <span>Imagen: </span><input type="file" id="imagen" name="imagen" accept="image/*">
+          </div>
+      
+          <div class="preciosEvento">
+              <div style="border: 0;"></div>
+              <div class="precios">Preventa</div>
+              <div class="precios">Dia del Evento</div> 
+              <div class="zona">Zona Lateral</div><div class="precios">$<input type="number" name="laterales" placeholder="000.00" required></div><div class="precios"> $<input type="number" name="lateralesD" placeholder="000.00" required></div>
+              <div class="zona">Zona General</div> <div class="precios">$<input type="number" name="general" placeholder="000.00" required></div> <div class="precios">$<input type="number" name="generalD" placeholder="000.00" required></div>
+              <div class="zona">Zona Preferente</div> <div class="precios">$<input type="number" name="preferente" placeholder="000.00" required></div> <div class="precios">$<input type="number" name="preferenteD" placeholder="000.00" required></div>
+              <div class="zona">Zona Vip</div> <div class="precios">$<input type="number" name="vip" placeholder="000.00" required></div> <div class="precios">$<input type="number" name="vipD" placeholder="000.00" required></div>
+          </div>
+
+          <button type="submit" class="agregar">AGREGAR</button>
+      </form>
+
+      <form action="#" id="Modal-Baile">
+          <button type="button" class="cerrar-modal tro" 
+          onclick="document.querySelector('.modal').style.display='none';
+          document.querySelector('#Modal-Baile').style.display = 'none'
+          document.getElementById('Modal-Baile').reset();
+          ">
+            ✖
+          </button>
+          <div class="datosEvento">
+              <span>Evento Nuevo </span><span></span>
+              <span>Nombre del evento: </span><input type="text" name="nombre" placeholder="Escribe el nombre del evento" maxlength="30" autocomplete="off" required>
+              <span>Subtitulo: </span><input type="text" name="subtitulo" placeholder="subtitulo" maxlength="40" autocomplete="off" required>
+              <span>Fecha:</span><input type="date" name="fecha" required>
+              <span>Fecha Preventa:</span><input type="date" name="fechap" required>
+              <span>Hora: </span><input type="time" name="hora" required>
+              <span>Imagen: </span><input type="file" id="imagen" name="imagen" accept="image/*">
+          </div>
+      
+          <div class="preciosEvento">
+              <div style="border: 0;"></div>
+              <div class="precios">Preventa</div>
+              <div class="precios">Dia del Evento</div> 
+              <div class="zona">Zona General</div> <div class="precios">$<input type="number" name="general" placeholder="000.00" required></div> <div class="precios">$<input type="number" name="generalD" placeholder="000.00" required></div>
+              <div class="zona">Zona Preferente</div> <div class="precios">$<input type="number" name="preferente" placeholder="000.00" required></div> <div class="precios">$<input type="number" name="preferenteD" placeholder="000.00" required></div>
+              <div class="zona">Zona Vip</div> <div class="precios">$<input type="number" name="vip" placeholder="000.00" required></div> <div class="precios">$<input type="number" name="vipD" placeholder="000.00" required></div>
+          </div>
+
+          <button type="submit" class="agregar">AGREGAR</button>
+      </form>
+
+      <form action="#" id="Modal-Edita-Trova">
+          <button type="button" class="cerrar-modal tro" 
+          onclick="document.querySelector('.modal').style.display='none';
+          document.querySelector('#Modal-Edita-Trova').style.display = 'none'">
+            ✖
+          </button>
+          <div class="datosEvento">
+              <span>Edicion evento</span><span></span>
+              <span>Nombre del evento: </span><input type="text" name="nombre" placeholder="Escribe el nombre del evento" required>
+              <span>Subtitulo: </span><input type="text" name="subtitulo" placeholder="subtitulo" required>
+              <span>Fecha:</span><input type="date" name="fecha" required>
+              <span>Fecha Preventa:</span><input type="date" name="fechap" required>
+              <span>Hora: </span><input type="time" name="hora" required>
+              <span>Imagen: </span><input type="file" id="imagen" name="imagen" accept="image/*">
+          </div>
+      
+          <div class="preciosEvento">
+              <div style="border: 0;"></div>
+              <div class="precios">Preventa</div>
+              <div class="precios">Dia del Evento</div> 
+              <div class="zona">Zona Lateral</div><div class="precios">$<input type="number" name="laterales" placeholder="000.00" required></div><div class="precios"> $<input type="number" name="lateralesD" placeholder="000.00" required></div>
+              <div class="zona">Zona General</div> <div class="precios">$<input type="number" name="general" placeholder="000.00" required></div> <div class="precios">$<input type="number" name="generalD" placeholder="000.00" required></div>
+              <div class="zona">Zona Preferente</div> <div class="precios">$<input type="number" name="preferente" placeholder="000.00" required></div> <div class="precios">$<input type="number" name="preferenteD" placeholder="000.00" required></div>
+              <div class="zona">Zona Vip</div> <div class="precios">$<input type="number" name="vip" placeholder="000.00" required></div> <div class="precios">$<input type="number" name="vipD" placeholder="000.00" required></div>
+          </div>
+
+          <button type="submit" class="actualizar">ACTUALIZAR</button>
+      </form>
+
+      <form action="#" id="Modal-Edita-Baile">
+          <button type="button" class="cerrar-modal tro" 
+          onclick="document.querySelector('.modal').style.display='none';
+          document.querySelector('#Modal-Edita-Baile').style.display = 'none'">
+            ✖
+          </button>
+          <div class="datosEvento">
+              <span>Edicion evento </span><span></span>
+              <span>Nombre del evento: </span><input type="text" name="nombre" placeholder="Escribe el nombre del evento" required>
+              <span>Subtitulo: </span><input type="text" name="subtitulo" placeholder="subtitulo" required>
+              <span>Fecha:</span><input type="date" name="fecha" required>
+              <span>Fecha Preventa:</span><input type="date" name="fechap" required>
+              <span>Hora: </span><input type="time" name="hora" required>
+              <span>Imagen: </span><input type="file" id="imagen" name="imagen" accept="image/*">
+          </div>
+      
+          <div class="preciosEvento">
+              <div style="border: 0;"></div>
+              <div class="precios">Preventa</div>
+              <div class="precios">Dia del Evento</div> 
+              <div class="zona">Zona General</div> <div class="precios">$<input type="number" name="general" placeholder="000.00" required></div> <div class="precios">$<input type="number" name="generalD" placeholder="000.00" required></div>
+              <div class="zona">Zona Preferente</div> <div class="precios">$<input type="number" name="preferente" placeholder="000.00" required></div> <div class="precios">$<input type="number" name="preferenteD" placeholder="000.00" required></div>
+              <div class="zona">Zona Vip</div> <div class="precios">$<input type="number" name="vip" placeholder="000.00" required></div> <div class="precios">$<input type="number" name="vipD" placeholder="000.00" required></div>
+          </div>
+
+          <button type="submit" class="actualizar">ACTUALIZAR</button>
+      </form>
+  </div>
+  <span class="idEvento" id="" hidden></span>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="js/index.js"></script>
+</body>
+</html>

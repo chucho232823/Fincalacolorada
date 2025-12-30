@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Evento</title>
+  <link rel="stylesheet" href="/css/editar.css">
+</head>
+<body>
+  <form id = "nuevo-evento" method="post">
+      <h2>Editar evento</h2>
+      <!-- Campo Nombre del Evento -->
+      <div class="nombre">
+          <label>Nombre del Evento:</label>
+          <input type="text" id="nombre"placeholder="Escribe el nombre del evento" required autocomplete="off">
+      </div>
+      
+      <!-- Campo Fecha -->
+      <div class="fecha">
+          <label>Fecha:</label>
+          <input type="date" id="fecha" required autocomplete="off">
+          <label>Fecha preventa</label>
+          <input type="date" id="fechaP" required autocomplete="off">
+      </div>
+
+      <div class = "evento trova">
+          <div><span></span></div>
+          <div class = "txtE"><span>Preventa</span></div>
+          <div class = "txtE"><span>Dia del evento</span></div>
+          <div class="zona"> Zona Laterales </div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="Laterales" placeholder="000"></div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="LateralesD" placeholder="000"></div>
+          <div class="zona"> Zona General </div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="General" placeholder="000"></div>    
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="GeneralD" placeholder="000"></div>    
+          <div class="zona"> Zona Preferente </div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="Preferente" placeholder="000"></div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="PreferenteD" placeholder="000"></div>
+          <div class="zona"> Zona Vip </div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="VIP" placeholder="000" ></div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="VIPD" placeholder="000" ></div>
+      </div>
+
+      <div class = "evento baile">
+          <div><span></span></div>
+          <div class = "txtE"><span>Preventa</span></div>
+          <div class = "txtE"><span>Dia del evento</span></div>
+          <div class="zona"> Zona General </div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="General" placeholder="000"></div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="GeneralD" placeholder="000"></div>
+          <div class="zona"> Zona Preferente </div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="Preferente" placeholder="000"></div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="PreferenteD" placeholder="000"></div>
+          <div class="zona"> Zona Vip </div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="VIP" placeholder="000"></div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="VIPD" placeholder="000"></div>
+      </div>
+
+      <!-- <div class = "evento general">
+          <div class="zona"> Pista </div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="Pista" placeholder="000"></div>
+          <div class="zona"> Laterales </div>
+          <div class="precio"> <span style="font-weight: bold;">$</span> <input type="number" name="Laterales" placeholder="000"></div>
+      </div> -->
+
+      <!-- Botón de Envío -->
+      <button type="submit" id="Agregar">Actualizar</button>
+   </form>
+   <button type="button" id="inicio">Cancelar Edicion</button>
+  <script>
+    window.eventoData = {
+      idEvento: "<%= idEvento %>",
+      nombreEvento: "<%= nombreEvento %>",
+      fechaEvento: "<%= fechaEvento.toISOString().split('T')[0] %>",
+      fechaPreventa: "<%= fechaPreventa.toISOString().split('T')[0] %>",
+      precios: <%- JSON.stringify(precios) %>,
+      tipoEvento: "<%= tipoEvento %>",
+    };
+  </script>
+
+  <script src="/js/editarEvento.js"></script>
+</body>
+</html>

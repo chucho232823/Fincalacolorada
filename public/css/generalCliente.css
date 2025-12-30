@@ -1,0 +1,742 @@
+/* declaracion de fuentes */
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Light.ttf') format('truetype');
+    font-weight: 300; /* Light */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Regular.ttf') format('truetype');
+    font-weight: 400; /* Regular */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Medium.ttf') format('truetype');
+    font-weight: 500; /* Medium */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Semibold.ttf') format('truetype');
+    font-weight: 600; /* SemiBold */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Bold.ttf') format('truetype');
+    font-weight: 700; /* Bold */
+    font-style: normal;
+}
+
+body {
+    font-family: 'Hind', sans-serif;
+}
+
+.centrar {
+    display: flex;
+    /* flex-direction: column; */
+    justify-self: center;
+    /* align-items: center; */
+    /* width: max-content; */
+    margin-left: auto;
+    margin-right: auto;
+    overflow: auto;
+}
+
+.informacion{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    padding: 20px;
+    /* width: 33vw; */
+    text-align: center;
+    gap: 50px;
+}
+
+.mesasSeleccionadas > div > :first-child{
+    text-align: left;
+    padding-left: 30px;
+    font-weight: bold;
+}
+
+.mesasSeleccionadas > * > *{
+    display: flex;
+    text-align: left;
+    padding-left: 60px;
+    padding-right: 30px;
+    font-weight: normal;
+    justify-content: space-between;
+}
+
+#seleccion{
+    /* border: 1px solid; */
+    min-width: 400px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 25px;
+    /* border-color: black; */
+    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.5);
+}
+
+#seleccion >:nth-child(3){
+    display: flex;
+    flex-direction: column;
+    padding: 15px 100px 0px 100px;
+    gap: 10px;
+}
+
+#txtBoletos{
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+    line-height: 18px;
+    gap: 10px;
+}
+
+#txtBoletos > :first-child{
+    text-align: left;
+    overflow-wrap: anywhere;
+    color: black;
+    line-height: 17px;
+    gap: 20px;
+    font-weight: bold;
+}
+
+.infoEvento{
+    display: flex;
+    gap: 20px;
+}
+
+.infoEvento div:first-child span:first-child,
+.infoEvento div:first-child span:nth-child(2){
+    color: #b17036;
+    font-family: fantasy;
+}
+
+.infoEvento div:first-child span:nth-child(2){
+    position: relative;
+    top: -8px;
+    font-size: 32px;
+}
+
+.infoEvento div:first-child span:nth-child(3){
+    /* font-weight: bold; */
+    position: relative;
+    color: gray;
+    top: -5px;
+    font-size: 20px;
+}
+
+.infoEvento div:first-child span:first-child{
+    font-size: 42px;
+}
+
+.infoEvento div:first-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.infoEvento div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+}
+
+.seleccionBoletos{
+    display: flex;
+    justify-content: space-between;
+}
+
+.seleccionBoletos > :last-child{
+    width: 30px;
+}
+
+h1 {
+    text-align: start;
+    padding: 0;
+    width: auto;
+    margin: 0;
+    line-height: 1;
+}
+
+.totalPagar{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.totalPagar :first-child{
+    font-weight: bold;
+}
+
+.totalPagar :last-child{
+    font-weight: bold;
+    color: #b17036;
+}
+
+.main-container {
+    display: grid;
+    grid-template-areas:
+        "general-izq vip general-der"
+        "footer footer footer";
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+}
+
+.general, .escenario, .centro{
+    /* padding: 10px; */
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    position: relative;
+}
+
+.izq,.der {
+    display: grid;
+    grid-template-columns: repeat(3, auto); /* Cinco filas */
+    grid-auto-rows: auto;
+    /* gap: 20px;  */
+    justify-content: center;   
+}
+
+.izq >:nth-child(1),
+.der >:nth-child(3){
+    align-content: flex-start;
+    padding-top: 65px;
+    gap: 10px;
+}
+
+.izq >:nth-child(2),
+.der >:nth-child(2){
+    align-content: flex-start;
+    padding-top: 100px;
+    gap: 10px;
+}
+
+.izq >:nth-child(3),
+.der >:nth-child(1){
+    align-content: flex-start;
+    padding-top: 60px;
+}
+
+.escenario {
+    text-align: center;
+    font-weight: bold;
+    background: #e5ceb9;
+    padding: 20px;
+    margin: auto;
+    width: 18em;
+}
+
+
+.izquierda {
+    grid-area: general-izq;
+}
+
+.derecha {
+    grid-area: general-der;
+}
+
+.centro {
+    grid-area: vip;
+    display: flex;
+    flex-direction: column;
+    /* grid-template-areas:
+        "titulos"
+        "centro-mesas";    */
+    gap: 20px;
+}
+
+.centro-mesas {
+    /* grid-area: centro-mesas; */
+    display: grid;
+    grid-template-columns: repeat(4,auto);
+    /* gap: 20px; */
+    justify-self: center;
+}
+
+.footer {
+    grid-area: footer;
+    position: relative;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.footer-izq{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-self: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+} 
+
+/* .footer-izq{
+    display: grid;
+    grid-template-rows: repeat(3, auto);
+    gap: 20px;
+    justify-self: center;
+    justify-items: center;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: fit-content;
+    height: fit-content;
+}  */
+
+.footer-der{
+    display: flex;
+    justify-self: end;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: fit-content;  /* Ancho del div */
+    height: fit-content;
+    margin-right: 18%;
+    padding: 3%;
+}
+
+.table-wrapper {
+    position: relative;
+    width: 75px;
+    height: 60px;
+}
+
+.table {
+    width: 30px;
+    height: 30px;
+    background-color: #66C2DB;
+    transform: rotate(45deg);
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* girando texto */
+.numMesa{
+    transform: rotate(-45deg);
+}
+
+/* Color amarillo para las mesas vip */
+.table.vip{
+    background-color: #f8DA3D;
+}
+
+.table.tres,
+.table.dos{
+    transform: rotate(0deg);
+    border-radius: 90px / 60px;
+}
+
+/*Color gris preferente*/
+.table.preferente{
+    background-color: rgb(228, 228, 228);
+}
+
+/*laterales*/
+.laterales{
+    background-color: #FF8A00;
+}
+
+.chair, .chair2, .chair3 {
+    width: 10px;
+    height: 10px;
+    background-color: #aae014;
+    position: absolute;
+    border-radius: 2px;
+    border: 1px solid #654321;
+    /* box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5); */
+}
+
+/*Posicion de las mesas de 4 sillas*/
+
+.chair:nth-child(2) { right: 0; top: 0; transform: translateY(80%) translateX(-275%) rotate(0deg); }
+.chair:nth-child(3) { bottom: 0; left: 0; transform: translateY(-275%) translateX(80%) rotate(0deg); }
+.chair:nth-child(4) { right: 0; bottom: 0; transform: translateY(-80%) translateX(120%) rotate(0deg); }
+.chair:nth-child(5) { top: 0; left: 0; transform: translateY(275%) translateX(80%) rotate(0deg); }
+
+
+.chair3:nth-child(2) { right: 110%; bottom: 30%;}
+.chair3:nth-child(3) { bottom: -45%; }
+.chair3:nth-child(4) { left: 110%; bottom: 30%;}
+
+.chair2:nth-child(2) { right: 60%; bottom: -45%;}
+.chair2:nth-child(3) { right: 0%; bottom: -45%; }
+
+/*cosas nuevas*/
+
+.chair.activa{
+    background-color: aqua;
+}
+
+.chair3.activa{
+    background-color: aqua;
+}
+
+.chair2.activa{
+    background-color: aqua;
+}
+
+.compra{
+    grid-area: compra;
+    display: block; /* El botón sigue siendo un bloque */
+    justify-self: end; /* Alineamos el botón a la derecha */
+    background-color: #8e735b; /* Marrón suave/beige cálido (combinable con café) */
+    color: white; /* Amarillo mostaza cálido (complementa el amarillo) */
+    font-size: 16px;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    margin-right: 18%;
+}
+
+.compra:active {
+    background-color: #6b4f39;  /* Un tono más oscuro de marrón */
+    color: white; /* Un amarillo aún más cálido y profundo */
+    transform: scale(0.98); /* Efecto de reducir el tamaño al hacer clic */
+}
+
+.compra:hover {
+    background-color: #7a5d45;  /* Marrón más oscuro (refleja el café) */
+    color: white; /* Amarillo más brillante (llamativo pero armonioso) */
+    transform: scale(1.05); /* Efecto de agrandar el botón */
+}
+
+/* .confirma-compra{
+    display: none; 
+    position: fixed;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: fit-content;
+    background-color: white;
+    z-index: 1000;
+} */
+
+.confirma-compra {
+    display: none; /* Oculto por defecto */
+    flex-direction: column;
+    position: fixed;
+    top: 15%;  /* Ajustado para dejar más espacio arriba */
+    left: 25%;
+    /* transform: translateX(-50%); */
+    width: 50%;
+    max-height: 50vh; /* Máxima altura en función de la altura de la pantalla */
+    overflow-y: auto; /* Scroll vertical si se necesita */
+    background-color: white;
+    z-index: 1000;
+    padding: 20px; /* Opcional, mejora la apariencia */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Opcional */
+    border-radius: 8px; /* Opcional */
+}
+
+.confirma-compra h2{
+    text-align: center;
+}
+
+.confirma-compra li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 16px;
+  color: #333;
+}
+
+.confirma-compra h3{
+  text-align: center;
+  padding: 20px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.confirma-compra div{
+    display: flex;
+    justify-content: space-between;
+}
+
+.volver{
+    display: flex;
+    bottom: 10px;
+    left: 10px; 
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+/*Para espacio en el centro*/
+
+.centro-mesas > :nth-child(2){
+    margin-right: 9em;
+}
+
+.centro-mesas > :nth-child(3){
+    margin-left: 9rem;
+}
+
+.confirmar{
+    display: flex;
+    bottom: 10px; 
+    right: 10px; 
+    background-color: #1a73e8;
+    color: white;
+}
+
+.fondo-compra{
+    position: unset;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro con transparencia */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999; /* Asegura que esté sobre todo lo demás */
+}
+
+.ocupada{
+    background-color: #b3b3b3;
+}
+
+table {
+  width: 400px;
+  border-collapse: collapse;
+  background-color: #fff;
+  font-size: 18px; /* texto más grande */
+}
+
+th, td {
+   padding: 4px 25px;
+   text-align: left;
+}
+
+thead {
+  background-color: #f0f0f0;
+}
+
+tbody tr + tr {
+  border-top: 1px solid #ddd; /* solo borde entre filas */
+}
+
+/* codigo en bloc */
+
+/* codigo de colores */
+#bolitaVIP{
+    display:inline-block; 
+    width:20px; 
+    height:20px; 
+    border-radius:50%; 
+    background-color:#f8DA3D; 
+    margin-right:8px;
+}
+
+#bolitaPreferente{
+    display:inline-block; 
+    width:20px; 
+    height:20px; 
+    border-radius:50%; 
+    background-color:rgb(228, 228, 228); 
+    margin-right:8px;
+}
+
+#bolitaGeneral{
+    display:inline-block; 
+    width:20px; 
+    height:20px; 
+    border-radius:50%; 
+    background-color:#68AAFC; 
+    margin-right:8px;
+}
+
+/* Modal de boletos */
+.cantidadBoletos {
+    /* Fija el modal para que cubra toda la ventana */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro semitransparente */
+    display: flex; /* Centra el contenido */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegura que esté por encima de todo */
+}
+
+.contenido {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.contenido h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.contenido input {
+    padding: 10px;
+    margin: 15px 0;
+    width: 80%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    text-align: center;
+}
+
+button{
+    color: white;
+    background-color: #b17036;
+    border: 0;
+    border-radius: 25px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-weight: bold;
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: #b37945;
+}
+
+/* mesa ocupada */
+
+.mesasCentro > :nth-child(5) {
+  /* Tus estilos CSS aquí */
+  margin-top: 60px;
+}
+
+/* mesa ocupada */
+.mesaOcupada{
+    background-color: #b3b3b3 !important;
+}
+
+#inicio{
+    display: flex;
+    align-self: center;
+    width: fit-content;
+    gap: 10px;
+}
+
+#inicio > :nth-child(2){
+    display: flex;
+    color: white;
+    background-color: #68AAFC;
+    padding: 5px;
+    border-radius: 20px;
+    align-items: center;
+}
+
+#icoinicio{
+    width: 40px;
+    height: 40px;
+}
+
+#inicio:hover{
+    cursor: pointer;
+}
+
+.escalera {
+  width: 30px;          /* ancho del rectángulo */
+  height: 50px;        /* alto total */
+  background-color: #b17036;
+
+  background-image: repeating-linear-gradient(
+    to right,
+    #999 0 2px,          /* línea */
+    transparent 2px 10px /* espacio entre líneas */
+  );
+
+  position: absolute; /* se mueve libremente */
+}
+
+.izqb{
+    top: 385px;
+    left: 215px;
+}
+.izqa{
+    top: 0px;
+    left: 215px;
+}
+.derb{
+    top: 385px;
+    left: -20px;
+}
+.dera{
+    top: 0px;
+    left: -20px;
+}
+
+.der > :nth-child(1) > div:nth-child(5){
+    margin-top: 60px;
+}
+
+.palmera {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 75px;
+  height: 35px;
+  background-color: #9acd32; /* verde similar */
+  border-radius: 50%;       /* forma ovalada */
+  color: #1f3b1f;
+}
+
+.one{
+    position: absolute;
+    top: 30px;
+    left: 350px;
+}
+
+.two{
+    position: absolute;
+    top: 30px;
+    left: 115px;
+}
+
+.sillasAltas{
+    order: 3;
+    font-weight: Bold;
+}
+
+/* .produccion{
+    position: absolute;
+    bottom: 30px;
+    right: 0px;
+    width: 90px;
+    height: 30px;
+    background: #7ec8ff;
+    border: 2px solid #68AAFC;
+    transform: rotate(-60deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color: #000;
+} */
+
+.main-container span{
+    user-select: none;
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/reporte.css">
+    <title>Reporte</title>
+</head>
+<body>
+    
+    <h1>Evento: <%= evento.nombre %></h1>
+    <h2>Fecha: <%= new Date(evento.fecha).toLocaleDateString() %></h2>
+
+    <h3>Precios por tipo de mesa</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Precio Preventa</th>
+                <th>Precio Día</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% precios.forEach(p => { %>
+                <tr>
+                    <td><%= p.tipo %></td>
+                    <td>$<%= p.precioPreventa %></td>
+                    <td>$<%= p.precioDia %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <h3>Boletos vendidos - Preventa</h3>
+    <ul>
+    <%  
+        let totalP = 0;
+        precios.forEach(p => { 
+        const tipo = p.tipo;
+        const cantidad = conteos.preventa[tipo] || 0;
+        const total = cantidad * p.precioPreventa;
+        totalP += total;
+    %>
+        <li><%= tipo %>: <%= cantidad %></li>
+        <ul>
+        <li>Total: $<%= total %></li>
+        </ul>
+    <% }) %>
+    </ul>
+
+    <h3>Boletos vendidos - Día del Evento</h3>
+    <ul>
+    <%  
+        let totalD = 0; 
+        precios.forEach(p => { 
+        const tipo = p.tipo;
+        const cantidad = conteos.diaEvento[tipo] || 0;
+        const total = cantidad * p.precioDia;
+        totalD += total;
+    %>
+        <li><%= tipo %>: <%= cantidad %></li>
+        <ul>
+        <li>Total: $<%= total %></li>
+        </ul>
+    <% }) %>
+    </ul>
+
+    <h3>Venta total</h3>
+    <ul>
+        <li>Total: $<%= totalD + totalP %></li>
+    </ul>
+
+    <button onclick="history.back()">volver</button>
+</body>
+</html>

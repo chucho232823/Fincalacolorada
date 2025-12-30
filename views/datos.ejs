@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/datos.css">
+</head>
+<body>
+    <div class = "centrar">
+        <form id="formulario" action="#">
+            <h3>Ingrese sus datos</h3>
+            <span>Nombre</span><input type="text" id="nombre" name="nombre" autocomplete="off" required>
+            <span>Apellido</span><input type="text" id="apellidos" name="apellidos" autocomplete="off" required>
+            <span>Telefono de contacto </span><input type="text" id="telefono" name="telefono" minlength="12" autocomplete="off">
+            <div id="grupo-mesas">
+                
+            </div>
+            <button type="button" id="reservar">Reservar</button>
+        </form>
+        <div class = "pago">
+            <h2>Mesas y Sillas:</h2>
+            <!-- <h3>Tipo <%= tipo %></h3> -->
+            <ul>
+            <% Object.keys(agrupadasPorMesa).forEach(function(mesaId) { %>
+                <li>
+                Mesa: <%= mesaId %> Silla(s): <%= agrupadasPorMesa[mesaId].sillas.join(', ') %>%>
+                </li>
+            <% }) %>
+            </ul>
+        </div>
+    </div>
+
+    <button id = "volver"> volver </button>
+
+    <script>
+        window.sembrado = <%- JSON.stringify(sembrado) %>;
+        window.listaMesaSilla = <%- JSON.stringify(listaMesaSilla) %>;
+        window.tipo = <%- JSON.stringify(tipo) %>;
+        window.controlFila = <%- JSON.stringify(controlFila) %>;
+        window.consecutivas = <%- JSON.stringify(consecutivas) %>;
+        window.agrupadasPorMesa = <%- JSON.stringify(agrupadasPorMesa) %>
+    </script>
+    <script src="js/datos.js"></script>
+</body>
+</html>

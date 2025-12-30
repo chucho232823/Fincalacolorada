@@ -1,0 +1,540 @@
+/* declaracion de fuentes */
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Light.ttf') format('truetype');
+    font-weight: 300; /* Light */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Regular.ttf') format('truetype');
+    font-weight: 400; /* Regular */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Medium.ttf') format('truetype');
+    font-weight: 500; /* Medium */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Semibold.ttf') format('truetype');
+    font-weight: 600; /* SemiBold */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hind';
+    src: url('/fonts/Hind-Bold.ttf') format('truetype');
+    font-weight: 700; /* Bold */
+    font-style: normal;
+}
+
+
+body{
+    margin: 0;
+}
+
+.principal {
+    display: grid;
+    grid-template-areas: "anadir evento";
+    grid-template-columns: 1fr 3fr; /* Cambié la proporción para que "Añadir" y el swiper se vean bien en pantalla */
+    /* border-top: 10px solid #f6e4b1; */
+    /* border-bottom: 10px solid #f6e4b1; */
+    padding: 20px 0 20px 0;
+    /* align-items: center; */
+    
+}
+
+.trova, .baile {
+    background-color: #DBB54B;
+    /* padding-left: 12vw;
+    padding-right: 12vw; */
+    padding-left: 150px;
+    padding-right: 150px;
+    /* padding-top: 4vh;
+    padding-bottom: 4vh; */
+}
+
+#espacio{
+    /* background-color: #f1f1f1; */
+}
+
+.contA{
+    grid-area: anadir;
+    padding: 3vw;
+}
+
+.Anadir {
+    background-color: #f1f1f1;
+    font-family: 'Hind', serif;
+    font-weight: bold;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; 
+    align-content: center;
+    width: 210px;
+    min-height: 450px;
+    height: 100%;
+    /* padding: 2vw 0; */
+    border-radius: 20px;
+    /* Desplazamiento horizontal | Desplazamiento vertical | Radio de desenfoque | Radio de expansión | Color */
+    box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.5);
+}
+
+.evento {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 10px;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: auto;
+}
+
+.swiper-slide .evento{
+    height: 100%;
+    justify-content: space-between;
+}
+
+.swiper-slide{
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.5);
+    /* anadir tambien */
+    position: relative;
+    z-index: 1; 
+}
+
+#espacio{
+    padding-top: 2vw;
+    padding-bottom: 2vw;
+}
+
+.swiper {
+    grid-area: evento;
+    display: flex;
+    width: 100%;
+    padding: 3vw;
+    /* padding: 20px 0; */
+}
+
+/* .swiper-slide {
+    display: flex;
+    justify-content: center; */
+    /* max-height: 25vh;
+} */
+
+#Agregar h3 {
+    margin: 0;
+    font-weight: bold
+}
+
+#Agregar{
+    color: #808080;
+    font-size: 1.3rem; /* Ajusta el tamaño de la fuente para el h3 */
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.evento h3 {
+    display: flex;
+    font-size: 1rem; /* Igual que en "Añadir" */
+    /* font-weight: bold; */
+    justify-content: center;
+}
+
+.botones button {
+    font-family: 'Hind', serif;
+    font-weight: bold;
+    margin: 5px;
+    font-size: 1em;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    cursor: pointer;
+    border: none;  /* Color similar al del swiper */
+    color: white;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+}
+
+/* .botones button:hover {
+    background-color: #45a049;
+} */
+
+#Agregar h3, .evento h3 {
+    text-transform: uppercase; /* Puedes mantener esta propiedad si quieres darle un toque más llamativo */
+}
+
+img{
+    width: 100%; /* Opcional: puede usar max-width: 100% */
+    height: auto; /* Mantiene la proporción de alto automáticamente */;
+    /* object-fit: cover; */
+}
+
+.ico{
+    width: 30px;
+    height: 30px;
+}
+
+
+.swiper-button-prev,.swiper-button-next{
+    color: black;
+    z-index: 300;
+    /* width: 10px;
+    height: 10px; */
+}
+
+h5,h4{
+    padding-left:2vw;
+    text-align: left;
+}
+
+.editar{
+    font-family: 'Hind', serif;
+    font-size: 1.3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 12px;
+    /* padding-bottom: 10px; */
+    font-weight: bold;
+    gap: 10px;
+}
+
+.titulo,.subtitulo{
+    display: block;
+    text-align: left;
+    padding-left: 20px;
+    padding-right: 20px;
+    gap: 10px;
+}
+
+.titulo{
+    font-family: 'Hind', serif;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.subtitulo{
+    font-family: 'Hind', sans-serif;
+    font-size: 1rem;
+    line-height: 18px;
+}
+
+.fechaHora{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-top: auto;
+}
+
+.fechaHora span{
+    font-family: 'Hind', sans-serif;
+    color: #785551;
+    line-height: 16px;
+    display: flex;
+    font-size: 1rem;
+    align-items: center;
+    gap: 5px;
+}
+
+.fechaHora .ico{
+    width: 15px;
+    height: 15px;
+}
+
+.botones{
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+}
+
+.ventas{
+    grid-area: ventas;
+    background-color: #719644;
+}
+
+.reservas{
+    grid-area: reservas;
+    background-color: #e69900;
+}
+
+.eliminar{
+    grid-area: eliminar;
+    background-color: #bf0d0d;
+}
+
+.swiper-wrapper{
+    height: auto; 
+    /* overflow: visible !important; */
+}
+
+/* .swiper-button-prev{
+    
+    left: -10px;
+    z-index: ;
+}
+
+.swiper-button-next{
+    
+} */
+
+.editar .ico:hover,
+#Agregar{
+  cursor: pointer;
+}
+
+
+/* CSS MODAL */
+
+/* --- Fondo oscuro del modal --- */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;         /* lo activas con JS:  modal.style.display = "flex" */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* --- Contenedor del formulario (la ventana modal) --- */
+#Modal-Trova, #Modal-Baile, #Modal-Edita-Trova, #Modal-Edita-Baile{
+    position: relative;
+    background: white;
+    padding: 25px 30px;
+    width: 550px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    font-family: "Hind", sans-serif;
+    font-size: 1rem;
+    display: none; 
+    gap: 20px;
+    animation: modalFade .25s ease-out;
+}
+
+/* Animación suave */
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* --- Estilo general de textos y etiquetas --- */
+#Modal-Trova span,
+#Modal-Baile span {
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+/* --- Inputs globales --- */
+#Modal-Trova input[type="text"],
+#Modal-Trova input[type="date"],
+#Modal-Trova input[type="time"],
+#Modal-Trova input[type="file"],
+#Modal-Baile input[type="text"],
+#Modal-Baile input[type="date"],
+#Modal-Baile input[type="time"],
+#Modal-Baile input[type="file"],
+#Modal-Edita-Trova input[type="text"],
+#Modal-Edita-Trova input[type="date"],
+#Modal-Edita-Trova input[type="time"],
+#Modal-Edita-Trova input[type="file"],
+#Modal-Edita-Baile input[type="text"],
+#Modal-Edita-Baile input[type="date"],
+#Modal-Edita-Baile input[type="time"],
+#Modal-Edita-Baile input[type="file"]{
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 14px;
+    width: auto;
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.5);
+}
+
+#Modal-Trova input[type="number"],
+#Modal-Baile input[type="number"],
+#Modal-Edita-Trova input[type="number"],
+#Modal-Edita-Baile input[type="number"]{
+    border-radius: 12px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 14px;
+    width: auto;
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Sección de datos del evento --- */
+.datosEvento {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 8px;
+}
+
+.datosEvento span:first-child {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* --- Tabla de precios --- */
+.preciosEvento {
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr;
+    align-items: center;
+
+    row-gap: 12px;
+    column-gap: 10px;
+}
+
+.preciosEvento .precios {
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Inputs de precios */
+.preciosEvento input {
+    width: 90px;
+}
+
+.precios{
+    display: flex;
+    width: 110px;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1.5px solid;
+    padding-bottom: 1vh;
+    margin-left: 2vw;
+    margin-right: 2vw;
+}
+
+.preciosEvento div.precios input {
+    border-radius: 10px;
+}
+
+/* --- Botón AGREGAR --- */
+#Modal-Trova .agregar,
+#Modal-Baile .agregar,
+#Modal-Edita-Trova .actualizar,
+#Modal-Edita-Baile .actualizar {
+    font-family: "Hind", serif;
+    font-weight: bold;
+    display: grid;
+    padding: 10px;
+    background: #0866d2;
+    border: none;
+    color: white;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 30%;
+    transition: .2s;
+    justify-self: end;
+}
+
+#Modal-Trova button:hover {
+    background: #065bb7;
+}
+
+
+
+.zona{
+    display: flex;
+    justify-content: center;
+    border-bottom: 1.5px solid;
+    padding-bottom: 1vh;
+    margin-left: 2vw;
+    margin-right: 2vw;
+    white-space: nowrap;
+    /* overflow: hidden; */
+    text-overflow: ellipsis;
+}
+
+.precios input{
+    width: 60px !important;
+}
+
+.cerrar-modal {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #e60000;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.cerrar-modal:hover {
+    background: #c20000;
+}
+
+/* flechas del input */
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* .mySwiper .swiper-slide {
+  width: 210px !important;
+} */
+
+.cabeceras{
+    font-family: "Hind", serif;
+    display: flex;
+    justify-self: center;
+    margin-top: 50px;
+    margin-bottom: 0;
+}
+
+#eventosPasados{
+    color: white;
+    background-color: #b17036;
+    border: 0;
+    border-radius: 25px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-weight: bold;
+}
+
+#eventosPasados:hover{
+    cursor: pointer;
+}

@@ -1,0 +1,55 @@
+.centrar{
+    display: grid;
+    grid-template-areas: 
+    "formulario pago";
+    gap: 20px;
+    
+}
+
+#formulario{
+    grid-area: formulario;
+    justify-self: center;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 45px;
+    align-items: center;
+    gap: 5px;
+}
+
+.pago{
+    grid-area: pago;
+    justify-self: start;
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    row-gap: 10px;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 45px;
+}
+
+button{
+    color: white;
+    background-color: #b17036;
+    border: 0;
+    border-radius: 25px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-weight: bold;
+}
+
+button:hover{
+    cursor: pointer;
+}
+
+ul{
+    display: contents;
+}

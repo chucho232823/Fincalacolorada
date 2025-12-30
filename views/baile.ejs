@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title><%= evento.nombre %></title>
+  <link rel="stylesheet" href="/css/generalCliente.css">
+</head>
+<body>
+    <div class="centrar">
+        <noscript>
+            <p style="text-align: center; color: red;">Este sitio requiere JavaScript para funcionar correctamente.</p>
+        </noscript>
+
+       <!-- Título principal -->
+
+        <div class="informacion">
+            <div class = "infoEvento">
+                <div>
+                    <span id="dia"></span>
+                    <span id="mes"></span> 
+                    <span><%= evento.hora %></span>
+                </div>
+                <div>
+                    <h1><%= evento.nombre %></h1>
+                </div>    
+            </div>
+
+            <div id="txtBoletos"> 
+                <span><%= evento.descripcion %></span>
+                <span>Selecciona tus boletos por el tipo de mesa y asientos. <br>
+                    Recuerda que existe la posibilidad de compartir una mesa con otros invitados. <br> 
+                    Te recomendamos que llegues un poco antes de que inicie el evento.
+                </span>
+            </div>
+            
+            <table id="tablaPrecios">
+                <thead>
+                <tr>
+                    <th>Tipo de Mesa</th>
+                    <th>Precio</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Se llenará con JS -->
+                </tbody>
+            </table>
+            <div id="seleccion">
+                <div class="mesasSeleccionadas">
+                    <div class="lateral" style="display: none;">
+                        <span>Zona Lateral</span>
+                    </div>
+                    <div class="generales" style="display: none;">
+                        <span>Zona General</span>
+                    </div>
+                    <div class="preferentes" style="display: none;">
+                        <span>Zona Preferente</span>
+                    </div>
+                    <div class="vips" style="display: none;">
+                        <span>Zona VIP</span>
+                    </div>
+                </div>
+                <div class="totalPagar">
+                    <span>Total </span>
+                    <span>$0</span>
+                </div>
+                <div>
+                    <div class="seleccionBoletos">
+                        <button class = 'pagar'>
+                            <span>PAGAR BOLETOS</span>
+                        </button>
+                        <input type="number" id="inputBoletos" min="1" value="2">
+                    </div>
+                </div>
+            </div>
+            <div id = "inicio">
+                <img id="icoinicio" src="../ico/inicio.png" alt="">
+                <span>VOLVER AL INICIO</span>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <!-- Escenario -->
+            <!-- Sección General Izquierda -->
+            <div class="general izquierda">
+                <div>
+                    <h2 style="grid-column: 1 / -1; text-align: center;">General Izquierda</h2>
+                </div> 
+                <div class="izq"></div>
+                <div class="escalera izqb"></div>
+                <div class="escalera izqa"></div>
+                <!-- <div class="produccion"><span>produccion</span></div> -->
+             </div>
+            <!-- Sección VIP -->
+            <div class="centro">
+                <div class="titulos">
+                    <p class="escenario" style="grid-column: 1 / -1; text-align: center; top: 0;"">Escenario Musical</p> 
+                    <!-- <h2 style="grid-column: 1 / -1; text-align: center;"></h2> -->
+                </div>         
+
+                <div class ="centro-mesas"></div>
+            </div>
+
+            <!-- Sección General Derecha -->
+            <div class="general derecha">
+                <div>
+                    <h2 style="grid-column: 1 / -1; text-align: center;">General Derecha</h2>
+                </div> 
+                <div class="der"></div>
+
+                <div class="escalera derb"></div>
+                <div class="escalera dera"></div>
+             </div>
+
+            <!-- Footer con zonas adicionales -->
+            <div class="footer">
+                <div class="footer-izq">
+                    <div class="palmera one"><span>PALMERA</span></div>
+                    <div class="palmera two"><span>PALMERA</span></div>
+                    <div class="sillasAltas"><span>Zona de sillas altas</span></div>
+                </div>
+                <div class="footer-der">
+                </div>
+            </div>
+        </div>
+
+        <!-- sillas seleccionadas -->
+        <div class = "fondo-compra hidden">
+            <div class="confirma-compra">
+                <h2>sillas seleccionadas: </h2>
+                <span></span>
+                <ul></ul>
+                <h3></h3>
+                <div>
+                    <button class="volver">VOLVER</button>
+                    <button class="confirmar">CONFIRMAR</button>
+                </div>                
+            </div>
+            <!-- Para el envio de los datos -->
+            <form id="jsonform" method="POST" style="display:none;">
+                <input type="hidden" id="jsonData" name="jsonData">
+                <input type="submit">
+            </form>
+        </div>
+    </div>
+    <script>
+        window.evento = <%- JSON.stringify(evento) %>;
+    </script>
+    <script src="/js/generalCliente.js"></script>
+</body>
+</html>

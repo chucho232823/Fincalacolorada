@@ -1,0 +1,512 @@
+.centrar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1 {
+    text-align: center;
+    padding: 0;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.main-container {
+    display: grid;
+    grid-template-areas:
+        "general-izq vip general-der"
+        "footer footer footer"
+        "inicio boletos compra";
+    gap: 20px;
+    /* grid-template-columns: repeat(9, 1fr);
+    width: 100%;
+    margin: 0 auto;
+    padding: 0; */
+    max-width: 100%;
+}
+
+.general, .escenario, .centro{
+    padding: 10px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.general {
+    display: grid;
+    grid-template-columns: repeat(3, auto); /* Cinco filas */
+    grid-auto-rows: auto;
+    gap: 20px; /* Espacio entre mesas */
+    /* justify-content: center;  */
+    align-items: start;
+}   
+
+.escenario {
+    /* grid-area: escenario; */
+    text-align: center;
+    font-weight: bold;
+    background: #e5ceb9;
+    padding: 20px;
+    margin: auto;
+    width: 18em;
+}
+
+
+.izq {
+    grid-area: general-izq;
+
+}
+
+.der {
+    grid-area: general-der;
+}
+
+.centro {
+    grid-area: vip;
+    display: flex;
+    flex-direction: column;
+    /* grid-template-areas:
+        "titulos"
+        "centro-mesas";    */
+    gap: 20px;
+}
+
+.centro-mesas {
+    /* grid-area: centro-mesas; */
+    display: grid;
+    grid-template-columns: repeat(4,auto);
+    gap: 20px;
+    justify-self: center;
+}
+
+.footer {
+    grid-area: footer;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.footer-izq{
+    display: grid;
+    grid-template-rows: repeat(3, auto);
+    gap: 20px;
+    justify-self: center;
+    justify-items: center;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: fit-content;  /* Ancho del div */
+    height: fit-content;
+} 
+
+.footer-der{
+    display: flex;
+    justify-self: end;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: fit-content;  /* Ancho del div */
+    height: fit-content;
+    margin-right: 18%;
+    padding: 3%;
+}
+
+.table-wrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.table {
+    width: 40px;
+    height: 40px;
+    background-color: #007bff;
+    transform: rotate(45deg);
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* girando texto */
+.numMesa{
+    transform: rotate(-45deg);
+}
+
+/* Color amarillo para las mesas vip */
+.table.vip{
+    background-color: #f8ca67;
+}
+
+.table.tres,
+.table.dos{
+    transform: rotate(0deg);
+    border-radius: 90px / 60px;
+}
+
+/*Color gris preferente*/
+.table.preferente{
+    background-color: rgb(228, 228, 228);
+}
+
+/*laterales*/
+.laterales{
+    background-color: orangered;
+}
+
+.chair {
+    width: 14px;
+    height: 14px;
+    background-color: #8B4513;
+    position: absolute;
+    border-radius: 2px;
+    border: 1px solid #654321;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+    
+}
+
+/*Posicion de las mesas de 4 sillas*/
+.chair:nth-child(2) { right: 0; top: 0; transform: translateY(-130%) translateX(-80%) rotate(0deg); }
+.chair:nth-child(3) { bottom: 0; left: 0; transform: translateY(130%) translateX(80%) rotate(0deg); }
+.chair:nth-child(4) { right: 0; bottom: 0; transform: translateY(-80%) translateX(130%) rotate(0deg); }
+.chair:nth-child(5) { top: 0; left: 0; transform: translateY(80%) translateX(-130%) rotate(0deg); }
+
+.chair3 {
+    width: 14px;
+    height: 14px;
+    background-color: #8B4513;
+    position: absolute;
+    border-radius: 2px;
+    border: 1px solid #654321;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+.chair3:nth-child(2) { right: -50%; bottom: 30%;}
+.chair3:nth-child(3) { bottom: -45%; }
+.chair3:nth-child(4) { left: -50%; bottom: 30%;}
+
+.chair2 {
+    width: 14px;
+    height: 14px;
+    background-color: #8B4513;
+    position: absolute;
+    border-radius: 2px;
+    border: 1px solid #654321;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+.chair2:nth-child(2) { right: -10%; bottom: -40%;}
+.chair2:nth-child(3) { right: 70%; bottom: -40%; }
+
+/*cosas nuevas*/
+
+.chair.activa{
+    background-color: aqua;
+}
+
+.chair3.activa{
+    background-color: aqua;
+}
+
+.chair2.activa{
+    background-color: aqua;
+}
+
+.compra{
+    grid-area: compra;
+    display: block; /* El botón sigue siendo un bloque */
+    justify-self: end; /* Alineamos el botón a la derecha */
+    background-color: #8e735b; /* Marrón suave/beige cálido (combinable con café) */
+    color: white; /* Amarillo mostaza cálido (complementa el amarillo) */
+    font-size: 16px;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    margin-right: 18%;
+}
+
+.compra:active {
+    background-color: #6b4f39;  /* Un tono más oscuro de marrón */
+    color: white; /* Un amarillo aún más cálido y profundo */
+    transform: scale(0.98); /* Efecto de reducir el tamaño al hacer clic */
+}
+
+.compra:hover {
+    background-color: #7a5d45;  /* Marrón más oscuro (refleja el café) */
+    color: white; /* Amarillo más brillante (llamativo pero armonioso) */
+    transform: scale(1.05); /* Efecto de agrandar el botón */
+}
+
+/* .confirma-compra{
+    display: none; 
+    position: fixed;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: fit-content;
+    background-color: white;
+    z-index: 1000;
+} */
+
+.confirma-compra {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    top: 15%;  /* Ajustado para dejar más espacio arriba */
+    left: 25%;
+    /* transform: translateX(-50%); */
+    width: 50%;
+    max-height: 50vh; /* Máxima altura en función de la altura de la pantalla */
+    overflow-y: auto; /* Scroll vertical si se necesita */
+    background-color: white;
+    z-index: 1000;
+    padding: 20px; /* Opcional, mejora la apariencia */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Opcional */
+    border-radius: 8px; /* Opcional */
+}
+
+.confirma-compra h2{
+    text-align: center;
+}
+
+.confirma-compra li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 16px;
+  color: #333;
+}
+
+.confirma-compra h3{
+  text-align: center;
+  padding: 20px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+/* .volver{
+    position: absolute;
+    bottom: 20px; /* Distancia desde abajo */
+    /* right: 20px; Distancia desde la derecha */
+/* } */
+
+.volver{
+    display: flex;
+    position: absolute;
+    margin-bottom: 10px; 
+    left: 10px; 
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+/*Para espacio en el centro*/
+
+.centro-mesas > :nth-child(2){
+    margin-right: 9em;
+}
+
+.centro-mesas > :nth-child(3){
+    margin-left: 9rem;
+}
+
+.confirmar{
+    display: flex;
+    position: absolute;
+    bottom: 10px; 
+    right: 10px; 
+    background-color: #1a73e8;
+    color: white;
+}
+
+.fondo-compra{
+    position: unset;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro con transparencia */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999; /* Asegura que esté sobre todo lo demás */
+}
+
+.ocupada{
+    background-color: rgb(84, 255, 16);
+}
+
+table {
+  width: 50%;
+  border-collapse: collapse;
+  background-color: #fff;
+  font-size: 18px; /* texto más grande */
+}
+
+th, td {
+  padding: 12px 10px;
+  text-align: left;
+}
+
+thead {
+  background-color: #f0f0f0;
+}
+
+tbody tr + tr {
+  border-top: 1px solid #ddd; /* solo borde entre filas */
+}
+
+#inicio{
+    grid-area: inicio;
+    display: block; /* El botón sigue siendo un bloque */
+    justify-self: end; /* Alineamos el botón a la derecha */
+    background-color: #8e735b; /* Marrón suave/beige cálido (combinable con café) */
+    color: white; /* Amarillo mostaza cálido (complementa el amarillo) */
+    font-size: 16px;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    /* margin-right: 18%; */
+}
+
+#btnReabrirModal{
+    grid-area: boletos;
+    display: block; /* El botón sigue siendo un bloque */
+    justify-self: start; /*Alineamos el botón a la derecha*/
+    background-color: #8e735b; /* Marrón suave/beige cálido (combinable con café) */
+    color: white; /* Amarillo mostaza cálido (complementa el amarillo) */
+    font-size: 16px;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    /* margin-right: 18%; */
+}
+
+#inicio:active {
+    background-color: #6b4f39;  /* Un tono más oscuro de marrón */
+    color: white; /* Un amarillo aún más cálido y profundo */
+    transform: scale(0.98); /* Efecto de reducir el tamaño al hacer clic */
+}
+
+#inicio:hover {
+    background-color: #7a5d45;  /* Marrón más oscuro (refleja el café) */
+    color: white; /* Amarillo más brillante (llamativo pero armonioso) */
+    transform: scale(1.05); /* Efecto de agrandar el botón */
+}
+
+/* codigo de colores */
+#bolitaVIP{
+    display:inline-block; 
+    width:20px; 
+    height:20px; 
+    border-radius:50%; 
+    background-color:#f8ca67; 
+    margin-right:8px;
+}
+
+#bolitaPreferente{
+    display:inline-block; 
+    width:20px; 
+    height:20px; 
+    border-radius:50%; 
+    background-color:rgb(228, 228, 228); 
+    margin-right:8px;
+}
+
+#bolitaGeneral{
+    display:inline-block; 
+    width:20px; 
+    height:20px; 
+    border-radius:50%; 
+    background-color:#007bff; 
+    margin-right:8px;
+}
+
+/* Modal de boletos */
+.cantidadBoletos {
+    /* Fija el modal para que cubra toda la ventana */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro semitransparente */
+    display: flex; /* Centra el contenido */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegura que esté por encima de todo */
+}
+
+.contenido {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.contenido h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.contenido input {
+    padding: 10px;
+    margin: 15px 0;
+    width: 80%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.contenido button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.contenido button:hover {
+    background-color: #0056b3;
+}
+
+.mesasLaterales{
+    margin-top: 3vw;
+}
+
+.general.izq > :nth-child(3),
+.general.der > :nth-child(3) {
+  /* Tus estilos CSS aquí */
+  margin-top: 12vw;
+}
+
+.general.izq > :nth-child(4),
+.general.der > :nth-child(2){
+  /* Tus estilos CSS aquí */
+  margin-top: 6vw;
+}
+
+.mesasCentro > :nth-child(5) {
+  /* Tus estilos CSS aquí */
+  margin-top: 5vw;
+}

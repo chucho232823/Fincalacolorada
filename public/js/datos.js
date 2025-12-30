@@ -1,0 +1,480 @@
+//console.log("Datos recibidos");
+//console.log(window.sembrado);
+//console.log(window.listaMesaSilla);
+
+const sembrado = parseInt(window.sembrado);
+const listaMesaSilla = window.listaMesaSilla;
+const tipo = window.tipo;
+const controlFila = window.controlFila;
+const consecutivas = window.consecutivas;
+const agrupadasPorMesa = window.agrupadasPorMesa;
+let mesasJuntadas = [];
+let cancelarLiberacion = false;
+
+// PASO 1: Convertir el objeto a un array de pares [ [clave, valor], ... ]
+console.log(listaMesaSilla);
+console.log(typeof(listaMesaSilla));
+console.log(consecutivas);
+console.log(agrupadasPorMesa);
+console.log(sembrado);
+
+const arrayDePares = Object.entries(controlFila);
+
+// PASO 2: Reconstruir el Map
+const controlFilaReconstruido = new Map(arrayDePares);
+console.log(controlFilaReconstruido);
+
+/**
+ * Poniendo sillas en espera
+ */
+async function esperaSilla( letra, numeroMesa, idEvento ) {
+  try {
+    const response = await fetch(`/espera-silla/${idEvento}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json' // Ahora usas JSON
+      },
+      body: JSON.stringify({ letra, numeroMesa })
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al liberar la silla');
+    }
+
+    console.log('✅ Silla espera correctamente');
+  } catch (err) {
+    console.error('❌ Error en liberarSilla:', err);
+  }
+}
+
+let sillasExtra = [];
+controlFilaReconstruido.forEach(async (num, mesa) => {
+  //console.log(`mesa: ${mesa} Reservas: ${num}`);
+  //console.log(!(mesa >= 215 && mesa <= 219));
+  if (num === 3 && !(mesa >= 215 && mesa <= 219)) {
+    const idSilla = ['A', 'B', 'C', 'D'];
+    console.log(listaMesaSilla);
+    //console.log(idSilla);
+    listaMesaSilla.forEach(silla => {
+      if (silla.mesa == mesa) {
+        const indice = idSilla.indexOf(silla.silla);
+        if (indice > -1) {
+          // Borrar 1 elemento a partir de ese índice
+          idSilla.splice(indice, 1);
+        }
+      }
+    });
+    const relleno = {
+      mesa: mesa,
+      silla: idSilla[0]
+    };
+    await esperaSilla(idSilla[0], mesa, sembrado);
+    sillasExtra.push(relleno);
+
+  }
+  if (num === 2 && (mesa >= 215 && mesa <= 219)) {
+    const idSilla = ['A', 'B', 'C'];
+    console.log(listaMesaSilla);
+    console.log(idSilla);
+    listaMesaSilla.forEach(silla => {
+      if (silla.mesa == mesa) {
+        const indice = idSilla.indexOf(silla.silla);
+        if (indice > -1) {
+          // Borrar 1 elemento a partir de ese índice
+          idSilla.splice(indice, 1);
+        }
+      }
+    });
+    const relleno = {
+      mesa: mesa,
+      silla: idSilla[0]
+    };
+    await esperaSilla(idSilla[0], mesa, sembrado);
+    console.log(relleno);
+    sillasExtra.push(relleno);
+    //console.log(listaMesaSilla);
+    //console.log(relleno);
+  }
+})
+
+listaMesaSilla.forEach(silla =>{
+    //faltan las sillas a bloquear
+    const sem = sembrado;
+    //console.log('sillas puestas en espera');
+    esperaSilla(silla.silla,silla.mesa,sem);
+})
+
+/**
+ * quitando sillas en espera si se cierra la pagina
+ */
+function liberaTodasLasSillas(listaMesaSilla, idEvento) {
+  if (!listaMesaSilla || listaMesaSilla.length === 0) return;
+  
+  const payload = JSON.stringify({
+    idEvento,
+    sillas: listaMesaSilla.map(silla => ({
+      letra: silla.silla,
+      numeroMesa: silla.mesa
+    }))
+  });
+
+  navigator.sendBeacon(`/liberar-sillas/${idEvento}`, payload);
+}
+
+function manejarLiberacion() {
+  if (cancelarLiberacion) return;
+  liberaTodasLasSillas(sillasExtra,sembrado);
+  liberaTodasLasSillas(listaMesaSilla, sembrado);
+}
+
+window.addEventListener('beforeunload', manejarLiberacion);
+window.addEventListener('pagehide', manejarLiberacion);
+
+
+const lista = [];
+let codigo;
+
+/**
+ * Confirmando la compra
+ */
+const reservarMesa = async (silla,codigo) => {
+  silla.mesa = parseInt(silla.mesa);
+  console.log(silla);
+  try {
+    //sembrado tiene el id del evento)
+    const response = await fetch(`/reservar/${sembrado}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json' // Indicamos que el cuerpo de la solicitud es JSON
+      },
+      body: JSON.stringify({
+        silla,
+        codigo
+      }) // Convertimos el objeto 'datos' a JSON
+    });
+
+    // Verificamos si la respuesta es exitosa
+    if (!response.ok) {
+      throw new Error(`Error al reservar: ${response.statusText}`);
+    }
+
+    // Convertimos la respuesta en JSON (si es necesario)
+    //const result = await response.json();
+    
+    //console.log('Reserva exitosa:', result.message);
+    //alert(result.message); // Por ejemplo, alertamos el mensaje
+
+  } catch (error) {
+    console.error('Error en la solicitud:', error);
+    alert('Hubo un problema al intentar hacer la reserva.');
+  }
+};
+
+/**
+ * Bloqueando sillas
+ */
+const bloqueo = async (silla) => {
+  silla.mesa = parseInt(silla.mesa);
+  //console.log(`silla ${silla} bloqueada!!!`);
+  try {
+    //sembrado tiene el id del evento)
+    const response = await fetch(`/bloqueo/${sembrado}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json' // Indicamos que el cuerpo de la solicitud es JSON
+      },
+      body: JSON.stringify({
+        silla
+      }) // Convertimos el objeto 'datos' a JSON
+    });
+
+    // Verificamos si la respuesta es exitosa
+    if (!response.ok) {
+      throw new Error(`Error al reservar: ${response.statusText}`);
+    }
+
+    // Convertimos la respuesta en JSON (si es necesario)
+    //const result = await response.json();
+    
+    //console.log('Reserva exitosa:', result.message);
+    //alert(result.message); // Por ejemplo, alertamos el mensaje
+
+  } catch (error) {
+    console.error('Error en la solicitud:', error);
+    alert('Hubo un problema al intentar hacer la reserva.');
+    console.log(error);
+  }
+};
+
+/**
+ * enviar datos
+ */
+async function enviarDatos(codigo,nombre,apellidos,telefono,mesasJuntadas) {
+  try {
+    const resFecha = await fetch(`/fechaP/${sembrado}`);
+    const data = await resFecha.json();
+
+    if (data.length === 0) {
+      console.warn('No se encontró fecha para ese sembrado');
+      return;
+    }
+
+    const fechaP = data[0].fechaP;
+
+    const response = await fetch('/codigo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ codigo, nombre,apellidos, telefono, fechaP, mesasJuntadas})
+    });
+
+    const resultado = await response.json();
+    //console.log(mesasJuntadas);
+    console.log('Datos enviados correctamente:', resultado);
+
+    for (const silla of listaMesaSilla){
+        const cod = codigo;
+        await reservarMesa(silla,cod);
+    }
+  } catch (error) {
+    console.error('Error en el proceso:', error);
+  }
+}
+
+
+/**
+ * Obteniendo los valores del formulario para reservar
+ */
+document.getElementById('reservar').addEventListener('click', async function() {
+    // Obtener los valores de los campos del formulario
+    const nombre = document.getElementById('nombre').value;
+    const apellidos = document.getElementById('apellidos').value;
+    const telefono = document.getElementById('telefono').value;
+    if (telefono.length < 12) {
+      alert("El teléfono debe de ser de 10 digitos");
+      return; 
+    }
+    let i = 0;
+    cancelarLiberacion = true;
+    document.querySelectorAll('input[type="checkbox"][name="grupoMesas"]').forEach(check => {
+      mesasJuntadas[i++].juntar = check.checked;
+    })
+    // Verificar si todos los campos están llenos
+    if (nombre && apellidos && telefono) {
+        // Mostrar los datos en consola
+        console.log('Nombre:', nombre);
+        console.log('Apellidos:', apellidos);
+        console.log('Teléfono:', telefono);
+        const res = await fetch(`/conteo/${sembrado}`);
+        const data = await res.json();
+        const conteo = data.conteo;
+        //console.log('Conteo recibido con fetch:', conteo);
+        // Aquí puedes hacer lo que desees con los datos (enviarlos al servidor, etc.)
+        // Por ejemplo, podrías enviar los datos a un servidor usando fetch
+        const codigo = `${sembrado}-${conteo}`;
+        
+        // Paso 1: Obtener fechaP primero
+        
+        await enviarDatos(codigo,nombre,apellidos,telefono,mesasJuntadas);
+
+
+        //no usar foreach con async
+        for (const [mesa, num] of controlFilaReconstruido.entries()){
+          //console.log(`mesa: ${mesa} Reservas: ${num}`);
+          console.log(!(mesa >= 215 && mesa <= 219));
+          if(num === 3 && !(mesa >= 215 && mesa <= 219)){
+            const idSilla = ['A','B','C','D'];
+            //console.log(listaMesaSilla);
+            //console.log(idSilla);
+            listaMesaSilla.forEach(silla => {
+              if(silla.mesa == mesa){
+                const indice = idSilla.indexOf(silla.silla);
+                if (indice > -1) { 
+                  // Borrar 1 elemento a partir de ese índice
+                  idSilla.splice(indice, 1);
+                }
+              }
+            })
+            const relleno = {
+              mesa: mesa,
+              silla: idSilla[0]
+            }
+            await bloqueo(relleno);
+            //console.log(listaMesaSilla);
+            //console.log(relleno);
+          }
+          if(num === 2 && (mesa >= 215 && mesa <= 219)){
+            const idSilla = ['A','B','C'];
+            console.log(listaMesaSilla);
+            console.log(idSilla);
+            listaMesaSilla.forEach(silla => {
+              if(silla.mesa == mesa){
+                const indice = idSilla.indexOf(silla.silla);
+                if (indice > -1) { 
+                  // Borrar 1 elemento a partir de ese índice
+                  idSilla.splice(indice, 1);
+                }
+              }
+            })
+            const relleno = {
+              mesa: mesa,
+              silla: idSilla[0]
+            }
+            await bloqueo(relleno);
+            //console.log(listaMesaSilla);
+            //console.log(relleno);
+          }          
+        }
+        // alert('Reservacion hecha!');
+
+        //generacion del pdf
+        await fetch(`/creaPDFBoleto/${sembrado}/${codigo}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Error al generar el PDF');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('✅ PDF generado correctamente');
+          window.location.href='/';
+        })
+        .catch(error => {
+          console.error('❌ Error al generar el PDF:', error);
+          alert('Reservacion hecha!');
+        });
+        // setTimeout(()=>{
+        //   alert('Reservacion hecha!');
+        //  
+        // },500)
+            
+        } else {
+            alert('Por favor, complete todos los campos.');
+        }
+});
+
+document.getElementById('volver').addEventListener('click', () =>{
+  history.back();
+})
+
+/**
+ * Validacion para el telefono
+ */
+const telefonoInput = document.getElementById('telefono');
+
+  telefonoInput.addEventListener('input', function (e) {
+    const cursorPos = this.selectionStart;
+
+    // 1. Obtener solo números (limpia el input)
+    let numeros = this.value.replace(/\D/g, '').slice(0, 10);
+
+    // 2. Aplicar formato: XX XXXX XXXX
+    let formateado = '';
+    if (numeros.length > 0) {
+      formateado += numeros.slice(0, 2);
+    }
+    if (numeros.length > 2) {
+      formateado += ' ' + numeros.slice(2, 6);
+    }
+    if (numeros.length > 6) {
+      formateado += ' ' + numeros.slice(6, 10);
+    }
+
+    // 3. Guardar longitud anterior para intentar mantener el cursor
+    const valorAnterior = this.value;
+    this.value = formateado;
+
+    // // 4. (Opcional) Mover cursor al final siempre
+    // this.setSelectionRange(this.value.length, this.value.length);
+  });
+
+
+
+/**
+ * Verificando mesas que cumplen para juntar
+ */
+const container = document.getElementById('grupo-mesas');
+
+consecutivas.forEach( con =>{
+  let juntar;
+  let conteo = 0;
+  con.forEach(can => {
+    console.log(can);
+    conteo += controlFilaReconstruido.get(can);
+  })
+  //console.log(conteo);
+  //console.log(con.length * 4 - 1);
+  if(conteo < (con.length * 4 -1 )){
+    return;
+  } 
+
+  const label = document.createElement('label');
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.name = 'grupoMesas';
+  checkbox.value = con.join(',');
+  mesasJuntadas.push({
+    mesas: con.join(','),
+    juntar: false
+  });
+  label.appendChild(checkbox);
+  label.appendChild(document.createTextNode(` Juntar mesas: ${con.join(', ')}`));
+
+  container.appendChild(label);
+  container.appendChild(document.createElement('br'));
+})
+
+
+/**
+ * obtener cierre de pagina
+ */
+
+
+
+// 
+// codigo util para despues
+// 
+
+// async function procesarReserva(codigo, nombreCompleto, telefono) {
+//   try {
+//     const response = await fetch('/codigo', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify({ codigo, nombreCompleto, telefono })
+//     });
+
+//     const data = await response.json();
+//     console.log('Datos enviados correctamente:', data);
+
+//     // Ahora sí, reservar cada silla
+//     for (const silla of listaMesaSilla) {
+//       await reservarMesa(silla, codigo); // O sin await si querés paralelismo
+//     }
+
+//     alert('¡Reservación hecha!');
+//     window.location.href = "/";
+    
+//   } catch (err) {
+//     console.error('Error en la reserva:', err);
+//     alert('Hubo un problema al intentar hacer la reserva.');
+//   }
+// }
+
+// document.getElementById('reservar').addEventListener('click', function () {
+//   const nombre = document.getElementById('nombre').value;
+//   const apellidos = document.getElementById('apellidos').value;
+//   const telefono = document.getElementById('telefono').value;
+//   const nombreCompleto = `${nombre} ${apellidos}`;
+
+//   if (nombre && apellidos && telefono) {
+//     const codigo = generarCodigo(); // o donde lo estés generando
+
+//     // 👇 Pasás los parámetros a la función async
+//     procesarReserva(codigo, nombreCompleto, telefono);
+//   } else {
+//     alert('Por favor, complete todos los campos.');
+//   }
+// });
