@@ -2,9 +2,9 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const fs = require('fs');
-const conexion = require('./database/db');
+//const conexion = require('./database/db');
 const bodyParser = require('body-parser');
-const conexionPromise = require('./database/dbp');
+//const conexionPromise = require('./database/dbp');
 const pool = require('./database/dbpool');
 //const PDFDocument = require('pdfkit');
 const { error } = require('console');
@@ -36,7 +36,7 @@ app.set('view engine','ejs');
 app.set('views', path.join(__dirname,'views'));
 
 // Ejecutar cada minuto
-cron.schedule('* * * * *', () => {
+cron.schedule('* * * * *', async () => {
   const query = `
     UPDATE silla
     SET enEspera = false,
@@ -44,13 +44,16 @@ cron.schedule('* * * * *', () => {
     WHERE enEspera = true
       AND enEsperaDesde < NOW() - INTERVAL 5 MINUTE;
   `;
-  conexion.query(query, (err, result) => {
-    if (err) {
-      console.error('Error liberando sillas:', err);
-    } else if (result.affectedRows > 0) {
-      //console.log(`Sillas liberadas automáticamente: ${result.affectedRows}`);
+  
+  try {
+    const [result] = await pool.query(query); // Usando async/await
+    if (result.affectedRows > 0) {
+      // Si deseas ver cuántas filas fueron afectadas:
+      // console.log(`Sillas liberadas automáticamente: ${result.affectedRows}`);
     }
-  });
+  } catch (err) {
+    console.error('Error liberando sillas:', err); // Manejo de error
+  }
 });
 
 /**
@@ -84,7 +87,7 @@ app.get('/', (req, res) => {
 //Eventos 
 app.get('/evento',(req,res)=>{
   const query = 'SELECT * FROM evento';
-  conexion.query(query,(error,resultado) => {
+  pool.query(query,(error,resultado) => {
     if(error){
       console.error('Error en la consulta: ',error);
     }else{
@@ -97,39 +100,40 @@ app.get('/evento',(req,res)=>{
  * Carga de listado de eventos
  * 
  */
-app.get('/listado-de-eventos', (req, res) => {
-  conexion.query("SET lc_time_names = 'es_ES'", (error1) => {
-    if (error1) {
-      console.error('Error al configurar lc_time_names:', error1);
-      res.status(500).send('Error interno del servidor');
-      return;
-    }
 
-    const query = `SELECT e.idEvento AS idEvento, e.nombre AS nombre, t.tipo AS tipo, DATE_FORMAT(e.fecha, '%d de %M de %Y') AS fecha,
-      TIME_FORMAT(e.hora, '%H:%i') AS hora, e.imagen AS imagen, e.subtitulo AS subtitulo 
+app.get('/listado-de-eventos', async (req, res) => {
+  try {
+    // Establecer el idioma en español (con el SET lc_time_names)
+    await pool.query("SET lc_time_names = 'es_ES'");
+    
+    const query = `
+      SELECT e.idEvento AS idEvento, e.nombre AS nombre, t.tipo AS tipo, 
+             DATE_FORMAT(e.fecha, '%d de %M de %Y') AS fecha,
+             TIME_FORMAT(e.hora, '%H:%i') AS hora, e.imagen AS imagen, e.subtitulo AS subtitulo 
       FROM evento e
       JOIN tipoEvento t ON e.idTipoEVento = t.idTipoEvento
       WHERE e.fecha >= CURDATE()
       ORDER BY e.fecha ASC;
     `;
 
-    conexion.query(query, (error2, resultado) => {
-      if (error2) {
-        console.error('Error en la consulta:', error2);
-        res.status(500).send('Error en la consulta');
-      } else {
-        res.json(resultado);
-      }
-    });
-  });
-}); 
+    // Realizar la consulta
+    const [resultado] = await pool.query(query); 
+
+    // Enviar los resultados en formato JSON
+    res.json(resultado);
+  } catch (error) {
+    // Manejo de errores
+    console.error('Error en la consulta:', error);
+    res.status(500).send('Error en la consulta');
+  }
+});
 
 /**
  * Carga de listado de eventos
  * 
  */
 app.get('/listado-de-eventos-pasados', (req, res) => {
-  conexion.query("SET lc_time_names = 'es_ES'", (error1) => {
+  pool.query("SET lc_time_names = 'es_ES'", (error1) => {
     if (error1) {
       console.error('Error al configurar lc_time_names:', error1);
       res.status(500).send('Error interno del servidor');
@@ -144,7 +148,7 @@ app.get('/listado-de-eventos-pasados', (req, res) => {
       ORDER BY e.fecha ASC;
     `;
 
-    conexion.query(query, (error2, resultado) => {
+    pool.query(query, (error2, resultado) => {
       if (error2) {
         console.error('Error en la consulta:', error2);
         res.status(500).send('Error en la consulta');
@@ -161,7 +165,7 @@ app.get('/evento/nombre/:nombre',(req,res) => {
   const nombre = req.params.nombre;
 
   const query = 'SELECT * FROM evento WHERE nombre = ?';
-  conexion.query(query,[nombre],(error,resultado) => {
+  pool.query(query,[nombre],(error,resultado) => {
     if(error){
       console.error('Error en la consulta: ',error);
       return res.status(500).send('Error en el servidor');
@@ -189,7 +193,7 @@ app.get('/estado-sillas/:idEvento',(req,res) => {
                   JOIN mesa m ON p.idPrecio = m.idPrecio
                   JOIN silla s ON m.idMesa = s.idMesa
                   WHERE e.idEvento = ?;`;
-  conexion.query(query,[idEvento], (error,resultado) => {
+  pool.query(query,[idEvento], (error,resultado) => {
     if(error){
       console.error('Error al conectar la  base',error);
       return res.status(500).send('error en el servidor');
@@ -220,7 +224,7 @@ app.get('/estado-silla/:idEvento', (req, res) => {
       AND s.letra = ?;
     `;
 
-    conexion.query(query, [idEvento, mesa, silla], (error, resultado) => {
+    pool.query(query, [idEvento, mesa, silla], (error, resultado) => {
       if (error) {
         console.error('Error al conectar la base', error);
         return res.status(500).send('Error en el servidor');
@@ -297,7 +301,7 @@ app.post('/crearEvento', (req, res) => {
     return res.status(400).send('❌ Tipo de evento no válido');
   }
 
-  conexion.query(query, params, (err, result) => {
+  pool.query(query, params, (err, result) => {
     if (err) {
       console.error('❌ Error al insertar evento:', err);
       return res.status(500).send('Error al crear el evento');
@@ -360,7 +364,7 @@ app.put('/reservar/:idEvento', (req, res) => {
                   AND s.letra = ?;`;
 
   // Ejecutar la consulta con parámetros
-  conexion.query(query, [codigo, mesa, parseInt(idEvento), sil], (err, result) => {
+  pool.query(query, [codigo, mesa, parseInt(idEvento), sil], (err, result) => {
     if (err) {
       console.error('Error al actualizar:', err);
       return res.status(500).json({ error: 'Error al actualizar los datos' });
@@ -395,7 +399,7 @@ app.put('/bloqueo/:idEvento', (req, res) => {
                   AND e.idEvento = ?
                   AND s.letra = ?;`;
   // Ejecutar la consulta con parámetros
-  conexion.query(query, [mesa, parseInt(idEvento), sil], (err, result) => {
+  pool.query(query, [mesa, parseInt(idEvento), sil], (err, result) => {
     if (err) {
       console.error('Error al actualizar:', err);
       return res.status(500).json({ error: 'Error al actualizar los datos' });
@@ -426,7 +430,7 @@ app.post('/datos', (req,res) => {
  * Obtencion del conteo de forma asyncrona
  */
 async function obtenerConteo(idEvento) {
-  const conexionConteo = await conexionPromise
+  const conexionConteo = await pool
   const [rows] = await conexionConteo.execute(
     `SELECT COUNT(*) AS numero
      FROM silla s
@@ -483,7 +487,7 @@ app.post('/codigo',(req,res) =>{
     const query = `INSERT INTO reserva (codigo,nombre,apellido,telefono,preventa,juntar)
              VALUES( ? , ? , ? , ? , ? , ?);`;
 
-    conexion.query(query,[codigo,nombre,apellidos,telefono,1,cadena],(err,result) =>{
+    pool.query(query,[codigo,nombre,apellidos,telefono,1,cadena],(err,result) =>{
       if (err) {
       console.error('Error al actualizar:', err);
         return res.status(500).json({ error: 'Error al actualizar los datos' });
@@ -513,7 +517,7 @@ app.get('/lista/:idEvento', async (req, res) => {
   const queryNombreEvento = `SELECT nombre FROM evento WHERE idEvento = ?;`;
 
   try {
-    const conexion = await conexionPromise;
+    const conexion = await pool;
 
     // Obtener las reservas
     const [reservas] = await conexion.execute(queryReservas, [idEvento]);
@@ -577,7 +581,7 @@ app.get('/precios/:idEvento', (req, res) => {
     WHERE e.idEvento = ?;
   `;
 
-  conexion.query(query, [idEvento], (err, resultado) => {
+   pool.query(query, [idEvento], (err, resultado) => {
     if (err) {
       console.error('Error en la consulta:', err);
       return res.status(500).json({ error: 'Error en el servidor' });
@@ -600,7 +604,7 @@ app.get('/fechaP/:idEvento', (req, res) => {
     WHERE idEvento = ?;
   `;
 
-  conexion.query(query, [idEvento], (err, resultado) => {
+  pool.query(query, [idEvento], (err, resultado) => {
     if (err) {
       console.error('Error en la consulta:', err);
       return res.status(500).json({ error: 'Error en el servidor' });
@@ -626,7 +630,7 @@ app.get('/editar/:idEvento', (req, res) => {
     WHERE e.idEvento = ?;
   `;
 
-  conexion.query(query, [idEvento], (err, resultado) => {
+  pool.query(query, [idEvento], (err, resultado) => {
     if (err) {
       console.error('Error al consultar evento:', err);
       return res.status(500).send('Error en el servidor');
@@ -665,7 +669,7 @@ app.get('/api/editar/:idEvento', (req, res) => {
     WHERE e.idEvento = ?;
   `;
 
-  conexion.query(query, [idEvento], (err, resultado) => {
+  pool.query(query, [idEvento], (err, resultado) => {
     if (err) return res.status(500).json({ error: "Error en el servidor" });
 
     if (resultado.length === 0)
@@ -703,7 +707,7 @@ app.put(`/cambio/:idEvento`, (req, res) => {
                   fechaP = ?, hora = ?
                   WHERE idEvento = ?`;
 
-  conexion.query(queryEvento, [nombre,subtitulo,fecha,fechaP,hora,parseInt(idEvento)], (err, result) => {
+  pool.query(queryEvento, [nombre,subtitulo,fecha,fechaP,hora,parseInt(idEvento)], (err, result) => {
     if (err) {
       return res.status(500).json({ error: 'Error al actualizar los datos del evento' });
     }
@@ -739,7 +743,7 @@ app.put(`/cambio/:idEvento`, (req, res) => {
                               END
                           WHERE idEvento = ?`;
 
-      conexion.query(queryPrecio, [VIP, Preferente, General, Laterales,VIPD, PreferenteD, GeneralD, LateralesD, parseInt(idEvento)], (err, result) => {
+        pool.query(queryPrecio, [VIP, Preferente, General, Laterales,VIPD, PreferenteD, GeneralD, LateralesD, parseInt(idEvento)], (err, result) => {
         if (err) {
           return res.status(500).json({ error: 'Error al actualizar los datos del precio' });
         }
@@ -771,7 +775,7 @@ app.put(`/cambio/:idEvento`, (req, res) => {
                                 END
                             WHERE idEvento = ?`;
 
-        conexion.query(queryPrecio, [VIP, Preferente, General, VIPD, PreferenteD, GeneralD, parseInt(idEvento)], (err, result) => {
+        pool.query(queryPrecio, [VIP, Preferente, General, VIPD, PreferenteD, GeneralD, parseInt(idEvento)], (err, result) => {
           if (err) {
             return res.status(500).json({ error: 'Error al actualizar los datos del precio' });
           }
@@ -792,7 +796,7 @@ app.delete(`/eliminar/:idEvento`, (req,res) =>{
   
   const query = `DELETE FROM evento WHERE idEvento = ?`
 
-  conexion.query(query,[idEvento],(err,result) =>{
+  pool.query(query,[idEvento],(err,result) =>{
     if(err){
       res.status(500).json({error: 'Error al eliminar el evento'});
     }
@@ -808,7 +812,7 @@ app.delete(`/eliminar/:idEvento`, (req,res) =>{
  * Conteo de reservas de forma asyncrona
  */
 async function conteoReservas(idEvento,codigo) {
-  const conexionConteo = await conexionPromise
+  const conexionConteo = await pool
   const [rows] = await conexionConteo.execute(
     `SELECT COUNT(*) AS boletos
     FROM reserva r
@@ -857,7 +861,7 @@ app.get('/verBoleto/:codigo', async (req, res) => {
             r.codigo = ?;
     `;
 
-    conexion.query(query, [codigoBoleto], (err, results) => {
+    pool.query(query, [codigoBoleto], (err, results) => {
         if (err) {
             console.error('Error al ejecutar la consulta:', err);
             return res.status(500).json({ error: 'Error interno del servidor' });
@@ -897,7 +901,7 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
 
   // Agrupar sillas por mesa
   const mesasMap = new Map();
-  conexion.query(query, [codigo, idEvento], async (err, results) => {
+  pool.query(query, [codigo, idEvento], async (err, results) => {
     if (err) {
       console.error('❌ Error en la consulta:', err);
       return res.status(500).json({ error: 'Error al generar el PDF' });
@@ -1132,7 +1136,7 @@ app.post('/espera-silla/:idEvento', (req, res) => {
 
     const values = [letra, idEvento, numeroMesa];
 
-    conexion.query(query, values, (err, result) => {
+    pool.query(query, values, (err, result) => {
       if (err) {
         console.error('Error liberando enEspera:', err);
         return res.sendStatus(500);
@@ -1185,7 +1189,7 @@ app.post('/liberar-sillas/:idEvento', express.text(), (req, res) => {
         AND e.idEvento = ?;
     `;
 
-    conexion.query(fullQuery, [...flatValues, idEvento], (err, result) => {
+    pool.query(fullQuery, [...flatValues, idEvento], (err, result) => {
       if (err) {
         console.error('❌ Error liberando múltiples sillas:', err);
         return res.sendStatus(500);
