@@ -1,18 +1,18 @@
 const mysql = require('mysql2');
 
-// const connection = mysql.createConnection({
-//   host: '127.0.0.1',
-//   user: 'u506116281_Chucho',
-//   password: 'Finca_bd.2025',
-//   database: 'u506116281_Finca'
-// });
-
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'Lawbin2328',
-  database: 'fincalacolorada'
+  host: '127.0.0.1',
+  user: 'u506116281_Chucho',
+  password: 'Finca_bd.2025',
+  database: 'u506116281_Finca'
 });
+
+// const connection = mysql.createConnection({
+//   host: 'localhost',
+//   user: 'root',
+//   password: 'Lawbin2328',
+//   database: 'fincalacolorada'
+// });
 
 connection.connect((err) => {
   if (err) {
