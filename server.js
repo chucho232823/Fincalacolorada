@@ -1148,7 +1148,7 @@ app.get('/reporte/:idEvento', async (req, res) => {
         const [precios] = await pool.query(
             `SELECT pe.precio AS precioPreventa, pe.precioD AS precioDia, tm.tipo AS tipo
              FROM evento e
-             JOIN precioevento pe ON pe.idEvento = e.idEvento
+             JOIN precioEvento pe ON pe.idEvento = e.idEvento
              JOIN tipoMesa tm ON pe.idTipoMesa = tm.idTipoMesa
              WHERE e.idEvento = ?`, [idEvento]
         );
@@ -1207,7 +1207,7 @@ app.post('/espera-silla/:idEvento', async (req, res) => {
     const query = `
       UPDATE silla s 
       JOIN mesa m ON m.idMesa = s.idMesa
-      JOIN precioevento pe ON m.idPrecio = pe.idPrecio
+      JOIN precioEvento pe ON m.idPrecio = pe.idPrecio
       JOIN evento e ON e.idEvento = pe.idEvento
       SET s.enEspera = true,
           s.enEsperaDesde = NOW()
@@ -1247,7 +1247,7 @@ app.post('/liberar-sillas/:idEvento', express.text(), async (req, res) => {
     const query = `
       UPDATE silla s 
       JOIN mesa m ON m.idMesa = s.idMesa
-      JOIN precioevento pe ON m.idPrecio = pe.idPrecio
+      JOIN precioEvento pe ON m.idPrecio = pe.idPrecio
       JOIN evento e ON e.idEvento = pe.idEvento
       SET s.enEspera = false
       WHERE (s.letra, m.numero) IN (? )
@@ -1262,7 +1262,7 @@ app.post('/liberar-sillas/:idEvento', express.text(), async (req, res) => {
     const fullQuery = `
       UPDATE silla s
       JOIN mesa m ON m.idMesa = s.idMesa
-      JOIN precioevento pe ON m.idPrecio = pe.idPrecio
+      JOIN precioEvento pe ON m.idPrecio = pe.idPrecio
       JOIN evento e ON e.idEvento = pe.idEvento
       SET s.enEspera = false
       WHERE (s.letra, m.numero) IN (${placeholders})
