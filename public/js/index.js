@@ -133,7 +133,7 @@ fetch("/listado-de-eventos")
 
             // Preparar y enviar el formulario
             const form = document.getElementById('jsonform');
-            form.action = `/sembrado/${eventoSeleccionado.tipo}`;
+            form.action = `/sembrado/${eventoSeleccionado.tipo.toLowerCase()}`;
             document.getElementById('jsonData').value = JSON.stringify(eventoSeleccionado);
             form.submit();
         });
