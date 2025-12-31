@@ -30,7 +30,7 @@ fetch("/listado-de-eventos-pasados")
             nombre: evento.nombre,
             tipo: evento.tipo,
             fecha: evento.fecha,
-            subtitlo: evento.subtitulo,
+            subtitulo: evento.subtitulo,
             imagen: evento.imagen
         }
         datosEventos.push(ev);
