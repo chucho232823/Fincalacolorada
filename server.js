@@ -213,7 +213,7 @@ app.get('/estado-sillas/:idEvento', async (req, res) => {
     SELECT e.nombre, m.numero AS Mesa, s.letra AS Silla, s.estado, p.precio, s.bloqueada, s.enEspera, tm.tipo
     FROM evento e 
     JOIN precioEvento p ON e.idEvento = p.idEvento
-    JOIN tipomesa tm ON tm.idTipoMesa = p.idTipoMesa
+    JOIN tipoMesa tm ON tm.idTipoMesa = p.idTipoMesa
     JOIN mesa m ON p.idPrecio = m.idPrecio
     JOIN silla s ON m.idMesa = s.idMesa
     WHERE e.idEvento = ?;
@@ -1149,7 +1149,7 @@ app.get('/reporte/:idEvento', async (req, res) => {
             `SELECT pe.precio AS precioPreventa, pe.precioD AS precioDia, tm.tipo AS tipo
              FROM evento e
              JOIN precioevento pe ON pe.idEvento = e.idEvento
-             JOIN tipomesa tm ON pe.idTipoMesa = tm.idTipoMesa
+             JOIN tipoMesa tm ON pe.idTipoMesa = tm.idTipoMesa
              WHERE e.idEvento = ?`, [idEvento]
         );
 
@@ -1163,7 +1163,7 @@ app.get('/reporte/:idEvento', async (req, res) => {
              JOIN mesa m ON m.idMesa = s.idMesa
              JOIN precioEvento p ON p.idPrecio = m.idPrecio
              JOIN evento e ON e.idEvento = p.idEvento
-             JOIN tipomesa t ON t.idtipoMesa = p.idtipoMesa 
+             JOIN tipoMesa t ON t.idtipoMesa = p.idtipoMesa 
              WHERE s.estado = TRUE AND e.idEvento = ? AND r.preventa = 1`, [idEvento]
         );
 
@@ -1177,7 +1177,7 @@ app.get('/reporte/:idEvento', async (req, res) => {
              JOIN mesa m ON m.idMesa = s.idMesa
              JOIN precioEvento p ON p.idPrecio = m.idPrecio
              JOIN evento e ON e.idEvento = p.idEvento
-             JOIN tipomesa t ON t.idtipoMesa = p.idtipoMesa 
+             JOIN tipoMesa t ON t.idtipoMesa = p.idtipoMesa 
              WHERE s.estado = TRUE AND e.idEvento = ? AND r.preventa = 0`, [idEvento]
         );
 
