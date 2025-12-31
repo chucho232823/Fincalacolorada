@@ -36,7 +36,7 @@ app.set('view engine','ejs');
 app.set('views', path.join(__dirname,'views'));
 
 // Ejecutar cada minuto
-cron.schedule('* * * * *', async () => {
+/*cron.schedule('* * * * *', async () => {
   const query = `
     UPDATE silla
     SET enEspera = false,
@@ -50,6 +50,25 @@ cron.schedule('* * * * *', async () => {
     if (result.affectedRows > 0) {
       // Si deseas ver cuántas filas fueron afectadas:
       // console.log(`Sillas liberadas automáticamente: ${result.affectedRows}`);
+    }
+  } catch (err) {
+    console.error('Error liberando sillas:', err); // Manejo de error
+  }
+}); */
+
+cron.schedule('* * * * *', async () => {
+  const query = `
+    UPDATE silla
+    SET enEspera = false,
+        enEsperaDesde = NULL
+    WHERE enEspera = true
+      AND enEsperaDesde < NOW() - INTERVAL 5 MINUTE;
+  `;
+  
+  try {
+    const [result] = await pool.query(query); // Usando async/await para ejecutar la consulta
+    if (result.affectedRows > 0) {
+      console.log(`Sillas liberadas automáticamente: ${result.affectedRows}`);
     }
   } catch (err) {
     console.error('Error liberando sillas:', err); // Manejo de error
@@ -132,36 +151,40 @@ app.get('/listado-de-eventos', async (req, res) => {
  * Carga de listado de eventos
  * 
  */
-app.get('/listado-de-eventos-pasados', (req, res) => {
-  pool.query("SET lc_time_names = 'es_ES'", (error1) => {
-    if (error1) {
-      console.error('Error al configurar lc_time_names:', error1);
-      res.status(500).send('Error interno del servidor');
-      return;
-    }
+app.get('/listado-de-eventos-pasados', async (req, res) => {
+  const querySetLocale = "SET lc_time_names = 'es_ES'"; // Configurar el locale
+  
+  try {
+    // Primero ejecutamos el SET lc_time_names
+    await pool.query(querySetLocale);
 
-    const query = `SELECT e.idEvento AS idEvento, e.nombre AS nombre, t.tipo AS tipo, DATE_FORMAT(e.fecha, '%d de %M de %Y') AS fecha,
-      e.imagen AS imagen, e.subtitulo AS descripcion
+    // Luego, la consulta para obtener los eventos pasados
+    const query = `
+      SELECT e.idEvento AS idEvento, e.nombre AS nombre, t.tipo AS tipo, 
+             DATE_FORMAT(e.fecha, '%d de %M de %Y') AS fecha,
+             e.imagen AS imagen, e.subtitulo AS descripcion
       FROM evento e
       JOIN tipoEvento t ON e.idTipoEVento = t.idTipoEvento
       WHERE e.fecha < CURDATE()
       ORDER BY e.fecha ASC;
     `;
+    
+    // Ejecutamos la consulta para obtener los resultados
+    const [resultado] = await pool.query(query);
 
-    pool.query(query, (error2, resultado) => {
-      if (error2) {
-        console.error('Error en la consulta:', error2);
-        res.status(500).send('Error en la consulta');
-      } else {
-        res.json(resultado);
-      }
-    });
-  });
-}); 
+    // Enviamos los resultados como respuesta
+    res.json(resultado);
+
+  } catch (error) {
+    // Si ocurre algún error, se captura y se responde con el error
+    console.error('Error en la consulta:', error);
+    res.status(500).send('Error interno del servidor');
+  }
+});
 
 
 //Encontrando evento por nombre
-app.get('/evento/nombre/:nombre',(req,res) => {
+/*app.get('/evento/nombre/:nombre',(req,res) => {
   const nombre = req.params.nombre;
 
   const query = 'SELECT * FROM evento WHERE nombre = ?';
@@ -177,66 +200,77 @@ app.get('/evento/nombre/:nombre',(req,res) => {
 
     res.json(resultado);
   })
-})
+}) */
 
 
 /**
  * Cargando el estado de las sillas de acuerdo al evento
  */
-app.get('/estado-sillas/:idEvento',(req,res) => {
+app.get('/estado-sillas/:idEvento', async (req, res) => {
   const idEvento = req.params.idEvento;
-  
-  const query = ` SELECT e.nombre, m.numero AS Mesa, s.letra AS Silla, s.estado, p.precio, s.bloqueada, s.enEspera, tm.tipo
-                  FROM evento e 
-                  JOIN precioEvento p ON e.idEvento = p.idEvento
-                  JOIN tipomesa tm ON tm.idTipoMesa = p.idTipoMesa
-                  JOIN mesa m ON p.idPrecio = m.idPrecio
-                  JOIN silla s ON m.idMesa = s.idMesa
-                  WHERE e.idEvento = ?;`;
-  pool.query(query,[idEvento], (error,resultado) => {
-    if(error){
-      console.error('Error al conectar la  base',error);
-      return res.status(500).send('error en el servidor');
-    }
-    if(resultado.length ===0){
-      return res.status(404).send('No se encontro el evento');
+
+  const query = `
+    SELECT e.nombre, m.numero AS Mesa, s.letra AS Silla, s.estado, p.precio, s.bloqueada, s.enEspera, tm.tipo
+    FROM evento e 
+    JOIN precioEvento p ON e.idEvento = p.idEvento
+    JOIN tipomesa tm ON tm.idTipoMesa = p.idTipoMesa
+    JOIN mesa m ON p.idPrecio = m.idPrecio
+    JOIN silla s ON m.idMesa = s.idMesa
+    WHERE e.idEvento = ?;
+  `;
+
+  try {
+    // Ejecutar la consulta con Promesas
+    const [resultado] = await pool.query(query, [idEvento]);
+
+    if (resultado.length === 0) {
+      return res.status(404).send('No se encontró el evento');
     }
 
+    // Responder con los resultados
     res.json(resultado);
-  })
-})
+  } catch (error) {
+    // Manejo de errores
+    console.error('Error al conectar la base de datos:', error);
+    return res.status(500).send('Error en el servidor');
+  }
+});
+
 
 /**
  * Cargando estado de sillas individuales
  */
-app.get('/estado-silla/:idEvento', (req, res) => {
-    const idEvento = req.params.idEvento;
-    const { mesa, silla } = req.query; 
+app.get('/estado-silla/:idEvento', async (req, res) => {
+  const idEvento = req.params.idEvento;
+  const { mesa, silla } = req.query;
 
-    const query = `
-      SELECT s.estado, s.bloqueada, s.enEspera
-      FROM evento e 
-      JOIN precioEvento p ON e.idEvento = p.idEvento
-      JOIN mesa m ON p.idPrecio = m.idPrecio
-      JOIN silla s ON m.idMesa = s.idMesa
-      WHERE e.idEvento = ?
-      AND m.numero = ?
-      AND s.letra = ?;
-    `;
+  const query = `
+    SELECT s.estado, s.bloqueada, s.enEspera
+    FROM evento e 
+    JOIN precioEvento p ON e.idEvento = p.idEvento
+    JOIN mesa m ON p.idPrecio = m.idPrecio
+    JOIN silla s ON m.idMesa = s.idMesa
+    WHERE e.idEvento = ?
+    AND m.numero = ?
+    AND s.letra = ?;
+  `;
 
-    pool.query(query, [idEvento, mesa, silla], (error, resultado) => {
-      if (error) {
-        console.error('Error al conectar la base', error);
-        return res.status(500).send('Error en el servidor');
-      }
-      if (resultado.length === 0) {
-        return res.status(404).send('No se encontró el evento');
-      }
+  try {
+    // Ejecutar la consulta con Promesas
+    const [resultado] = await pool.query(query, [idEvento, mesa, silla]);
 
-      res.json(resultado);
-    });
+    if (resultado.length === 0) {
+      return res.status(404).send('No se encontró el evento');
+    }
+
+    // Responder con los resultados
+    res.json(resultado);
+  } catch (error) {
+    // Manejo de errores
+    console.error('Error al conectar la base de datos:', error);
+    return res.status(500).send('Error en el servidor');
+  }
 });
-
 // Puerto en que correrá el servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
@@ -257,55 +291,54 @@ if (!fs.existsSync(carpetaBase)) {
 /**
  * Enviar creacion de evento
  */
-app.post('/crearEvento', (req, res) => {
-  const { nombre, fecha, fechaP , tipo, precio, precioD, hora, img, subtitulo} = req.body;
-  const imagen = "img/img.JPG";
+app.post('/crearEvento', async (req, res) => {
+  const { nombre, fecha, fechaP, tipo, precio, precioD, hora, img, subtitulo } = req.body;
+  const imagen = "img/img.JPG"; // Imagen estática, puedes modificar si necesitas algo dinámico
+
   let query = '';
   let params = [];
 
-  if (tipo === "Trova") {
-    query = `CALL eventoTrova(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    params = [
-      nombre,
-      subtitulo,
-      fecha,
-      fechaP,
-      hora,
-      imagen,
-      parseFloat(precio.VIP),
-      parseFloat(precio.Preferente),
-      parseFloat(precio.General),
-      parseFloat(precio.Laterales),
-      parseFloat(precioD.VIP),
-      parseFloat(precioD.Preferente),
-      parseFloat(precioD.General),
-      parseFloat(precioD.Laterales)
-    ];
-  } else if (tipo === "Baile") {
-    query = `CALL eventoBaile(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    params = [
-      nombre,
-      subtitulo,
-      fecha,
-      fechaP,
-      hora,
-      imagen,
-      parseFloat(precio.VIP),
-      parseFloat(precio.Preferente),
-      parseFloat(precio.General),
-      parseFloat(precioD.VIP),
-      parseFloat(precioD.Preferente),
-      parseFloat(precioD.General),
-    ];
-  } else {
-    return res.status(400).send('❌ Tipo de evento no válido');
-  }
-
-  pool.query(query, params, (err, result) => {
-    if (err) {
-      console.error('❌ Error al insertar evento:', err);
-      return res.status(500).send('Error al crear el evento');
+  try {
+    if (tipo === "Trova") {
+      query = `CALL eventoTrova(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      params = [
+        nombre,
+        subtitulo,
+        fecha,
+        fechaP,
+        hora,
+        imagen,
+        parseFloat(precio.VIP),
+        parseFloat(precio.Preferente),
+        parseFloat(precio.General),
+        parseFloat(precio.Laterales),
+        parseFloat(precioD.VIP),
+        parseFloat(precioD.Preferente),
+        parseFloat(precioD.General),
+        parseFloat(precioD.Laterales)
+      ];
+    } else if (tipo === "Baile") {
+      query = `CALL eventoBaile(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      params = [
+        nombre,
+        subtitulo,
+        fecha,
+        fechaP,
+        hora,
+        imagen,
+        parseFloat(precio.VIP),
+        parseFloat(precio.Preferente),
+        parseFloat(precio.General),
+        parseFloat(precioD.VIP),
+        parseFloat(precioD.Preferente),
+        parseFloat(precioD.General)
+      ];
+    } else {
+      return res.status(400).send('❌ Tipo de evento no válido');
     }
+
+    // Ejecutar la consulta para crear el evento
+    const [result] = await pool.query(query, params);
 
     const idEvento = result[0]?.[0]?.id;
     if (!idEvento) {
@@ -316,17 +349,16 @@ app.post('/crearEvento', (req, res) => {
     const nombreCarpeta = `evento_${idEvento}`;
     const rutaCarpeta = path.join(carpetaBase, nombreCarpeta);
 
-    fs.mkdir(rutaCarpeta, { recursive: true }, (err) => {
-      if (err) {
-        console.error('❌ Error al crear la carpeta:', err);
-        return res.status(500).send('Evento creado, pero falló la creación de carpeta');
-      }
-      //console.log(`Carpeta creada: ${rutaCarpeta}`);
-      res.send(`✅ Evento '${nombre}' agregado!`);
-    });
-  });
-});
+    // Crear la carpeta para el evento
+    await fs.promises.mkdir(rutaCarpeta, { recursive: true });
 
+    // Responder que el evento fue creado correctamente
+    res.send(`✅ Evento '${nombre}' agregado!`);
+  } catch (err) {
+    console.error('❌ Error al crear el evento:', err);
+    res.status(500).send('Error al crear el evento');
+  }
+});
 /**
  * cargar pagina de sembrado
  */
@@ -343,75 +375,91 @@ app.post('/sembrado/:nombre',(req,res) => {
 /**
  * Reservacion de sillas
  */
-app.put('/reservar/:idEvento', (req, res) => {
-  const { idEvento } = req.params; 
-  const { silla , codigo} = req.body; 
+app.put('/reservar/:idEvento', async (req, res) => {
+  const { idEvento } = req.params;
+  const { silla, codigo } = req.body;
   const mesa = silla.mesa;
   const sil = silla.silla;
-  let preventa;
+
+  // Validación de los parámetros silla y mesa
   if (!mesa || !sil || isNaN(mesa) || typeof sil !== 'string') {
     return res.status(400).json({ error: 'Los parámetros mesa y silla deben ser números válidos' });
   }
 
-  const query = ` UPDATE silla s
-                  JOIN mesa m ON m.idMesa = s.idMesa
-                  JOIN precioEvento p ON p.idPrecio = m.idPrecio
-                  JOIN evento e ON e.idEvento = p.idEvento
-                  SET s.estado = true,
-                      s.codigo = ?
-                  WHERE m.numero = ? 
-                  AND e.idEvento = ?
-                  AND s.letra = ?;`;
+  // Consulta SQL para actualizar la reserva
+  const query = `
+    UPDATE silla s
+    JOIN mesa m ON m.idMesa = s.idMesa
+    JOIN precioEvento p ON p.idPrecio = m.idPrecio
+    JOIN evento e ON e.idEvento = p.idEvento
+    SET s.estado = true,
+        s.codigo = ?
+    WHERE m.numero = ?
+    AND e.idEvento = ?
+    AND s.letra = ?;
+  `;
 
-  // Ejecutar la consulta con parámetros
-  pool.query(query, [codigo, mesa, parseInt(idEvento), sil], (err, result) => {
-    if (err) {
-      console.error('Error al actualizar:', err);
-      return res.status(500).json({ error: 'Error al actualizar los datos' });
-    }
+  try {
+    // Ejecutar la consulta usando pool.query y await
+    const [result] = await pool.query(query, [codigo, mesa, parseInt(idEvento), sil]);
 
+    // Verificar si se realizó alguna actualización
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'No se encontró el registro con los datos proporcionados' });
     }
+
+    // Respuesta exitosa
     res.status(200).json({ message: 'Reserva realizada correctamente' });
-  });
+  } catch (err) {
+    // Manejo de errores
+    console.error('Error al actualizar:', err);
+    res.status(500).json({ error: 'Error al actualizar los datos' });
+  }
 });
 
 /**
  * Bloqueo de sillas para apartar mesa
  */
-app.put('/bloqueo/:idEvento', (req, res) => {
-  const { idEvento } = req.params; 
-  const { silla } = req.body; 
+app.put('/bloqueo/:idEvento', async (req, res) => {
+  const { idEvento } = req.params;
+  const { silla } = req.body;
   const mesa = silla.mesa;
   const sil = silla.silla;
+
   // Validación básica
   if (!mesa || !sil || isNaN(mesa) || typeof sil !== 'string') {
     return res.status(400).json({ error: 'Los parámetros mesa y silla deben ser números válidos' });
   }
 
-  const query = ` UPDATE silla s
-                  JOIN mesa m ON m.idMesa = s.idMesa
-                  JOIN precioEvento p ON p.idPrecio = m.idPrecio
-                  JOIN evento e ON e.idEvento = p.idEvento
-                  SET s.bloqueada = true
-                  WHERE m.numero = ? 
-                  AND e.idEvento = ?
-                  AND s.letra = ?;`;
-  // Ejecutar la consulta con parámetros
-  pool.query(query, [mesa, parseInt(idEvento), sil], (err, result) => {
-    if (err) {
-      console.error('Error al actualizar:', err);
-      return res.status(500).json({ error: 'Error al actualizar los datos' });
-    }
+  // Consulta para bloquear la silla
+  const query = `
+    UPDATE silla s
+    JOIN mesa m ON m.idMesa = s.idMesa
+    JOIN precioEvento p ON p.idPrecio = m.idPrecio
+    JOIN evento e ON e.idEvento = p.idEvento
+    SET s.bloqueada = true
+    WHERE m.numero = ?
+    AND e.idEvento = ?
+    AND s.letra = ?;
+  `;
 
+  try {
+    // Ejecutar la consulta usando async/await
+    const [result] = await pool.query(query, [mesa, parseInt(idEvento), sil]);
+
+    // Verificar si la consulta afectó alguna fila
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'No se encontró el registro con los datos proporcionados' });
     }
-    res.status(200).json({ message: 'Bloqueo de silla realizado' });
-  });
-});
 
+    // Respuesta exitosa
+    res.status(200).json({ message: 'Bloqueo de silla realizado' });
+  } catch (err) {
+    // Manejo de errores
+    console.error('Error al actualizar:', err);
+    res.status(500).json({ error: 'Error al actualizar los datos' });
+  }
+});
 /**
  * Enviando los datos para el formulario de los datos del usuario
  */
@@ -430,8 +478,7 @@ app.post('/datos', (req,res) => {
  * Obtencion del conteo de forma asyncrona
  */
 async function obtenerConteo(idEvento) {
-  const conexionConteo = await pool
-  const [rows] = await conexionConteo.execute(
+  const [rows] = await pool.execute(
     `SELECT COUNT(*) AS numero
      FROM silla s
      JOIN mesa m ON m.idMesa = s.idMesa
@@ -440,9 +487,9 @@ async function obtenerConteo(idEvento) {
      WHERE estado = true AND e.idEvento = ?`,
     [idEvento]
   );
+  console.log(`conteo: ${rows[0].numero}`)
   return rows[0].numero;
 }
-
 /**
  * consulta para la creacion del codigo
  */
@@ -461,48 +508,58 @@ app.get('/conteo/:idEvento', async (req, res) => {
 /**
  * Insercion del codigo y el nombre de quien reserva
  */
-app.post('/codigo',(req,res) =>{
-    const {codigo,nombre,apellidos,telefono,fechaP,mesasJuntadas} = req.body;
-    let preventa;
-    if (fechaP) {
-      const hoy = new Date();
-      const fecha = new Date(fechaP);
+app.post('/codigo', async (req, res) => {
+  const { codigo, nombre, apellidos, telefono, fechaP, mesasJuntadas } = req.body;
 
-      if (hoy <= fecha) {
-        preventa = true;
-      } else {
-        preventa = false;
-      }
+  // Validar que los parámetros requeridos estén presentes
+  if (!codigo || !nombre || !apellidos || !telefono) {
+    return res.status(400).json({ error: 'Parametros invalidos' });
+  }
+
+  let preventa;
+  if (fechaP) {
+    const hoy = new Date();
+    const fecha = new Date(fechaP);
+
+    // Determinar si la reserva es preventa (fecha futura)
+    preventa = hoy <= fecha;
+  } else {
+    preventa = false;  // Si no se pasa la fecha, asignamos preventa como false
+  }
+
+  // Crear la cadena de mesas
+  let cadena = "";
+  mesasJuntadas.forEach(mesas => {
+    if (mesas.juntar) {
+      cadena += `${mesas.mesas} `;
     }
-    if( !codigo || !nombre || !apellidos || !telefono){
-      return res.status(400).json({ error: 'Parametros invalidos' });
+  });
+
+  // Consulta para insertar la reserva
+  const query = `
+    INSERT INTO reserva (codigo, nombre, apellido, telefono, preventa, juntar)
+    VALUES (?, ?, ?, ?, ?, ?);
+  `;
+
+  try {
+    // Ejecutar la consulta para insertar los datos
+    const [result] = await pool.query(query, [codigo, nombre, apellidos, telefono, preventa ? 1 : 0, cadena]);
+
+    // Verificar si se insertaron filas
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'No se pudo realizar la reserva' });
     }
-    let cadena = "";
-    mesasJuntadas.forEach(mesas =>{
-      if(mesas.juntar){
-        cadena += `${mesas.mesas} `; 
-      }
-    })
-    
-    const query = `INSERT INTO reserva (codigo,nombre,apellido,telefono,preventa,juntar)
-             VALUES( ? , ? , ? , ? , ? , ?);`;
 
-    pool.query(query,[codigo,nombre,apellidos,telefono,1,cadena],(err,result) =>{
-      if (err) {
-      console.error('Error al actualizar:', err);
-        return res.status(500).json({ error: 'Error al actualizar los datos' });
-      }
-
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'No se encontró el registro con los datos proporcionados' });
-      }
-      res.status(200).json({ message: 'Reserva realizada correctamente' });
-    })
-})
+    // Respuesta exitosa
+    res.status(200).json({ message: 'Reserva realizada correctamente' });
+  } catch (err) {
+    console.error('Error al realizar la reserva:', err);
+    res.status(500).json({ error: 'Error al realizar la reserva' });
+  }
+});
 
 app.get('/lista/:idEvento', async (req, res) => {
   const { idEvento } = req.params;
-
   const queryReservas = `
     SELECT DISTINCT r.nombre, r.telefono, r.codigo, r.juntar
     FROM reserva r
@@ -510,20 +567,18 @@ app.get('/lista/:idEvento', async (req, res) => {
     JOIN mesa m ON m.idMesa = s.idMesa
     JOIN precioEvento p ON p.idPrecio = m.idPrecio
     JOIN evento e ON e.idEvento = p.idEvento
-    WHERE e.idEvento = ? 
+    WHERE e.idEvento = ?
     ORDER BY r.nombre;
   `;
 
   const queryNombreEvento = `SELECT nombre FROM evento WHERE idEvento = ?;`;
 
   try {
-    const conexion = await pool;
-
     // Obtener las reservas
-    const [reservas] = await conexion.execute(queryReservas, [idEvento]);
+    const [reservas] = await pool.query(queryReservas, [idEvento]);
 
     // Obtener el nombre del evento
-    const [eventoResultado] = await conexion.execute(queryNombreEvento, [idEvento]);
+    const [eventoResultado] = await pool.query(queryNombreEvento, [idEvento]);
 
     if (eventoResultado.length === 0) {
       return res.status(404).send('Evento no encontrado');
@@ -534,7 +589,7 @@ app.get('/lista/:idEvento', async (req, res) => {
     // Obtener el conteo de boletos para cada reserva
     const reservasConBoletos = await Promise.all(
       reservas.map(async (reserva) => {
-        const [conteo] = await conexion.execute(
+        const [conteo] = await pool.query(
           `SELECT COUNT(*) AS boletos
            FROM reserva r
            JOIN silla s ON r.codigo = s.codigo
@@ -570,7 +625,7 @@ app.get('/lista/:idEvento', async (req, res) => {
  * Obtencion de precios
  */
 
-app.get('/precios/:idEvento', (req, res) => {
+app.get('/precios/:idEvento', async (req, res) => {
   const { idEvento } = req.params;
 
   const query = `
@@ -581,21 +636,24 @@ app.get('/precios/:idEvento', (req, res) => {
     WHERE e.idEvento = ?;
   `;
 
-   pool.query(query, [idEvento], (err, resultado) => {
-    if (err) {
-      console.error('Error en la consulta:', err);
-      return res.status(500).json({ error: 'Error en el servidor' });
-    }
+  try {
+    // Ejecutar la consulta con Promesas
+    const [resultado] = await pool.query(query, [idEvento]);
 
-    res.json(resultado); // ← enviamos los resultados al cliente
-  });
+    // Enviar la respuesta como JSON
+    res.json(resultado); 
+  } catch (err) {
+    // Manejo de errores
+    console.error('Error en la consulta:', err);
+    res.status(500).json({ error: 'Error en el servidor' });
+  }
 });
 
 /**
  * Obtener fecha Preventa
  */
 
-app.get('/fechaP/:idEvento', (req, res) => {
+app.get('/fechaP/:idEvento', async (req, res) => {
   const { idEvento } = req.params;
 
   const query = `
@@ -604,21 +662,27 @@ app.get('/fechaP/:idEvento', (req, res) => {
     WHERE idEvento = ?;
   `;
 
-  pool.query(query, [idEvento], (err, resultado) => {
-    if (err) {
-      console.error('Error en la consulta:', err);
-      return res.status(500).json({ error: 'Error en el servidor' });
+  try {
+    // Usar await para ejecutar la consulta con mysql2/promise
+    const [resultado] = await pool.query(query, [idEvento]);
+    console.log(resultado);
+    if (resultado.length === 0) {
+      return res.status(404).json({ error: 'Evento no encontrado' });
     }
 
     res.json(resultado);
-  });
+  } catch (err) {
+    console.error('Error en la consulta:', err);
+    return res.status(500).json({ error: 'Error en el servidor' });
+  }
 });
+
 
 /**
  * Edicion de un evento
  */
 
-app.get('/editar/:idEvento', (req, res) => {
+/*app.get('/editar/:idEvento', (req, res) => {
   const { idEvento } = req.params;
 
   const query = `
@@ -653,10 +717,10 @@ app.get('/editar/:idEvento', (req, res) => {
 
     res.render('editarEvento', { idEvento, nombreEvento, fechaEvento, fechaPreventa, precios , tipoEvento });
   });
-});
+}); */
 
 // para el modal
-app.get('/api/editar/:idEvento', (req, res) => {
+app.get('/api/editar/:idEvento', async (req, res) => {
   const { idEvento } = req.params;
 
   const query = `
@@ -669,11 +733,13 @@ app.get('/api/editar/:idEvento', (req, res) => {
     WHERE e.idEvento = ?;
   `;
 
-  pool.query(query, [idEvento], (err, resultado) => {
-    if (err) return res.status(500).json({ error: "Error en el servidor" });
+  try {
+    // Usar await para ejecutar la consulta con mysql2/promise
+    const [resultado] = await pool.query(query, [idEvento]);
 
-    if (resultado.length === 0)
+    if (resultado.length === 0) {
       return res.status(404).json({ error: "Evento no encontrado" });
+    }
 
     const evento = {
       idEvento,
@@ -689,35 +755,38 @@ app.get('/api/editar/:idEvento', (req, res) => {
         precioD: row.precioD
       }))
     };
-    
-    res.json(evento);
-  });
-});
 
+    res.json(evento);
+  } catch (err) {
+    console.error('Error al obtener el evento:', err);
+    return res.status(500).json({ error: "Error en el servidor" });
+  }
+});
 
 /**
  * Edicion del evento
  */
-app.put(`/cambio/:idEvento`, (req, res) => {
+app.put(`/cambio/:idEvento`, async (req, res) => {
   const { idEvento } = req.params;
   const { tipo, nombre, subtitulo, fecha, fechaP, hora, precio, precioD } = req.body;
-  // Actualización del evento
-  const queryEvento = `UPDATE evento 
-                  SET nombre = ?, subtitulo = ?, fecha = ?, 
-                  fechaP = ?, hora = ?
-                  WHERE idEvento = ?`;
 
-  pool.query(queryEvento, [nombre,subtitulo,fecha,fechaP,hora,parseInt(idEvento)], (err, result) => {
-    if (err) {
-      return res.status(500).json({ error: 'Error al actualizar los datos del evento' });
-    }
+  const queryEvento = `
+    UPDATE evento 
+    SET nombre = ?, subtitulo = ?, fecha = ?, 
+        fechaP = ?, hora = ?
+    WHERE idEvento = ?;
+  `;
 
-    if (result.affectedRows === 0) {
+  try {
+    // Actualización del evento
+    const [resultEvento] = await pool.query(queryEvento, [nombre, subtitulo, fecha, fechaP, hora, parseInt(idEvento)]);
+
+    if (resultEvento.affectedRows === 0) {
       return res.status(404).json({ message: 'No se encontró el registro con los datos proporcionados' });
     }
 
     // Si la actualización del evento es exitosa, proceder con la actualización de precios.
-    if (tipo == "Trova") {
+    if (tipo === "Trova") {
       const VIP = parseFloat(precio.VIP);
       const Preferente = parseFloat(precio.Preferente);
       const General = parseFloat(precio.General);
@@ -726,86 +795,99 @@ app.put(`/cambio/:idEvento`, (req, res) => {
       const PreferenteD = parseFloat(precio.Preferente);
       const GeneralD = parseFloat(precio.General);
       const LateralesD = parseFloat(precio.Laterales);
-      const queryPrecio = `UPDATE precioEvento
-                          SET precio = 
-                              CASE
-                                WHEN idTipoMesa = 1 THEN ?
-                                WHEN idTipoMesa = 2 THEN ?
-                                WHEN idTipoMesa = 3 THEN ?
-                                WHEN idTipoMesa = 4 THEN ?
-                              END,
-                              precioD = 
-                              CASE
-                                WHEN idTipoMesa = 1 THEN ?
-                                WHEN idTipoMesa = 2 THEN ?
-                                WHEN idTipoMesa = 3 THEN ?
-                                WHEN idTipoMesa = 4 THEN ?
-                              END
-                          WHERE idEvento = ?`;
 
-        pool.query(queryPrecio, [VIP, Preferente, General, Laterales,VIPD, PreferenteD, GeneralD, LateralesD, parseInt(idEvento)], (err, result) => {
-        if (err) {
-          return res.status(500).json({ error: 'Error al actualizar los datos del precio' });
-        }
+      const queryPrecio = `
+        UPDATE precioEvento
+        SET precio = 
+          CASE
+            WHEN idTipoMesa = 1 THEN ?
+            WHEN idTipoMesa = 2 THEN ?
+            WHEN idTipoMesa = 3 THEN ?
+            WHEN idTipoMesa = 4 THEN ?
+          END,
+          precioD = 
+          CASE
+            WHEN idTipoMesa = 1 THEN ?
+            WHEN idTipoMesa = 2 THEN ?
+            WHEN idTipoMesa = 3 THEN ?
+            WHEN idTipoMesa = 4 THEN ?
+          END
+        WHERE idEvento = ?;
+      `;
 
-        if (result.affectedRows == 0) {
-          return res.status(404).json({ message: 'No se encontró el registro de precio para el evento' });
-        }
-        res.status(200).json({ message: 'Reserva realizada correctamente' });
-      });
-    } else if(tipo == "Baile") {
-          const VIP = parseFloat(precio.VIP);
-          const Preferente = parseFloat(precio.Preferente);
-          const General = parseFloat(precio.General);
-          const VIPD = parseFloat(precioD.VIP);
-          const PreferenteD = parseFloat(precioD.Preferente);
-          const GeneralD = parseFloat(precioD.General);
-          const queryPrecio = `UPDATE precioEvento
-                            SET precio = 
-                                CASE
-                                  WHEN idTipoMesa = 1 THEN ?
-                                  WHEN idTipoMesa = 2 THEN ?
-                                  WHEN idTipoMesa = 3 THEN ?
-                                END,
-                                precioD = 
-                                CASE
-                                  WHEN idTipoMesa = 1 THEN ?
-                                  WHEN idTipoMesa = 2 THEN ?
-                                  WHEN idTipoMesa = 3 THEN ?
-                                END
-                            WHERE idEvento = ?`;
+      const [resultPrecio] = await pool.query(queryPrecio, [VIP, Preferente, General, Laterales, VIPD, PreferenteD, GeneralD, LateralesD, parseInt(idEvento)]);
 
-        pool.query(queryPrecio, [VIP, Preferente, General, VIPD, PreferenteD, GeneralD, parseInt(idEvento)], (err, result) => {
-          if (err) {
-            return res.status(500).json({ error: 'Error al actualizar los datos del precio' });
-          }
+      if (resultPrecio.affectedRows === 0) {
+        return res.status(404).json({ message: 'No se encontró el registro de precio para el evento' });
+      }
 
-          if (result.affectedRows == 0) {
-            return res.status(404).json({ message: 'No se encontró el registro de precio para el evento' });
-          }
-          res.status(200).json({ message: 'Reserva realizada correctamente' });
-      });
-      } else{
-      res.status(200).json({ message: 'Evento actualizado correctamente' });
+      return res.status(200).json({ message: 'Evento y precios actualizados correctamente' });
+
+    } else if (tipo === "Baile") {
+      const VIP = parseFloat(precio.VIP);
+      const Preferente = parseFloat(precio.Preferente);
+      const General = parseFloat(precio.General);
+      const VIPD = parseFloat(precioD.VIP);
+      const PreferenteD = parseFloat(precioD.Preferente);
+      const GeneralD = parseFloat(precioD.General);
+
+      const queryPrecio = `
+        UPDATE precioEvento
+        SET precio = 
+          CASE
+            WHEN idTipoMesa = 1 THEN ?
+            WHEN idTipoMesa = 2 THEN ?
+            WHEN idTipoMesa = 3 THEN ?
+          END,
+          precioD = 
+          CASE
+            WHEN idTipoMesa = 1 THEN ?
+            WHEN idTipoMesa = 2 THEN ?
+            WHEN idTipoMesa = 3 THEN ?
+          END
+        WHERE idEvento = ?;
+      `;
+
+      const [resultPrecio] = await pool.query(queryPrecio, [VIP, Preferente, General, VIPD, PreferenteD, GeneralD, parseInt(idEvento)]);
+
+      if (resultPrecio.affectedRows === 0) {
+        return res.status(404).json({ message: 'No se encontró el registro de precio para el evento' });
+      }
+
+      return res.status(200).json({ message: 'Evento y precios actualizados correctamente' });
+
+    } else {
+      return res.status(200).json({ message: 'Evento actualizado correctamente' });
     }
-  });
+
+  } catch (err) {
+    console.error('Error al actualizar los datos:', err);
+    return res.status(500).json({ error: 'Error al actualizar los datos del evento' });
+  }
 });
 
-app.delete(`/eliminar/:idEvento`, (req,res) =>{
+/**
+ * Eliminacion definitiva de evento
+ */
+app.delete(`/eliminar/:idEvento`, async (req, res) => {
   const { idEvento } = req.params;
-  
-  const query = `DELETE FROM evento WHERE idEvento = ?`
 
-  pool.query(query,[idEvento],(err,result) =>{
-    if(err){
-      res.status(500).json({error: 'Error al eliminar el evento'});
+  const query = `DELETE FROM evento WHERE idEvento = ?`;
+
+  try {
+    // Ejecutar la consulta utilizando async/await
+    const [result] = await pool.query(query, [idEvento]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'No se eliminó ningún evento' });
     }
-    if(result.affectedRows === 0){
-        return res.status(404).json({ message: 'No se elimino ningun evento' });
-    }
+
     res.status(200).json({ message: 'Evento eliminado correctamente!' });
-  })
-})
+  } catch (err) {
+    console.error('Error al eliminar el evento:', err);
+    res.status(500).json({ error: 'Error al eliminar el evento' });
+  }
+});
 
 
 /**
@@ -845,41 +927,44 @@ app.get('/conteoReservas/:idEvento', async (req, res) => {
  * Consulta de boletos
  */
 app.get('/verBoleto/:codigo', async (req, res) => {
-    const codigoBoleto = req.params.codigo;
-    const query = `
-        SELECT 
-            r.nombre, 
-            m.numero AS numero_mesa, 
-            s.letra AS letra_silla 
-        FROM 
-            mesa m 
-        INNER JOIN 
-            silla s ON m.idMesa = s.idMesa
-        INNER JOIN 
-            reserva r ON s.codigo = r.codigo
-        WHERE 
-            r.codigo = ?;
-    `;
+  const codigoBoleto = req.params.codigo;
+  const query = `
+    SELECT 
+        r.nombre, 
+        m.numero AS numero_mesa, 
+        s.letra AS letra_silla 
+    FROM 
+        mesa m 
+    INNER JOIN 
+        silla s ON m.idMesa = s.idMesa
+    INNER JOIN 
+        reserva r ON s.codigo = r.codigo
+    WHERE 
+        r.codigo = ?;
+  `;
 
-    pool.query(query, [codigoBoleto], (err, results) => {
-        if (err) {
-            console.error('Error al ejecutar la consulta:', err);
-            return res.status(500).json({ error: 'Error interno del servidor' });
-        }
+  try {
+    // Usar await para ejecutar la consulta de manera asincrónica
+    const [results] = await pool.query(query, [codigoBoleto]);
 
-        if (results.length > 0) {
-            res.json(results);
-        } else {
-            res.status(404).json({ error: 'Boleto no encontrado.' });
-        }
-    });
+    if (results.length > 0) {
+      res.json(results);
+    } else {
+      res.status(404).json({ error: 'Boleto no encontrado.' });
+    }
+  } catch (err) {
+    console.error('Error al ejecutar la consulta:', err);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
 });
+
 
 /**
  * Generacion de boletos con pdf
  */
 app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
   const { idEvento, codigo } = req.params;
+
   const query = `
     SELECT 
         r.nombre, r.apellido, e.nombre AS titulo, e.fecha, e.hora,
@@ -901,11 +986,10 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
 
   // Agrupar sillas por mesa
   const mesasMap = new Map();
-  pool.query(query, [codigo, idEvento], async (err, results) => {
-    if (err) {
-      console.error('❌ Error en la consulta:', err);
-      return res.status(500).json({ error: 'Error al generar el PDF' });
-    }
+
+  try {
+    // Usar await para ejecutar la consulta con mysql2/promise
+    const [results] = await pool.query(query, [codigo, idEvento]);
 
     if (results.length === 0) {
       return res.status(404).json({ error: 'No se encontró información para este código y evento' });
@@ -922,6 +1006,8 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
       day: '2-digit',
       month: '2-digit'
     }).format(fecha);
+
+    // Agrupar los resultados por mesa
     results.forEach(row => {
       if (!mesasMap.has(row.numero_mesa)) {
         mesasMap.set(row.numero_mesa, []);
@@ -929,15 +1015,15 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
       mesasMap.get(row.numero_mesa).push(row.letra_silla);
     });
 
-    // Cargar PDF base
-    const plantillaPath = path.join(__dirname,'public' ,'bplantilla', 'plantilla.pdf');
+    // Cargar plantilla PDF base
+    const plantillaPath = path.join(__dirname,'public', 'bplantilla', 'plantilla.pdf');
     const pdfBytes = fs.readFileSync(plantillaPath);
 
     const pdfDoc = await PDFDocument.load(pdfBytes);
     pdfDoc.registerFontkit(fontkit);
-    //cargando fuentes
+
+    // Cargando fuentes
     const fontsDir = path.join(__dirname, 'public', 'fonts');
-    //objeto para organizarlas mejor
     const Hind = {
       bold: await pdfDoc.embedFont(fs.readFileSync(path.join(fontsDir, 'Hind-Bold.ttf'))),
       light: await pdfDoc.embedFont(fs.readFileSync(path.join(fontsDir, 'Hind-Light.ttf'))),
@@ -954,8 +1040,8 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
       y: 250,
       size: 36,
       font: Hind.bold,
-      maxWidth: 600, 
-      lineHeight: 38, 
+      maxWidth: 600,
+      lineHeight: 38,
       color: rgb(1, 1, 1)
     });
 
@@ -969,7 +1055,6 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
     });
 
     // NOMBRE
-    ;
     page.drawText(`${nombre.split(" ")[0].toUpperCase()} ${apellido.split(" ")[0].toUpperCase()}`, {
       x: 235,
       y: 90,
@@ -1011,8 +1096,7 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
       color: rgb(1, 1, 1)
     });
 
-    //texto vertical
-    //codigo para ordenar mesas
+    // Texto vertical
     let x = 940;
     tam = 28;
     esp = 50;
@@ -1020,10 +1104,6 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
       tam = 14;
       esp = 40;
     }
-    // if (mesasMap.size > 3) {
-    //   tam = 3;
-    //   esp = 0;
-    // }
     mesasMap.forEach((sillas, mesa) => {
       const texto = `Mesa ${mesa}\n${sillas.sort().join('-')}`;
       page.drawText(texto, {
@@ -1037,9 +1117,8 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
       x += esp;
     });
 
-
     // Guardar PDF
-    const dir = path.join(__dirname, 'public' ,'boletosEventos', `evento_${idEvento}`);
+    const dir = path.join(__dirname, 'public', 'boletosEventos', `evento_${idEvento}`);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
@@ -1049,7 +1128,10 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
     fs.writeFileSync(outputPath, finalPdf);
 
     res.status(200).json({ message: 'PDF generado correctamente' });
-  });
+  } catch (error) {
+    console.error('❌ Error al generar el PDF:', error);
+    res.status(500).json({ error: 'Error al generar el PDF' });
+  }
 });
 
 /**
@@ -1117,7 +1199,7 @@ app.get('/reporte/:idEvento', async (req, res) => {
 /**
  * Apartando sillas deseadas
  */
-app.post('/espera-silla/:idEvento', (req, res) => {
+app.post('/espera-silla/:idEvento', async (req, res) => {
   try {
     const idEvento = req.params.idEvento;
     const { letra, numeroMesa } = req.body;
@@ -1136,14 +1218,10 @@ app.post('/espera-silla/:idEvento', (req, res) => {
 
     const values = [letra, idEvento, numeroMesa];
 
-    pool.query(query, values, (err, result) => {
-      if (err) {
-        console.error('Error liberando enEspera:', err);
-        return res.sendStatus(500);
-      }
+    // Usamos await para ejecutar la consulta
+    const [result] = await pool.query(query, values);
 
-      res.sendStatus(200);
-    });
+    res.sendStatus(200);
   } catch (e) {
     console.error('Error procesando solicitud:', e);
     res.sendStatus(400);
@@ -1151,10 +1229,11 @@ app.post('/espera-silla/:idEvento', (req, res) => {
 });
 
 
+
 /**
  * Verificacion y liberacion de sillas
  */
-app.post('/liberar-sillas/:idEvento', express.text(), (req, res) => {
+app.post('/liberar-sillas/:idEvento', express.text(), async (req, res) => {
   try {
     const idEvento = req.params.idEvento;
     const { sillas } = JSON.parse(req.body);
@@ -1171,10 +1250,11 @@ app.post('/liberar-sillas/:idEvento', express.text(), (req, res) => {
       JOIN precioevento pe ON m.idPrecio = pe.idPrecio
       JOIN evento e ON e.idEvento = pe.idEvento
       SET s.enEspera = false
-      WHERE (s.letra, m.numero) IN (?)
+      WHERE (s.letra, m.numero) IN (? )
         AND e.idEvento = ?;
     `;
 
+    // Generamos los placeholders para el IN
     const letrasYMesas = sillas.map(s => [s.letra, s.numeroMesa]);
     const placeholders = letrasYMesas.map(() => '(?, ?)').join(', ');
     const flatValues = letrasYMesas.flat();
@@ -1189,21 +1269,15 @@ app.post('/liberar-sillas/:idEvento', express.text(), (req, res) => {
         AND e.idEvento = ?;
     `;
 
-    pool.query(fullQuery, [...flatValues, idEvento], (err, result) => {
-      if (err) {
-        console.error('❌ Error liberando múltiples sillas:', err);
-        return res.sendStatus(500);
-      }
+    // Ejecutamos la consulta
+    const [result] = await pool.query(fullQuery, [...flatValues, idEvento]);
 
-      res.sendStatus(200);
-    });
-
+    res.sendStatus(200);
   } catch (e) {
     console.error('❌ Error procesando liberación múltiple:', e);
     res.sendStatus(400);
   }
 });
-
 
 /**
  * Descargas de boletos pdf
