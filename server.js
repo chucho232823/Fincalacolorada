@@ -369,7 +369,7 @@ app.post('/sembrado/:nombre',(req,res) => {
   }
 
   const evento = JSON.parse(req.body.data);
-  res.render(evento.tipo, { evento });
+  res.render(evento.tipo.toLowerCase(), { evento });
 })
 
 /**
