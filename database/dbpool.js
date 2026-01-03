@@ -7,12 +7,24 @@ const mysql = require('mysql2/promise');
 //   database: 'u506116281_Finca'
 // });
 
-const pool = mysql.createConnection({
+const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: 'Lawbin2328',
-  database: 'fincalacolorada'
+  database: 'fincalacolorada',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
+
+module.exports = pool;
+
+// const pool = mysql.createConnection({
+//   host: 'localhost',
+//   user: 'root',
+//   password: 'Lawbin2328',
+//   database: 'fincalacolorada'
+// });
 
 
 // const pool = mysql.createPool({
@@ -24,5 +36,3 @@ const pool = mysql.createConnection({
 //   connectionLimit: 10, // Permite hasta 10 conexiones simultáneas
 //   queueLimit: 0
 // });
-
-module.exports = pool;

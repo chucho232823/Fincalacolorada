@@ -117,6 +117,7 @@ fetch("/listado-de-eventos")
         eventoDiv.append(editarTxt,imagenEvento,titulo,subTitulo,fechayHora,botones);
         swiperSlide.appendChild(eventoDiv);
         //agregando al swiper-wrapper correspondiente
+        console.log(evento.tipo)
         if(evento.tipo === "Baile")
             eventoBaile.appendChild(swiperSlide);
         if(evento.tipo === "Trova")
@@ -133,7 +134,7 @@ fetch("/listado-de-eventos")
 
             // Preparar y enviar el formulario
             const form = document.getElementById('jsonform');
-            form.action = `/sembrado/${eventoSeleccionado.tipo}Cliente`;
+            form.action = `/sembrado/${eventoSeleccionado.tipo.toLowerCase()}`;
             document.getElementById('jsonData').value = JSON.stringify(eventoSeleccionado);
             form.submit();
         });
@@ -185,7 +186,6 @@ fetch("/listado-de-eventos")
                 const response = await fetch(`/api/editar/${idEvento}`);
                 const data = await response.json();
                 // === 2. Llenar inputs del modal ===
-                console.log(data.subtitulo)
                 
                 document.querySelector("#Modal-Edita-Trova input[name='nombre']").value = data.nombreEvento;
                 document.querySelector("#Modal-Edita-Trova input[name='subtitulo']").value = data.subtitulo;
@@ -208,7 +208,7 @@ fetch("/listado-de-eventos")
                 const response = await fetch(`/api/editar/${idEvento}`);
                 const data = await response.json();
                 // === 2. Llenar inputs del modal ===
-                console.log(data.descripcion)
+                
                 document.querySelector("#Modal-Edita-Baile input[name='nombre']").value = data.nombreEvento;
                 document.querySelector("#Modal-Edita-Baile input[name='subtitulo']").value = data.subtitulo;
                 document.querySelector("#Modal-Edita-Baile input[name='fecha']").value = data.fechaEvento.split("T")[0];
@@ -335,7 +335,7 @@ document.getElementById("Modal-Trova").addEventListener("submit", async function
     } catch (err) {
         console.error("❌ Error al enviar:", err);
     }
-    location.reload();
+    window.location.href = "eventosAdmin.html";
 });
 
 document.getElementById("Modal-Baile").addEventListener("submit", async function(e) {

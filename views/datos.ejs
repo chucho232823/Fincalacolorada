@@ -16,7 +16,7 @@
             <div id="grupo-mesas">
                 
             </div>
-            <button type="button" id="reservar">Reservar</button>
+            <button type="button" id="reservar">RESERVAR</button>
         </form>
         <div class = "pago">
             <h2>Mesas y Sillas:</h2>
@@ -29,9 +29,15 @@
             <% }) %>
             </ul>
         </div>
+        <div class="volver">
+            <button id = "volver"> VOLVER AL MAPA </button>
+        </div>
     </div>
 
-    <button id = "volver"> volver </button>
+    <div id="cargando" class="overlay" style="display: none;">
+        <div class="spinner"></div>
+        <span>Reservando...</span>
+    </div>
 
     <script>
         window.sembrado = <%- JSON.stringify(sembrado) %>;

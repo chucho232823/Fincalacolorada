@@ -29,7 +29,7 @@
             </div>
 
             <div id="txtBoletos"> 
-                <span><%= evento.descripcion %></span>
+                <span><%= evento.subtitulo %></span>
                 <span>Selecciona tus boletos por el tipo de mesa y asientos. <br>
                     Recuerda que existe la posibilidad de compartir una mesa con otros invitados. <br> 
                     Te recomendamos que llegues un poco antes de que inicie el evento.
@@ -68,10 +68,13 @@
                 </div>
                 <div>
                     <div class="seleccionBoletos">
+                        <span>Seleccionar cantidad: </span>
+                        <input type="number" id="inputBoletos" min="1" value="2">
+                    </div>
+                    <div>
                         <button class = 'pagar'>
                             <span>PAGAR BOLETOS</span>
                         </button>
-                        <input type="number" id="inputBoletos" min="1" value="2">
                     </div>
                 </div>
             </div>
@@ -130,7 +133,7 @@
         <!-- sillas seleccionadas -->
         <div class = "fondo-compra hidden">
             <div class="confirma-compra">
-                <h2>sillas seleccionadas: </h2>
+                <h2>SILLAS SELECCIONADAS: </h2>
                 <span></span>
                 <ul></ul>
                 <h3></h3>
@@ -149,6 +152,7 @@
 
     <script>
         window.evento = <%- JSON.stringify(evento) %>;
+        console.log(window.evento)
     </script>
     <script src="/js/trovaCliente.js"></script>  
 </body>

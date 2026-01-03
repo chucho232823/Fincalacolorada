@@ -613,7 +613,7 @@ compra.addEventListener('click', () => {
     });
 
     //confirma.appendChild(lista);
-    document.querySelector('.confirma-compra h3').innerHTML = `Total a pagar: ${total}`;
+    document.querySelector('.confirma-compra h3').innerHTML = `Total a pagar: $${total}`;
     
 
     //confirma.appendChild(totalCompra);

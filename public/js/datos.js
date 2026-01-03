@@ -242,12 +242,18 @@ async function enviarDatos(codigo,nombre,apellidos,telefono,mesasJuntadas) {
   }
 }
 
+const overlay = document.getElementById('cargando');
+
+overlay.addEventListener('click', (e) => {
+  e.stopPropagation();
+});
 
 /**
  * Obteniendo los valores del formulario para reservar
  */
 document.getElementById('reservar').addEventListener('click', async function() {
     // Obtener los valores de los campos del formulario
+    overlay.style.display = 'flex';
     const nombre = document.getElementById('nombre').value;
     const apellidos = document.getElementById('apellidos').value;
     const telefono = document.getElementById('telefono').value;
@@ -337,7 +343,7 @@ document.getElementById('reservar').addEventListener('click', async function() {
           return response.json();
         })
         .then(data => {
-          console.log('✅ PDF generado correctamente');
+          console.log('PDF generado correctamente');
           window.location.href='/';
         })
         .catch(error => {

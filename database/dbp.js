@@ -12,10 +12,10 @@ const mysql = require('mysql2/promise');
 
 async function conectar() {
   const conexion = await mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'Lawbin2328',
-  database: 'fincalacolorada'
+    host: 'localhost',
+    user: 'root',
+    password: 'Lawbin2328',
+    database: 'fincalacolorada'
   });
   return conexion;
 }

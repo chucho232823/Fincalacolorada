@@ -85,3 +85,9 @@ function generarExcel() {
 
   XLSX.writeFile(libro, `Reservas ${nombreEvento}.xlsx`);
 }
+
+const volver = document.getElementById('volver');
+
+volver.addEventListener("click",() => {
+    window.location.href = "/"
+})

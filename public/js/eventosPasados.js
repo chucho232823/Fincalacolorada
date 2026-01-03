@@ -137,7 +137,7 @@ fetch("/listado-de-eventos-pasados")
 
 
 document.getElementById('volver').addEventListener('click', ()=> {
-    window.location.href = "EventosAdmin.html";
+    window.location.href = "eventosAdmin.html";
 })
 
 

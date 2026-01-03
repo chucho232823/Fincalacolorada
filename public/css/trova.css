@@ -247,7 +247,7 @@ h1 {
     top: 15%;  /* Ajustado para dejar más espacio arriba */
     left: 25%;
     /* transform: translateX(-50%); */
-    width: 50%;
+    width: 750px;
     max-height: 50vh; /* Máxima altura en función de la altura de la pantalla */
     overflow-y: auto; /* Scroll vertical si se necesita */
     background-color: white;
