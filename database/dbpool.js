@@ -4,8 +4,8 @@ const mysql = require('mysql2/promise');
 //   host: 'localhost',
 //   user: 'root',
 //   password: 'Lawbin2328',
-//   database: 'fincalacolorada',
-//}
+//   database: 'fincalacolorada'
+// });
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,

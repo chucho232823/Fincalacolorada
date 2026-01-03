@@ -320,6 +320,7 @@ document.getElementById("Modal-Trova").addEventListener("submit", async function
         }
     };
 
+    let alerta;
     try {
         const res = await fetch("/crearEvento", {
             method: "POST",
@@ -330,12 +331,22 @@ document.getElementById("Modal-Trova").addEventListener("submit", async function
         });
         const respuesta = await res.text();
         console.log("📥 Respuesta servidor:", respuesta);
-        alert(respuesta);
+        alerta = await Swal.fire({
+            title: 'Finca la colorada dice:',
+            text: respuesta,
+            icon: 'success', // puede ser 'success', 'error', 'warning', 'info', 'question'
+            confirmButtonColor: '#68AAFC',
+            confirmButtonText: 'Aceptar',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+        });
+        //alert(respuesta);
         
     } catch (err) {
         console.error("❌ Error al enviar:", err);
     }
-    window.location.href = "eventosAdmin.html";
+    if(alerta.isConfirmed)
+        window.location.href = "/";
 });
 
 document.getElementById("Modal-Baile").addEventListener("submit", async function(e) {
@@ -395,6 +406,7 @@ document.getElementById("Modal-Baile").addEventListener("submit", async function
         }
     };
 
+    let alerta;
     try {
         const res = await fetch("/crearEvento", {
             method: "POST",
@@ -405,12 +417,22 @@ document.getElementById("Modal-Baile").addEventListener("submit", async function
         });
         const respuesta = await res.text();
         console.log("📥 Respuesta servidor:", respuesta);
-        alert(respuesta);
+        alerta = await Swal.fire({
+            title: 'Finca la colorada dice:',
+            text: respuesta,
+            icon: 'success', // puede ser 'success', 'error', 'warning', 'info', 'question'
+            confirmButtonColor: '#68AAFC',
+            confirmButtonText: 'Aceptar',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+        });
+        //alert(respuesta);
         
     } catch (err) {
         console.error("❌ Error al enviar:", err);
     }
-    location.reload();
+    if(alerta.isConfirmed)
+        window.location.href = "/";
 });
 
 //edicion de trova

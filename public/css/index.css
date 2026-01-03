@@ -538,3 +538,8 @@ input[type=number] {
 #eventosPasados:hover{
     cursor: pointer;
 }
+
+/* Ajustamos el contenedor de SweetAlert para que sea superior a cualquier modal */
+.swal2-container {
+    z-index: 10000 !important;
+}

@@ -353,7 +353,7 @@ app.post('/crearEvento', async (req, res) => {
     await fs.promises.mkdir(rutaCarpeta, { recursive: true });
 
     // Responder que el evento fue creado correctamente
-    res.send(`✅ Evento '${nombre}' agregado!`);
+    res.send(`Evento '${nombre}' agregado!`);
   } catch (err) {
     console.error('❌ Error al crear el evento:', err);
     res.status(500).send('Error al crear el evento');
