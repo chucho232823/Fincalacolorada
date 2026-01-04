@@ -478,6 +478,7 @@ h1 {
     left: 10px; 
     background-color: #e0e0e0;
     color: #333;
+    font-weight: bold;
 }
 
 /*Para espacio en el centro*/
@@ -648,6 +649,8 @@ button:hover {
     padding: 5px;
     border-radius: 20px;
     align-items: center;
+    font-weight: bold;
+    padding: 10px 10px;
 }
 
 #icoinicio{
@@ -741,4 +744,24 @@ button:hover {
 
 .main-container span{
     user-select: none;
+}
+
+.alert-popup{
+    font-family: 'Hind', serif; 
+}
+
+.alert-boton{
+    display: flex;
+    color: white;
+    background-color: #68AAFC;
+    padding: 5px;
+    border-radius: 20px;
+    align-items: center;
+    font-weight: bold;
+    padding: 10px 10px;
+    border: 0 !important;
+}
+
+.alert-boton :hover{
+    cursor: pointer !important;
 }

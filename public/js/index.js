@@ -148,29 +148,77 @@ fetch("/listado-de-eventos")
         });
 
         //funcion del boton eliminar
-        botonEliminar.addEventListener('click', (e) => {
+        botonEliminar.addEventListener('click', async (e) => {
             e.preventDefault();
-            if(!confirm("Estas seguro que deseas eliminar el evento?")){
-                return;
-            }
+            console.log("evento id: " , e.currentTarget.dataset.eventoId)
+
             const idEvento = e.currentTarget.dataset.eventoId;
 
-            fetch(`/eliminar/${idEvento}`, {
-                method: 'DELETE'
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Error al eliminar');
-                return response.json();
-            })
-            .then(data => {
-                console.log(data.message);
-                alert('Evento eliminado correctamente');
-                location.reload();  // Puedes cambiarlo si quieres actualizar el DOM sin recargar
-            })
-            .catch(error => {
-                console.error('Error al eliminar el evento:', error);
-                alert('Hubo un error al eliminar el evento.');
+            // 1. Alerta de confirmación
+            const confirmacion = await Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Esta acción no se puede deshacer",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+                buttonsStyling: false,
+                customClass: {
+                    popup: 'alert-popup',
+                    title: 'alert-titulo',
+                    confirmButton: 'alert-boton',
+                    cancelButton: 'alert-boton-cancelar' // Opcional: añade estilo al botón cancelar
+                }
             });
+
+            // Si el usuario cancela, detenemos la ejecución
+            if (!confirmacion.isConfirmed) return;
+            
+
+            try {
+                const response = await fetch(`/eliminar/${idEvento}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Error al eliminar');
+                
+                const data = await response.json();
+
+                // 2. Alerta de éxito (usando tu estilo personalizado)
+                await Swal.fire({
+                    title: 'Finca la colorada dice:',
+                    text: data.message || 'Evento eliminado correctamente',
+                    icon: 'success',
+                    confirmButtonColor: '#68AAFC',
+                    confirmButtonText: 'Aceptar',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    buttonsStyling: false,
+                    customClass: {
+                        popup: 'alert-popup',
+                        title: 'alert-titulo',
+                        confirmButton: 'alert-boton'
+                    },
+                });
+
+                location.reload();
+
+            } catch (error) {
+                console.error('Error:', error);
+                
+                // 3. Alerta de error
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un error al eliminar el evento.',
+                    icon: 'error',
+                    confirmButtonText: 'Cerrar',
+                    buttonsStyling: false,
+                    customClass: {
+                        popup: 'alert-popup',
+                        confirmButton: 'alert-boton'
+                    }
+                });
+            }
         });
 
         // boton editar
@@ -269,8 +317,6 @@ document.getElementById("Modal-Trova").addEventListener("submit", async function
     const fecha = data.get("fecha");
     const fechaPreventa = data.get("fechap");
     const hora = data.get("hora");
-    const imagen = data.get("imagen");
-
     const laterales = data.get("laterales");
     const lateralesD = data.get("lateralesD");
     const general = data.get("general");
@@ -278,7 +324,7 @@ document.getElementById("Modal-Trova").addEventListener("submit", async function
     const preferente = data.get("preferente");
     const preferenteD = data.get("preferenteD");
     const vip = data.get("vip");
-    const vipD = data.get("vipD");
+    const vipD = data.get("vipD");    
 
     // Ejemplo: mostrar en consola
     console.log({
@@ -287,7 +333,6 @@ document.getElementById("Modal-Trova").addEventListener("submit", async function
         fecha,
         fechaPreventa,
         hora,
-        imagen,
         laterales,
         lateralesD,
         general,
@@ -297,7 +342,6 @@ document.getElementById("Modal-Trova").addEventListener("submit", async function
         vip,
         vipD
     });
-
     // Enviando al backend
     const enviarDatos = {
         nombre: nombre,
@@ -329,16 +373,41 @@ document.getElementById("Modal-Trova").addEventListener("submit", async function
             },
             body: JSON.stringify(enviarDatos)
         });
-        const respuesta = await res.text();
+        const respuesta = await res.json();
         console.log("📥 Respuesta servidor:", respuesta);
+
+        // Cargando la imagen
+        const idEvento = respuesta.idEvento; 
+        const imagen = data.get("imagen"); 
+        console.log(imagen && imagen.size > 0);
+        if (imagen && imagen.size > 0) {
+            const imageFormData = new FormData();
+            imageFormData.append("imagen", imagen);
+            imageFormData.append("idEvento", idEvento); 
+
+            // Enviamos la imagen al servidor
+            await fetch('/subir-imagen', { // Ajusta a tu endpoint real
+                method: 'POST',
+                body: imageFormData
+            });
+        } else {
+            console.log("No se seleccionó imagen, se usara una por defecto");
+        }
+
         alerta = await Swal.fire({
             title: 'Finca la colorada dice:',
-            text: respuesta,
+            text: respuesta.message,
             icon: 'success', // puede ser 'success', 'error', 'warning', 'info', 'question'
             confirmButtonColor: '#68AAFC',
             confirmButtonText: 'Aceptar',
             allowOutsideClick: false,
             allowEscapeKey: false,
+            buttonsStyling: false,
+            customClass: {
+                popup: 'alert-popup',
+                title: 'alert-titulo',
+                confirmButton: 'alert-boton'
+            },
         });
         //alert(respuesta);
         
@@ -415,16 +484,41 @@ document.getElementById("Modal-Baile").addEventListener("submit", async function
             },
             body: JSON.stringify(enviarDatos)
         });
-        const respuesta = await res.text();
+        const respuesta = await res.json();
         console.log("📥 Respuesta servidor:", respuesta);
+
+        // Cargando la imagen
+        const idEvento = respuesta.idEvento; 
+        const imagen = data.get("imagen"); 
+        console.log(imagen && imagen.size > 0);
+        if (imagen && imagen.size > 0) {
+            const imageFormData = new FormData();
+            imageFormData.append("imagen", imagen);
+            imageFormData.append("idEvento", idEvento); 
+
+            // Enviamos la imagen al servidor
+            await fetch('/subir-imagen', { // Ajusta a tu endpoint real
+                method: 'POST',
+                body: imageFormData
+            });
+        } else {
+            console.log("No se seleccionó imagen, se usara una por defecto");
+        }
+
         alerta = await Swal.fire({
             title: 'Finca la colorada dice:',
-            text: respuesta,
+            text: respuesta.message,
             icon: 'success', // puede ser 'success', 'error', 'warning', 'info', 'question'
             confirmButtonColor: '#68AAFC',
             confirmButtonText: 'Aceptar',
             allowOutsideClick: false,
             allowEscapeKey: false,
+            buttonsStyling: false,
+            customClass: {
+                popup: 'alert-popup',
+                title: 'alert-titulo',
+                confirmButton: 'alert-boton'
+            },
         });
         //alert(respuesta);
         

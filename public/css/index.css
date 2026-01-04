@@ -52,7 +52,7 @@ body{
 }
 
 .trova, .baile {
-    background-color: #DBB54B;
+    background-color: #C5C3B6;
     /* padding-left: 12vw;
     padding-right: 12vw; */
     padding-left: 150px;
@@ -71,7 +71,7 @@ body{
 }
 
 .Anadir {
-    background-color: #f1f1f1;
+    background-color: white;
     font-family: 'Hind', serif;
     font-weight: bold;
     display: flex;
@@ -84,7 +84,7 @@ body{
     /* padding: 2vw 0; */
     border-radius: 20px;
     /* Desplazamiento horizontal | Desplazamiento vertical | Radio de desenfoque | Radio de expansión | Color */
-    box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.5);
 }
 
 .evento {
@@ -105,7 +105,7 @@ body{
 .swiper-slide{
     background-color: white;
     border-radius: 20px;
-    box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.5);
     /* anadir tambien */
     position: relative;
     z-index: 1; 
@@ -174,8 +174,8 @@ body{
 }
 
 img{
-    width: 100%; /* Opcional: puede usar max-width: 100% */
-    height: auto; /* Mantiene la proporción de alto automáticamente */;
+    width: auto; /* Opcional: puede usar max-width: 100% */
+    height: 150px; /* Mantiene la proporción de alto automáticamente */;
     /* object-fit: cover; */
 }
 
@@ -542,4 +542,29 @@ input[type=number] {
 /* Ajustamos el contenedor de SweetAlert para que sea superior a cualquier modal */
 .swal2-container {
     z-index: 10000 !important;
+}
+
+.alert-popup{
+    font-family: 'Hind', serif; 
+}
+
+.alert-boton{
+    display: flex;
+    color: white;
+    background-color: #68AAFC;
+    padding: 5px;
+    border-radius: 20px;
+    align-items: center;
+    font-weight: bold;
+    padding: 10px 10px;
+    border: 0 !important;
+}
+
+.alert-boton :hover{
+    cursor: pointer !important;
+}
+
+#eventosPasados{
+    font-weight: bold;
+    margin: 10px 10px;
 }

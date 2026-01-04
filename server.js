@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 //const conexion = require('./database/db');
@@ -9,10 +10,12 @@ const pool = require('./database/dbpool');
 //const PDFDocument = require('pdfkit');
 const { error } = require('console');
 const cron = require('node-cron'); //para cronometro
-
 const fontkit = require('@pdf-lib/fontkit');
+const formidable = require('formidable');
 
-
+// Middleware para parsear los datos del formulario
+app.use(bodyParser.urlencoded({ extended: true })); // Para procesar datos del formulario (application/x-www-form-urlencoded)
+app.use(bodyParser.json()); // Para procesar JSON si es necesario
 
 
 
@@ -30,7 +33,6 @@ const { PDFDocument, rgb, degrees } = require('pdf-lib');
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine','ejs');
 app.set('views', path.join(__dirname,'views'));
@@ -292,7 +294,7 @@ if (!fs.existsSync(carpetaBase)) {
  * Enviar creacion de evento
  */
 app.post('/crearEvento', async (req, res) => {
-  const { nombre, fecha, fechaP, tipo, precio, precioD, hora, img, subtitulo } = req.body;
+  const { nombre, fecha, fechaP, tipo, precio, precioD, hora, subtitulo } = req.body;
   const imagen = "img/img.JPG"; // Imagen estática, puedes modificar si necesitas algo dinámico
 
   let query = '';
@@ -353,7 +355,10 @@ app.post('/crearEvento', async (req, res) => {
     await fs.promises.mkdir(rutaCarpeta, { recursive: true });
 
     // Responder que el evento fue creado correctamente
-    res.send(`Evento '${nombre}' agregado!`);
+    res.json({
+        message: `Evento '${nombre}' agregado!`,
+        idEvento: idEvento
+    });
   } catch (err) {
     console.error('❌ Error al crear el evento:', err);
     res.status(500).send('Error al crear el evento');
@@ -1300,5 +1305,102 @@ app.get('/descargar-boleto', (req, res) => {
                 res.status(404).send("El boleto específico no existe en la carpeta del evento.");
             }
         }
+    });
+});
+
+
+/**
+ * Actualizar nombre de la imagen
+ */
+async function actualizarImagenEvento(idEvento, nombreImagen) {
+  try {
+    const query = `
+      UPDATE evento
+      SET imagen = ?
+      WHERE idEvento = ?;
+    `;
+    
+    const [result] = await pool.query(query, [`./img/${nombreImagen}`, idEvento]);
+    
+    if (result.affectedRows > 0) {
+      //console.log(`Imagen para evento ${idEvento} actualizada correctamente.`);
+      return true; // Indica que la actualización fue exitosa
+    } else {
+      console.log(`No se encontró el evento con id ${idEvento}.`);
+      return false; // Si no se encontró el evento
+    }
+  } catch (e) {
+    console.error('Error al actualizar la imagen:', e);
+    throw e; // Lanza el error para manejarlo en la ruta si es necesario
+  }
+}
+
+/**
+ * Subir la imagen al servidor
+ */
+// 1. Configuración de almacenamiento
+
+app.post('/subir-imagen', (req, res) => {
+    // 1. Configurar Formidable
+    const form = new formidable.IncomingForm({
+        uploadDir: path.join(__dirname, 'public', 'img'),     // Carpeta destino
+        keepExtensions: true,    // Mantener .jpg, .png, etc.
+        multiples: false         // Solo una imagen
+    });
+
+    // 2. Asegurarse de que la carpeta 'public/img' exista, si no, crearla
+    const imgDir = path.join(__dirname, 'public', 'img');
+    if (!fs.existsSync(imgDir)) {
+        fs.mkdirSync(imgDir, { recursive: true });
+    }
+
+    // 3. Parsear el request
+    form.parse(req, async (err, fields, files) => {
+        if (err) {
+            console.error("Error parseando form:", err);
+            return res.status(500).json({ error: "Error al procesar archivo" });
+        }
+
+        // 'fields' contiene los textos (idEvento)
+        // 'files' contiene los archivos (imagen)
+        //console.log('fields:', fields);  // Verifica que contiene idEvento
+        //console.log('files:', files);    // Verifica que contiene imagen
+
+        const idEvento = fields.idEvento; 
+        const archivo = Array.isArray(files.imagen) ? files.imagen[0] : files.imagen; // Si es un array, tomar el primer archivo
+        
+        if (!archivo) {
+            return res.status(400).json({ error: "No se subió ninguna imagen" });
+        }
+      
+        // 4. Renombrar el archivo al formato img_ID.ext
+        const extension = path.extname(archivo.originalFilename);
+        const nuevoNombre = `img_${idEvento}${extension}`;
+
+        // Ruta final donde se guardará la imagen (directorio público)
+        const rutaFinal = path.join(__dirname, 'public', 'img', nuevoNombre);
+
+        // Ruta del servidor (solo para ser almacenada en la base de datos)
+        const rutaServidor = path.join('img', nuevoNombre);  // Es una ruta relativa a 'public'
+
+        // 5. Actualizar la imagen en la base de datos o hacer alguna otra acción
+        await actualizarImagenEvento(idEvento, nuevoNombre);  // Asegúrate de que esta función exista y actualice correctamente la base de datos.
+
+        // 6. Mover el archivo de la ruta temporal a la final
+        fs.rename(archivo.filepath, rutaFinal, (err) => {
+            if (err) {
+                console.error("Error al renombrar:", err);
+                return res.status(500).json({ error: "Error al guardar archivo" });
+            }
+
+            console.log(`Imagen guardada como: ${nuevoNombre}`);
+
+            // 7. Enviar respuesta al cliente
+            res.json({
+                message: "Imagen subida correctamente",
+                nombre: nuevoNombre,  // El nombre del archivo subido
+                ruta: rutaServidor     // La ruta del archivo en el servidor (útil para usarla en tu frontend)
+            });
+        });
     });
 });

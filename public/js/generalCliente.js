@@ -354,7 +354,20 @@ mesas.forEach(mesa => {
             let numero = controlFila.get(mesa.id);
             await verificarSilla(sembrado, mesa, silla);
             if(silla.classList.contains('ocupada')){
-                alert('Silla ocupada');
+                alerta = await Swal.fire({
+                title: 'Finca la colorada dice:',
+                text: "Silla ocupada",
+                icon: 'warning', // puede ser 'success', 'error', 'warning', 'info', 'question'
+                confirmButtonColor: '#68AAFC',
+                confirmButtonText: 'Aceptar',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                buttonsStyling: false,
+                customClass: {
+                    popup: 'alert-popup',
+                    title: 'alert-titulo',
+                    confirmButton: 'alert-boton'
+                },
                 return;
             }
 
@@ -539,7 +552,7 @@ let agrupadasPorMesa = {};
 /**
  * Visualizando la compra 
  */
-compra.addEventListener('click', () => {
+compra.addEventListener('click', async () => {
     // Obtener todas las sillas activas
     listaMesaSilla = [];
     agrupadasPorMesa = {};
@@ -562,7 +575,21 @@ compra.addEventListener('click', () => {
 
 
     if (sillasActivas.length === 0) {
-        alert("No hay sillas seleccionadas!");
+        alerta = await Swal.fire({
+            title: 'Finca la colorada dice:',
+            text: "No hay sillas seleccionadas!",
+            icon: 'warning', // puede ser 'success', 'error', 'warning', 'info', 'question'
+            confirmButtonColor: '#68AAFC',
+            confirmButtonText: 'Aceptar',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            buttonsStyling: false,
+            customClass: {
+                popup: 'alert-popup',
+                title: 'alert-titulo',
+                confirmButton: 'alert-boton'
+            },
+        });
         return;
     }
 

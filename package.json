@@ -14,6 +14,8 @@
     "@pdf-lib/fontkit": "^1.1.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "formidable": "^3.5.4",
+    "multer": "^2.0.2",
     "mysql2": "^3.14.1",
     "node-cron": "^4.2.1",
     "nodemon": "^3.1.10",
