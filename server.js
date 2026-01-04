@@ -1393,7 +1393,7 @@ app.post('/subir-imagen', (req, res) => {
                 return res.status(500).json({ error: "Error al guardar archivo" });
             }
 
-            console.log(`Imagen guardada como: ${nuevoNombre}`);
+            // console.log(`Imagen guardada como: ${nuevoNombre}`);
 
             // 7. Enviar respuesta al cliente
             res.json({
