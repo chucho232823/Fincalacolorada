@@ -1320,7 +1320,7 @@ async function actualizarImagenEvento(idEvento, nombreImagen) {
       WHERE idEvento = ?;
     `;
     
-    const [result] = await pool.query(query, [`/img/${nombreImagen}`, idEvento]);
+    const [result] = await pool.query(query, [`img/${nombreImagen}`, idEvento]);
     
     if (result.affectedRows > 0) {
       //console.log(`Imagen para evento ${idEvento} actualizada correctamente.`);
