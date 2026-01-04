@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 //const conexion = require('./database/db');
@@ -14,7 +13,6 @@ const fontkit = require('@pdf-lib/fontkit');
 const formidable = require('formidable');
 
 // Middleware para parsear los datos del formulario
-app.use(bodyParser.urlencoded({ extended: true })); // Para procesar datos del formulario (application/x-www-form-urlencoded)
 app.use(bodyParser.json()); // Para procesar JSON si es necesario
 
 
@@ -686,44 +684,6 @@ app.get('/fechaP/:idEvento', async (req, res) => {
 /**
  * Edicion de un evento
  */
-
-/*app.get('/editar/:idEvento', (req, res) => {
-  const { idEvento } = req.params;
-
-  const query = `
-    SELECT m.tipo, p.precio, p.precioD, e.fecha, e.fechaP, e.nombre, t.tipo AS tipoEvento
-    FROM evento e 
-    JOIN tipoEvento t ON e.idTipoEvento = t.idTipoEvento
-    JOIN precioEvento p ON e.idEvento = p.idEvento
-    JOIN tipoMesa m ON m.idTipoMesa = p.idTipoMesa 
-    WHERE e.idEvento = ?;
-  `;
-
-  pool.query(query, [idEvento], (err, resultado) => {
-    if (err) {
-      console.error('Error al consultar evento:', err);
-      return res.status(500).send('Error en el servidor');
-    }
-    if (resultado.length === 0) {
-      return res.status(404).send('Evento no encontrado');
-    }
-    
-    const nombreEvento = resultado[0].nombre;
-    const fechaEvento = resultado[0].fecha;
-    const tipoEvento = resultado[0].tipoEvento;
-    const fechaPreventa = resultado[0].fechaP;
-    // Preparamos los datos de precios y tipos de mesa para la vista
-    // Para que sea más cómodo en el EJS, agrupamos precios por tipo
-    const precios = resultado.map(row => ({
-      tipo: row.tipo,
-      precio: row.precio,
-      precioD: row.precioD
-    }));
-
-    res.render('editarEvento', { idEvento, nombreEvento, fechaEvento, fechaPreventa, precios , tipoEvento });
-  });
-}); */
-
 // para el modal
 app.get('/api/editar/:idEvento', async (req, res) => {
   const { idEvento } = req.params;
@@ -1349,7 +1309,9 @@ app.post('/subir-imagen', (req, res) => {
     });
 
     // 2. Asegurarse de que la carpeta 'public/img' exista, si no, crearla
-    const imgDir = path.join(__dirname, 'public', 'imgEventos');
+    const imgDir = 
+    console.log(fs.existsSync(imgDir));
+    console.log(path.join(__dirname, 'public', 'imgEventos'));
     if (!fs.existsSync(imgDir)) {
         fs.mkdirSync(imgDir, { recursive: true });
     }
