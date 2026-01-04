@@ -13,9 +13,6 @@ const fontkit = require('@pdf-lib/fontkit');
 const formidable = require('formidable');
 
 // Middleware para parsear los datos del formulario
-app.use(bodyParser.json()); // Para procesar JSON si es necesario
-
-
 
 const { PDFDocument, rgb, degrees } = require('pdf-lib');
 (async () => {
