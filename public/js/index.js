@@ -303,7 +303,7 @@ document.getElementById('eventosPasados').addEventListener('click', ()=> {
     window.location.href = "eventosPasados.html";
 })
 
-
+const overlay = document.getElementById('cargando');
 //obtencion de datos
 document.getElementById("Modal-Trova").addEventListener("submit", async function(e) {
     e.preventDefault(); // Evita que el form recargue la página

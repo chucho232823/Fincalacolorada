@@ -1320,7 +1320,7 @@ async function actualizarImagenEvento(idEvento, nombreImagen) {
       WHERE idEvento = ?;
     `;
     
-    const [result] = await pool.query(query, [`img/${nombreImagen}`, idEvento]);
+    const [result] = await pool.query(query, [`imgEventos/${nombreImagen}`, idEvento]);
     
     if (result.affectedRows > 0) {
       //console.log(`Imagen para evento ${idEvento} actualizada correctamente.`);
@@ -1343,13 +1343,13 @@ async function actualizarImagenEvento(idEvento, nombreImagen) {
 app.post('/subir-imagen', (req, res) => {
     // 1. Configurar Formidable
     const form = new formidable.IncomingForm({
-        uploadDir: path.join(__dirname, 'public', 'img'),     // Carpeta destino
+        uploadDir: path.join(__dirname, 'public', 'imgEventos'),     // Carpeta destino
         keepExtensions: true,    // Mantener .jpg, .png, etc.
         multiples: false         // Solo una imagen
     });
 
     // 2. Asegurarse de que la carpeta 'public/img' exista, si no, crearla
-    const imgDir = path.join(__dirname, 'public', 'img');
+    const imgDir = path.join(__dirname, 'public', 'imgEventos');
     if (!fs.existsSync(imgDir)) {
         fs.mkdirSync(imgDir, { recursive: true });
     }
@@ -1378,10 +1378,10 @@ app.post('/subir-imagen', (req, res) => {
         const nuevoNombre = `img_${idEvento}${extension}`;
 
         // Ruta final donde se guardará la imagen (directorio público)
-        const rutaFinal = path.join(__dirname, 'public', 'img', nuevoNombre);
+        const rutaFinal = path.join(__dirname, 'public', 'imgEventos', nuevoNombre);
 
         // Ruta del servidor (solo para ser almacenada en la base de datos)
-        const rutaServidor = path.join('img', nuevoNombre);  // Es una ruta relativa a 'public'
+        const rutaServidor = path.join('imgEventos', nuevoNombre);  // Es una ruta relativa a 'public'
 
         // 5. Actualizar la imagen en la base de datos o hacer alguna otra acción
         await actualizarImagenEvento(idEvento, nuevoNombre);  // Asegúrate de que esta función exista y actualice correctamente la base de datos.
