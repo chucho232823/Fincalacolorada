@@ -399,7 +399,7 @@ document.getElementById("Modal-Trova").addEventListener("submit", async function
             text: respuesta.message,
             icon: 'success', // puede ser 'success', 'error', 'warning', 'info', 'question'
             confirmButtonColor: '#68AAFC',
-            confirmButtonText: 'Aceptar',
+            confirmButtonText: 'ACEPTAR',
             allowOutsideClick: false,
             allowEscapeKey: false,
             buttonsStyling: false,

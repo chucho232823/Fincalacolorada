@@ -13,6 +13,9 @@ const fontkit = require('@pdf-lib/fontkit');
 const formidable = require('formidable');
 
 // Middleware para parsear los datos del formulario
+app.use(bodyParser.json()); // Para procesar JSON si es necesario
+
+
 
 const { PDFDocument, rgb, degrees } = require('pdf-lib');
 (async () => {
@@ -681,6 +684,7 @@ app.get('/fechaP/:idEvento', async (req, res) => {
 /**
  * Edicion de un evento
  */
+
 // para el modal
 app.get('/api/editar/:idEvento', async (req, res) => {
   const { idEvento } = req.params;
@@ -1306,9 +1310,7 @@ app.post('/subir-imagen', (req, res) => {
     });
 
     // 2. Asegurarse de que la carpeta 'public/img' exista, si no, crearla
-    const imgDir = 
-    console.log(fs.existsSync(imgDir));
-    console.log(path.join(__dirname, 'public', 'imgEventos'));
+    const imgDir = path.join(__dirname, 'public', 'imgEventos');
     if (!fs.existsSync(imgDir)) {
         fs.mkdirSync(imgDir, { recursive: true });
     }
