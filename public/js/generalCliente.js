@@ -355,19 +355,20 @@ mesas.forEach(mesa => {
             await verificarSilla(sembrado, mesa, silla);
             if(silla.classList.contains('ocupada')){
                 alerta = await Swal.fire({
-                title: 'Finca la colorada dice:',
-                text: "Silla ocupada",
-                icon: 'warning', // puede ser 'success', 'error', 'warning', 'info', 'question'
-                confirmButtonColor: '#68AAFC',
-                confirmButtonText: 'Aceptar',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                buttonsStyling: false,
-                customClass: {
-                    popup: 'alert-popup',
-                    title: 'alert-titulo',
-                    confirmButton: 'alert-boton'
-                },
+                    title: 'Finca la colorada dice:',
+                    text: "Silla ocupada",
+                    icon: 'warning', // puede ser 'success', 'error', 'warning', 'info', 'question'
+                    confirmButtonColor: '#68AAFC',
+                    confirmButtonText: 'Aceptar',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    buttonsStyling: false,
+                    customClass: {
+                        popup: 'alert-popup',
+                        title: 'alert-titulo',
+                        confirmButton: 'alert-boton'
+                    },
+                });
                 return;
             }
 

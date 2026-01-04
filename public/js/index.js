@@ -307,7 +307,7 @@ document.getElementById('eventosPasados').addEventListener('click', ()=> {
 //obtencion de datos
 document.getElementById("Modal-Trova").addEventListener("submit", async function(e) {
     e.preventDefault(); // Evita que el form recargue la página
-
+    overlay.style.display = 'flex';
     const form = e.target;
     const data = new FormData(form);
 
@@ -420,7 +420,7 @@ document.getElementById("Modal-Trova").addEventListener("submit", async function
 
 document.getElementById("Modal-Baile").addEventListener("submit", async function(e) {
     e.preventDefault(); // Evita que el form recargue la página
-
+    overlay.style.display = 'flex';
     const form = e.target;
     const data = new FormData(form);
 
@@ -534,6 +534,7 @@ document.getElementById("Modal-Baile").addEventListener("submit", async function
 //obtencion de datos
 document.getElementById("Modal-Edita-Trova").addEventListener("submit", async function(e) {
     e.preventDefault(); // Evita que el form recargue la página
+    overlay.style.display = 'flex';
     const idEvento = controlIdEvento.id;
     const form = e.target;
     const data = new FormData(form);
@@ -606,6 +607,7 @@ document.getElementById("Modal-Edita-Trova").addEventListener("submit", async fu
 
 document.getElementById("Modal-Edita-Baile").addEventListener("submit", async function(e) {
     e.preventDefault(); // Evita que el form recargue la página
+    overlay.style.display = 'flex';
     const idEvento = controlIdEvento.id;
     const form = e.target;
     const data = new FormData(form);
