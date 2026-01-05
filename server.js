@@ -1430,9 +1430,8 @@ app.post('/subir-imagen', (req, res) => {
         // Ruta final donde se guardará la imagen (directorio público)
         const rutaFinal = path.join(__dirname, 'public', 'imgEventos', nuevoNombre);
         // Ruta del servidor (solo para ser almacenada en la base de datos)
-        const rutaServidor = path.join(rutaFinal, nuevoNombre);  // Es una ruta relativa a 'public'
 
-        await uploadToFtp(rutaServidor,nuevoNombre,"IMG",idEvento);
+        await uploadToFtp(rutaFinal,nuevoNombre,"IMG",idEvento);
 
         // 5. Actualizar la imagen en la base de datos o hacer alguna otra acción
         await actualizarImagenEvento(idEvento, nuevoNombre);  // Asegúrate de que esta función exista y actualice correctamente la base de datos.
