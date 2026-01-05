@@ -956,14 +956,14 @@ async function uploadToFtp(filename,accion) {
         // Cambiar al directorio donde quieres subir el archivo
         if(accion === "PDF"){
           await client.cd(`${ftpDir}boletos/`);
-          console.log("archivo pdf guardado en el servidor")
-          console.log(ftpDir,"boletos/",filename);
+          console.log(`${ftpDir}boletos/${filename}`);
         }
           
 
         // Subir el archivo al servidor
+        console.log("guardando pdf en el servidor")
         await client.uploadFrom(filename, filename);
-        console.log(`Archivo ${filename} subido a FTP`);
+        console.log(`Archivo ${filename} subido al FTP`);
     } catch (error) {
         console.error("Error al subir el archivo:", error);
     } finally {
