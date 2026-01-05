@@ -11,7 +11,7 @@ const { error } = require('console');
 const cron = require('node-cron'); //para cronometro
 const fontkit = require('@pdf-lib/fontkit');
 const formidable = require('formidable');
-
+const { FTPClient } = require("basic-ftp");
 // Middleware para parsear los datos del formulario
 app.use(bodyParser.json()); // Para procesar JSON si es necesario
 
@@ -37,7 +37,7 @@ app.set('views', path.join(__dirname,'views'));
 
 
 //Para la subir los archivos al servidor
-const { FTPClient } = require("basic-ftp");
+
 // Datos de conexión FTP
 // const ftpHost = "156.67.75.166";
 // const ftpUser = "u506116281.Chucho"; 
@@ -955,7 +955,7 @@ async function uploadToFtp(filename,accion) {
         console.log("Conectado al servidor FTP");
         // Cambiar al directorio donde quieres subir el archivo
         if(accion === "PDF"){
-          await client.cd(ftpDir,"boletos/");
+          await client.cd(`${ftpDir}"boletos/`);
           console.log("archivo pdf guardado en el servidor")
           console.log(ftpDir,"boletos/",filename);
         }
