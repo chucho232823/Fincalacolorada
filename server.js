@@ -943,27 +943,35 @@ app.get('/verBoleto/:codigo', async (req, res) => {
  * Funcion para guardar el pdf en el servidor
  */
 // filename PDF evento_01/1-0
-async function uploadToFtp(filename,accion) {
+async function uploadToFtp(rutaLocal, nombreRemoto, accion) {
     const client = new ftp.Client();
+
     try {
         // Conectar al servidor FTP
+        console.log("Conectando al servidor FTP...");
         await client.access({
             host: ftpHost,
             user: ftpUser,
             password: ftpPass,
         });
-        console.log("Conectando al servidor FTP");
+
+        console.log("Conectado al servidor FTP");
+        console.log("Ruta local del archivo:", rutaLocal);
+        console.log("Nombre remoto del archivo:", nombreRemoto);
+
         // Cambiar al directorio donde quieres subir el archivo
-        if(accion === "PDF"){
-          await client.cd(`${ftpDir}boletos/`);
-          console.log(`${ftpDir}boletos/${filename}`);
+        if (accion === "PDF") {
+            console.log("Entrando al directorio FTP:", `${ftpDir}boletos/`);
+            await client.cd(`${ftpDir}boletos/`);
+            console.log("Directorio actual FTP:", await client.pwd());
         }
-          
 
         // Subir el archivo al servidor
-        console.log("guardando pdf en el servidor")
-        await client.uploadFrom(filename, filename);
-        console.log(`Archivo ${filename} subido al FTP`);
+        console.log("Guardando PDF en el servidor...");
+        await client.uploadFrom(rutaLocal, nombreRemoto);
+
+        console.log(`Archivo ${nombreRemoto} subido al FTP correctamente`);
+
     } catch (error) {
         console.error("Error al subir el archivo:", error);
     } finally {
@@ -1139,7 +1147,7 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
     const finalPdf = await pdfDoc.save();
     fs.writeFileSync(outputPath, finalPdf);
 
-    await uploadToFtp(`${codigo}.pdf`,"PDF");
+    await uploadToFtp(outputPath,`${codigo}.pdf`,"PDF");
 
     res.status(200).json({ message: 'PDF generado correctamente' });
   } catch (error) {
