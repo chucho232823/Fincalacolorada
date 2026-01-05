@@ -301,6 +301,32 @@ if (!fs.existsSync(carpetaBase)) {
     fs.mkdirSync(carpetaBase, { recursive: true });
 }
 
+//Aqui se crea la carpeta del evento
+async function crearCarpetaFtp(rutaRemota) {
+    const client = new ftp.Client();
+
+    try {
+        console.log("Conectando al servidor FTP...");
+        await client.access({
+            host: ftpHost,
+            user: ftpUser,
+            password: ftpPass,
+        });
+
+        console.log("Creando / asegurando carpeta FTP:", rutaRemota);
+
+        console.log("Carpeta FTP lista:", await client.pwd());
+        
+        await client.ensureDir(`${ftpDir}${rutaRemota}`);
+        console.log(`carpeta en ${ftpDir}${rutaRemota} creada`);
+    } catch (error) {
+        console.error("Error al crear carpeta FTP:", error);
+        throw error;
+    } finally {
+        client.close();
+    }
+}
+
 
 /**
  * Enviar creacion de evento
@@ -365,6 +391,8 @@ app.post('/crearEvento', async (req, res) => {
 
     // Crear la carpeta para el evento
     await fs.promises.mkdir(rutaCarpeta, { recursive: true });
+    await crearCarpetaFtp(`boletos/${nombreCarpeta}`);
+
 
     // Responder que el evento fue creado correctamente
     res.json({
