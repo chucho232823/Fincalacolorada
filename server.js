@@ -944,7 +944,7 @@ app.get('/verBoleto/:codigo', async (req, res) => {
  */
 // filename PDF evento_01/1-0
 async function uploadToFtp(filename,accion) {
-    const client = new Client();
+    const client = new ftp.Client();
     try {
         // Conectar al servidor FTP
         await client.access({
