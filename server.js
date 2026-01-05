@@ -35,6 +35,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine','ejs');
 app.set('views', path.join(__dirname,'views'));
 
+
+//Para la subir los archivos al servidor
+const { FTPClient } = require("basic-ftp");
+// Datos de conexión FTP
+// const ftpHost = "156.67.75.166";
+// const ftpUser = "u506116281.Chucho"; 
+// const ftpPass = "Finca_ftp.2025"; 
+// const ftpDir = "ftp://u506116281.Chucho@156.67.75.166/Eventos/";
+
+const ftpHost = process.env.FTP_HOST;  // Dirección IP o dominio de tu servidor FTP
+const ftpUser = process.env.FTP_USER;  // Tu usuario FTP
+const ftpPass = process.env.FTP_PASS;  // Tu contraseña FTP
+const ftpDir = process.env.FTP_DIR;    // Ruta en tu servidor
+
 // Ejecutar cada minuto
 /*cron.schedule('* * * * *', async () => {
   const query = `
@@ -926,6 +940,38 @@ app.get('/verBoleto/:codigo', async (req, res) => {
 
 
 /**
+ * Funcion para guardar el pdf en el servidor
+ */
+// filename PDF evento_01/1-0
+async function uploadToFtp(filename,accion) {
+    const client = new FTPClient();
+    try {
+        // Conectar al servidor FTP
+        await client.access({
+            host: ftpHost,
+            user: ftpUser,
+            password: ftpPass,
+        });
+        console.log("Conectado al servidor FTP");
+        // Cambiar al directorio donde quieres subir el archivo
+        if(accion === "PDF"){
+          await client.cd(ftpDir,"boletos/");
+          console.log("archivo pdf guardado en el servidor")
+          console.log(ftpDir,"boletos/",filename);
+        }
+          
+
+        // Subir el archivo al servidor
+        await client.uploadFrom(filename, filename);
+        console.log(`Archivo ${filename} subido a FTP`);
+    } catch (error) {
+        console.error("Error al subir el archivo:", error);
+    } finally {
+        client.close();
+    }
+}
+
+/**
  * Generacion de boletos con pdf
  */
 app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
@@ -1092,6 +1138,8 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
     const outputPath = path.join(dir, `${codigo}.pdf`);
     const finalPdf = await pdfDoc.save();
     fs.writeFileSync(outputPath, finalPdf);
+
+    await uploadToFtp(`${codigo}.pdf`,"PDF");
 
     res.status(200).json({ message: 'PDF generado correctamente' });
   } catch (error) {
