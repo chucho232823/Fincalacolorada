@@ -1013,6 +1013,76 @@ async function uploadToFtp(rutaLocal, nombreRemoto, accion,idEvento) {
 }
 
 /**
+ * Subir la imagen al servidor
+ */
+// 1. Configuración de almacenamiento
+
+app.post('/subir-imagen', (req, res) => {
+    // 1. Configurar Formidable
+    const form = new formidable.IncomingForm({
+        uploadDir: path.join(__dirname, 'public', 'imgEventos'),     // Carpeta destino
+        keepExtensions: true,    // Mantener .jpg, .png, etc.
+        multiples: false         // Solo una imagen
+    });
+
+    // 2. Asegurarse de que la carpeta 'public/img' exista, si no, crearla
+    const imgDir = path.join(__dirname, 'public', 'imgEventos');
+    if (!fs.existsSync(imgDir)) {
+        fs.mkdirSync(imgDir, { recursive: true });
+    }
+
+    // 3. Parsear el request
+    form.parse(req, async (err, fields, files) => {
+        if (err) {
+            console.error("Error parseando form:", err);
+            return res.status(500).json({ error: "Error al procesar archivo" });
+        }
+
+        // 'fields' contiene los textos (idEvento)
+        // 'files' contiene los archivos (imagen)
+        //console.log('fields:', fields);  // Verifica que contiene idEvento
+        //console.log('files:', files);    // Verifica que contiene imagen
+
+        const idEvento = fields.idEvento; 
+        const archivo = Array.isArray(files.imagen) ? files.imagen[0] : files.imagen; // Si es un array, tomar el primer archivo
+        
+        if (!archivo) {
+            return res.status(400).json({ error: "No se subió ninguna imagen" });
+        }
+      
+        // 4. Renombrar el archivo al formato img_ID.ext
+        const extension = path.extname(archivo.originalFilename);
+        const nuevoNombre = `img_${idEvento}${extension}`;
+
+        // Ruta final donde se guardará la imagen (directorio público)
+        const rutaFinal = path.join(__dirname, 'public', 'imgEventos', nuevoNombre);
+        // Ruta del servidor (solo para ser almacenada en la base de datos)
+
+        await uploadToFtp(archivo.filepath,nuevoNombre,"IMG",idEvento);
+
+        // 5. Actualizar la imagen en la base de datos o hacer alguna otra acción
+        await actualizarImagenEvento(idEvento, nuevoNombre);  // Asegúrate de que esta función exista y actualice correctamente la base de datos.
+
+        // 6. Mover el archivo de la ruta temporal a la final
+        fs.rename(archivo.filepath, rutaFinal, (err) => {
+            if (err) {
+                console.error("Error al renombrar:", err);
+                return res.status(500).json({ error: "Error al guardar archivo" });
+            }
+
+            // console.log(`Imagen guardada como: ${nuevoNombre}`);
+
+            // 7. Enviar respuesta al cliente
+            res.json({
+                message: "Imagen subida correctamente",
+                nombre: nuevoNombre,  // El nombre del archivo subido
+                ruta: rutaFinal     // La ruta del archivo en el servidor (útil para usarla en tu frontend)
+            });
+        });
+    });
+});
+
+/**
  * Generacion de boletos con pdf
  */
 app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
@@ -1384,73 +1454,3 @@ async function actualizarImagenEvento(idEvento, nombreImagen) {
     throw e; // Lanza el error para manejarlo en la ruta si es necesario
   }
 }
-
-/**
- * Subir la imagen al servidor
- */
-// 1. Configuración de almacenamiento
-
-app.post('/subir-imagen', (req, res) => {
-    // 1. Configurar Formidable
-    const form = new formidable.IncomingForm({
-        uploadDir: path.join(__dirname, 'public', 'imgEventos'),     // Carpeta destino
-        keepExtensions: true,    // Mantener .jpg, .png, etc.
-        multiples: false         // Solo una imagen
-    });
-
-    // 2. Asegurarse de que la carpeta 'public/img' exista, si no, crearla
-    const imgDir = path.join(__dirname, 'public', 'imgEventos');
-    if (!fs.existsSync(imgDir)) {
-        fs.mkdirSync(imgDir, { recursive: true });
-    }
-
-    // 3. Parsear el request
-    form.parse(req, async (err, fields, files) => {
-        if (err) {
-            console.error("Error parseando form:", err);
-            return res.status(500).json({ error: "Error al procesar archivo" });
-        }
-
-        // 'fields' contiene los textos (idEvento)
-        // 'files' contiene los archivos (imagen)
-        //console.log('fields:', fields);  // Verifica que contiene idEvento
-        //console.log('files:', files);    // Verifica que contiene imagen
-
-        const idEvento = fields.idEvento; 
-        const archivo = Array.isArray(files.imagen) ? files.imagen[0] : files.imagen; // Si es un array, tomar el primer archivo
-        
-        if (!archivo) {
-            return res.status(400).json({ error: "No se subió ninguna imagen" });
-        }
-      
-        // 4. Renombrar el archivo al formato img_ID.ext
-        const extension = path.extname(archivo.originalFilename);
-        const nuevoNombre = `img_${idEvento}${extension}`;
-
-        // Ruta final donde se guardará la imagen (directorio público)
-        const rutaFinal = path.join(__dirname, 'public', 'imgEventos', nuevoNombre);
-        // Ruta del servidor (solo para ser almacenada en la base de datos)
-
-        await uploadToFtp(rutaFinal,nuevoNombre,"IMG",idEvento);
-
-        // 5. Actualizar la imagen en la base de datos o hacer alguna otra acción
-        await actualizarImagenEvento(idEvento, nuevoNombre);  // Asegúrate de que esta función exista y actualice correctamente la base de datos.
-
-        // 6. Mover el archivo de la ruta temporal a la final
-        fs.rename(archivo.filepath, rutaFinal, (err) => {
-            if (err) {
-                console.error("Error al renombrar:", err);
-                return res.status(500).json({ error: "Error al guardar archivo" });
-            }
-
-            // console.log(`Imagen guardada como: ${nuevoNombre}`);
-
-            // 7. Enviar respuesta al cliente
-            res.json({
-                message: "Imagen subida correctamente",
-                nombre: nuevoNombre,  // El nombre del archivo subido
-                ruta: rutaServidor     // La ruta del archivo en el servidor (útil para usarla en tu frontend)
-            });
-        });
-    });
-});
