@@ -11,7 +11,7 @@ const { error } = require('console');
 const cron = require('node-cron'); //para cronometro
 const fontkit = require('@pdf-lib/fontkit');
 const formidable = require('formidable');
-const { FTPClient } = require("basic-ftp");
+const ftp = require("basic-ftp");
 // Middleware para parsear los datos del formulario
 app.use(bodyParser.json()); // Para procesar JSON si es necesario
 
