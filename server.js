@@ -971,7 +971,7 @@ app.get('/verBoleto/:codigo', async (req, res) => {
  * Funcion para guardar el pdf en el servidor
  */
 // filename PDF evento_01/1-0
-async function uploadToFtp(rutaLocal, nombreRemoto, accion) {
+async function uploadToFtp(rutaLocal, nombreRemoto, accion,idEvento) {
     const client = new ftp.Client();
 
     try {
@@ -989,15 +989,20 @@ async function uploadToFtp(rutaLocal, nombreRemoto, accion) {
 
         // Cambiar al directorio donde quieres subir el archivo
         if (accion === "PDF") {
-            console.log("Entrando al directorio FTP:", `${ftpDir}boletos/`);
-            await client.cd(`${ftpDir}boletos/`);
+            console.log("Entrando al directorio FTP:", `${ftpDir}boletos/evento_${idEvento}`);
+            await client.cd(`${ftpDir}boletos/evento_${idEvento}`);
             console.log("Directorio actual FTP:", await client.pwd());
+            console.log("Guardando PDF en el servidor...");
+        } else if(accion === "IMG"){
+            console.log("Entrando al directorio FTP:", `${ftpDir}img`);
+            await client.cd(`${ftpDir}img`);
+            console.log("Directorio actual FTP:", await client.pwd());
+            console.log("Guardando IMG en el servidor...");
         }
 
         // Subir el archivo al servidor
-        console.log("Guardando PDF en el servidor...");
+       
         await client.uploadFrom(rutaLocal, nombreRemoto);
-
         console.log(`Archivo ${nombreRemoto} subido al FTP correctamente`);
 
     } catch (error) {
@@ -1175,7 +1180,7 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
     const finalPdf = await pdfDoc.save();
     fs.writeFileSync(outputPath, finalPdf);
 
-    await uploadToFtp(outputPath,`${codigo}.pdf`,"PDF");
+    await uploadToFtp(outputPath,`${codigo}.pdf`,"PDF",idEvento);
 
     res.status(200).json({ message: 'PDF generado correctamente' });
   } catch (error) {
@@ -1427,6 +1432,8 @@ app.post('/subir-imagen', (req, res) => {
 
         // Ruta del servidor (solo para ser almacenada en la base de datos)
         const rutaServidor = path.join('imgEventos', nuevoNombre);  // Es una ruta relativa a 'public'
+
+        await uploadToFtp(rutaServidor,nuevoNombre,"IMG",idEvento);
 
         // 5. Actualizar la imagen en la base de datos o hacer alguna otra acción
         await actualizarImagenEvento(idEvento, nuevoNombre);  // Asegúrate de que esta función exista y actualice correctamente la base de datos.

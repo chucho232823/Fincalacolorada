@@ -582,8 +582,7 @@ input[type=number] {
 }
 
 #eventosPasados{
-    font-weight: bold;
-    margin: 10px 10px;
+    margin: 20px 10px;
 }
 
 /* Estilo del bloqueo de pantalla */
