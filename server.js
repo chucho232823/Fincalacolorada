@@ -952,7 +952,7 @@ async function uploadToFtp(filename,accion) {
             user: ftpUser,
             password: ftpPass,
         });
-        console.log("Conectado al servidor FTP");
+        console.log("Conectando al servidor FTP");
         // Cambiar al directorio donde quieres subir el archivo
         if(accion === "PDF"){
           await client.cd(`${ftpDir}boletos/`);
