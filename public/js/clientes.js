@@ -57,7 +57,7 @@ fetch("/listado-de-eventos")
 
         const subTitulo = document.createElement('span');
         subTitulo.className = "subtitulo";
-        subTitulo.innerHTML = evento.descripcion;
+        subTitulo.innerHTML = evento.subtitulo;
 
         const fechayHora = document.createElement('div');
         fechayHora.className = 'fechaHora';

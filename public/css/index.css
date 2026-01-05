@@ -81,7 +81,7 @@ body{
     /* padding: 2vw 0; */
     border-radius: 20px;
     /* Desplazamiento horizontal | Desplazamiento vertical | Radio de desenfoque | Radio de expansión | Color */
-    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
 }
 
 .evento {
@@ -149,7 +149,7 @@ body{
 }
 
 .botones button {
-    font-family: 'Hind', serif;
+    /* font-family: 'Hind', serif; */
     font-weight: bold;
     margin: 5px;
     font-size: 1em;
@@ -521,6 +521,7 @@ input[type=number] {
 }
 
 #eventosPasados{
+    display: flex;
     color: white;
     background-color: #b17036;
     border: 0;
@@ -530,6 +531,7 @@ input[type=number] {
     padding-left: 10px;
     padding-right: 10px;
     font-weight: bold;
+    justify-self: center;
 }
 
 #eventosPasados:hover{
@@ -541,14 +543,19 @@ input[type=number] {
     z-index: 10000 !important;
 }
 
+.swal2-actions{
+    gap: 50px;
+}
+
 .alert-popup{
     font-family: 'Hind', serif; 
 }
 
-.alert-boton{
+.alert-boton,
+.alert-boton-el,
+.alert-boton-cancelar{
     display: flex;
     color: white;
-    background-color: #68AAFC;
     padding: 5px;
     border-radius: 20px;
     align-items: center;
@@ -557,7 +564,20 @@ input[type=number] {
     border: 0 !important;
 }
 
-.alert-boton :hover{
+.alert-boton{
+    background-color: #68AAFC;
+}
+
+.alert-boton-el{
+    background-color: #bf0d0d;
+}
+
+.alert-boton-cancelar{
+    color: black;
+}
+
+.alert-boton:hover,
+.alert-boton-cancelar:hover{
     cursor: pointer !important;
 }
 

@@ -644,13 +644,17 @@ button:hover {
 
 #inicio > :nth-child(2){
     display: flex;
-    color: white;
-    background-color: #68AAFC;
-    padding: 5px;
-    border-radius: 20px;
     align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background-color: #68AAFC;
+    color: #ffffff;
+    font-size: 15px;
     font-weight: bold;
-    padding: 10px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 #icoinicio{

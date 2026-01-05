@@ -97,8 +97,18 @@ ul{
 }
 
 #volver{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
     background-color: #68AAFC;
-    padding: 10px 10px 10px 10px ;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 .volver{

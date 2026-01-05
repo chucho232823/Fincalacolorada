@@ -160,13 +160,13 @@ fetch("/listado-de-eventos")
                 text: "Esta acción no se puede deshacer",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'ELIMINAR',
+                cancelButtonText: 'CANCELAR',
                 buttonsStyling: false,
                 customClass: {
                     popup: 'alert-popup',
                     title: 'alert-titulo',
-                    confirmButton: 'alert-boton',
+                    confirmButton: 'alert-boton-el',
                     cancelButton: 'alert-boton-cancelar' // Opcional: añade estilo al botón cancelar
                 }
             });
