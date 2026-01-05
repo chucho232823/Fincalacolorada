@@ -944,7 +944,7 @@ app.get('/verBoleto/:codigo', async (req, res) => {
  */
 // filename PDF evento_01/1-0
 async function uploadToFtp(filename,accion) {
-    const client = new FTPClient();
+    const client = new Client();
     try {
         // Conectar al servidor FTP
         await client.access({
@@ -955,7 +955,7 @@ async function uploadToFtp(filename,accion) {
         console.log("Conectado al servidor FTP");
         // Cambiar al directorio donde quieres subir el archivo
         if(accion === "PDF"){
-          await client.cd(`${ftpDir}"boletos/`);
+          await client.cd(`${ftpDir}boletos/`);
           console.log("archivo pdf guardado en el servidor")
           console.log(ftpDir,"boletos/",filename);
         }
