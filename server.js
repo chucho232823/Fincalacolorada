@@ -14,6 +14,7 @@ const formidable = require('formidable');
 const ftp = require("basic-ftp");
 // Middleware para parsear los datos del formulario
 app.use(bodyParser.json()); // Para procesar JSON si es necesario
+const axios = require("axios");
 
 
 
@@ -1434,23 +1435,26 @@ app.post('/liberar-sillas/:idEvento', express.text(), async (req, res) => {
 /**
  * Descargas de boletos pdf
  */
-app.get('/descargar-boleto', (req, res) => {
-    const { idEvento, codigo } = req.query; 
+app.get("/descargar-boleto", async (req, res) => {
+    const { idEvento, codigo } = req.query;
 
-    const rutaArchivo = path.join(
-        __dirname,
-        'public', 
-        'boletosEventos', 
-        `evento_${idEvento}`, 
-        `${codigo}.pdf`       
-    );
+    try {
+        const urlPdf = `${process.env.PUBLIC_BASE_URL}/Eventos/boletos/evento_${idEvento}/${codigo}.pdf`;
 
-    res.download(rutaArchivo, `${codigo}.pdf`, (err) => {
-        if (err) {
-            console.error("Error en la descarga:", err);
-            if (!res.headersSent) {
-                res.status(404).send("El boleto específico no existe en la carpeta del evento.");
-            }
-        }
-    });
+        const response = await axios.get(urlPdf, {
+            responseType: "stream"
+        });
+
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="${codigo}.pdf"`
+        );
+        res.setHeader("Content-Type", "application/pdf");
+
+        response.data.pipe(res);
+
+    } catch (error) {
+        console.error("Error al descargar el boleto:", error.message);
+        res.status(404).send("El boleto no existe o no está disponible.");
+    }
 });
