@@ -49,6 +49,20 @@ app.use(session({
     }
 }));
 
+//Autenticacion de usuario
+// Middleware para verificar si el usuario está autenticado
+function checkAuthentication(req, res, next) {
+  if (req.session.user) {
+    return next(); // Si el usuario está autenticado, pasa al siguiente middleware
+  }
+  res.redirect('/login'); // Si no está autenticado, redirige al login
+}
+
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'sesion.html')); // Asegúrate de tener un archivo login.html
+});
+
+
 app.post("/login", async (req, res) => {
     const { usuario, password } = req.body;
 
@@ -67,6 +81,10 @@ app.post("/login", async (req, res) => {
 
     req.session.auth = true;
     res.json({ success: true });
+});
+
+app.get('/', checkAuthentication, (req, res) => {
+  res.sendFile(path.join(__dirname, 'eventosAdmin.html')); // Asegúrate de tener un archivo index.html
 });
 
 //middleWare de proteccion
