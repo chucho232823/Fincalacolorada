@@ -176,7 +176,7 @@ app.get('/listado-de-eventos-pasados', async (req, res) => {
     const query = `
       SELECT e.idEvento AS idEvento, e.nombre AS nombre, t.tipo AS tipo, 
              DATE_FORMAT(e.fecha, '%d de %M de %Y') AS fecha,
-             e.imagen AS imagen, e.subtitulo AS subtitulo
+             TIME_FORMAT(e.hora, '%H:%i') AS hora, e.imagen AS imagen, e.subtitulo AS subtitulo 
       FROM evento e
       JOIN tipoEvento t ON e.idTipoEVento = t.idTipoEvento
       WHERE e.fecha < CURDATE()

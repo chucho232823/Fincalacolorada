@@ -10,9 +10,10 @@ const swiper = new Swiper(".mySwiper", {
         prevEl: ".swiper-button-prev",
     },
     breakpoints: {
-        0: { slidesPerView: 1 },
-        600: { slidesPerView: 2 },
-        900: { slidesPerView: 4 }
+        0: { slidesPerView: 1 },        // En pantallas muy pequeñas (por debajo de 400px)
+        800: { slidesPerView: 2 },
+        1100: { slidesPerView: 3 },
+        1400: { slidesPerView: 4 }
     },
 });
 
@@ -30,6 +31,7 @@ fetch("/listado-de-eventos-pasados")
             nombre: evento.nombre,
             tipo: evento.tipo,
             fecha: evento.fecha,
+            hora: evento.hora,
             subtitulo: evento.subtitulo,
             imagen: evento.imagen
         }
@@ -40,11 +42,9 @@ fetch("/listado-de-eventos-pasados")
         swiperSlide.className = 'swiper-slide';
         const eventoDiv = document.createElement('div');
         eventoDiv.className = 'evento';
-        
-        const editarTxt = document.createElement('span');
 
         const imagenEvento = document.createElement('img');
-        imagenEvento.src = evento.imagen;
+        imagenEvento.src = `https://fincalacolorada.com/Eventos/${evento.imagen}`;
         imagenEvento.alt = "imagen evento";
 
         const titulo = document.createElement('span');
@@ -63,10 +63,16 @@ fetch("/listado-de-eventos-pasados")
         icoFecha.className = 'ico';
         icoFecha.src = 'ico/calendario.png';
         fechaEvento.appendChild(icoFecha);
-        fechaEvento.appendChild(document.createTextNode(`${evento.fecha}`));
+        fechaEvento.appendChild(document.createTextNode(`${evento.fecha.replace(/ de/g,'')}`));
 
+        const horaEvento = document.createElement('span');
+        const icoHora = document.createElement('img');
+        icoHora.className = 'ico';
+        icoHora.src = 'ico/reloj.png';
+        horaEvento.appendChild(icoHora);
+        horaEvento.appendChild(document.createTextNode(`   ${evento.hora}`));
 
-        fechayHora.append(fechaEvento);
+        fechayHora.append(fechaEvento,horaEvento);
 
         const botones = document.createElement('div');
         botones.className = "botones";
@@ -85,8 +91,8 @@ fetch("/listado-de-eventos-pasados")
         botones.append(botonVentas,botonEliminar);
 
         //agregando todo al div evento
-        eventoDiv.append(editarTxt,imagenEvento,titulo,subTitulo,fechayHora,botones);
-        swiperSlide.appendChild(eventoDiv);
+        swiperSlide.append(imagenEvento,titulo,subTitulo,fechayHora,botones)
+        
         //agregando al swiper-wrapper correspondiente
         if(evento.tipo === "General")
             eventoBaile.appendChild(swiperSlide);
