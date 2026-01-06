@@ -313,12 +313,12 @@ async function crearCarpetaFtp(rutaRemota) {
             password: ftpPass,
         });
 
-        console.log("Creando / asegurando carpeta FTP:", rutaRemota);
+        // console.log("Creando / asegurando carpeta FTP:", rutaRemota);
 
-        console.log("Carpeta FTP lista:", await client.pwd());
+        // console.log("Carpeta FTP lista:", await client.pwd());
         
         await client.ensureDir(`${ftpDir}${rutaRemota}`);
-        console.log(`carpeta en ${ftpDir}${rutaRemota} creada`);
+        // console.log(`carpeta en ${ftpDir}${rutaRemota} creada`);
     } catch (error) {
         console.error("Error al crear carpeta FTP:", error);
         throw error;

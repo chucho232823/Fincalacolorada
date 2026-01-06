@@ -48,7 +48,7 @@ fetch("/listado-de-eventos")
         eventoDiv.className = 'evento';
 
         const imagenEvento = document.createElement('img');
-        imagenEvento.src = evento.imagen;
+        imagenEvento.src = `https://fincalacolorada.com/Eventos/${evento.imagen}`;
         imagenEvento.alt = "imagen evento";
 
         const titulo = document.createElement('span');
