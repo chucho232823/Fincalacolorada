@@ -84,7 +84,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.get('/', checkAuthentication, (req, res) => {
-  res.sendFile(path.join(__dirname, 'eventosAdmin.html')); // Asegúrate de tener un archivo index.html
+  res.sendFile(path.join(__dirname,'public','eventosAdmin.html')); // Asegúrate de tener un archivo index.html
 });
 
 //middleWare de proteccion
