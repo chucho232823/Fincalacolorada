@@ -968,6 +968,33 @@ app.get('/verBoleto/:codigo', async (req, res) => {
 
 
 /**
+ * Actualizar nombre de la imagen
+ */
+async function actualizarImagenEvento(idEvento, nombreImagen) {
+  try {
+    const query = `
+      UPDATE evento
+      SET imagen = ?
+      WHERE idEvento = ?;
+    `;
+    
+    const [result] = await pool.query(query, [`img/${nombreImagen}`, idEvento]);
+    
+    if (result.affectedRows > 0) {
+      //console.log(`Imagen para evento ${idEvento} actualizada correctamente.`);
+      return true; // Indica que la actualización fue exitosa
+    } else {
+      console.log(`No se encontró el evento con id ${idEvento}.`);
+      return false; // Si no se encontró el evento
+    }
+  } catch (e) {
+    console.error('Error al actualizar la imagen:', e);
+    throw e; // Lanza el error para manejarlo en la ruta si es necesario
+  }
+}
+
+
+/**
  * Funcion para guardar el pdf en el servidor
  */
 // filename PDF evento_01/1-0
@@ -989,15 +1016,15 @@ async function uploadToFtp(rutaLocal, nombreRemoto, accion,idEvento) {
 
         // Cambiar al directorio donde quieres subir el archivo
         if (accion === "PDF") {
-            console.log("Entrando al directorio FTP:", `${ftpDir}boletos/evento_${idEvento}`);
+            // console.log("Entrando al directorio FTP:", `${ftpDir}boletos/evento_${idEvento}`);
             await client.cd(`${ftpDir}boletos/evento_${idEvento}`);
-            console.log("Directorio actual FTP:", await client.pwd());
-            console.log("Guardando PDF en el servidor...");
+            // console.log("Directorio actual FTP:", await client.pwd());
+            // console.log("Guardando PDF en el servidor...");
         } else if(accion === "IMG"){
-            console.log("Entrando al directorio FTP:", `${ftpDir}img`);
+            // console.log("Entrando al directorio FTP:", `${ftpDir}img`);
             await client.cd(`${ftpDir}img`);
-            console.log("Directorio actual FTP:", await client.pwd());
-            console.log("Guardando IMG en el servidor...");
+            // console.log("Directorio actual FTP:", await client.pwd());
+            // console.log("Guardando IMG en el servidor...");
         }
 
         // Subir el archivo al servidor
@@ -1052,7 +1079,7 @@ app.post('/subir-imagen', (req, res) => {
       
         // 4. Renombrar el archivo al formato img_ID.ext
         const extension = path.extname(archivo.originalFilename);
-        const nuevoNombre = `img_${idEvento}${extension}`;
+        const nuevoNombre = `evento_${idEvento}${extension}`;
 
         // Ruta final donde se guardará la imagen (directorio público)
         const rutaFinal = path.join(__dirname, 'public', 'imgEventos', nuevoNombre);
@@ -1427,30 +1454,3 @@ app.get('/descargar-boleto', (req, res) => {
         }
     });
 });
-
-
-/**
- * Actualizar nombre de la imagen
- */
-async function actualizarImagenEvento(idEvento, nombreImagen) {
-  try {
-    const query = `
-      UPDATE evento
-      SET imagen = ?
-      WHERE idEvento = ?;
-    `;
-    
-    const [result] = await pool.query(query, [`imgEventos/${nombreImagen}`, idEvento]);
-    
-    if (result.affectedRows > 0) {
-      //console.log(`Imagen para evento ${idEvento} actualizada correctamente.`);
-      return true; // Indica que la actualización fue exitosa
-    } else {
-      console.log(`No se encontró el evento con id ${idEvento}.`);
-      return false; // Si no se encontró el evento
-    }
-  } catch (e) {
-    console.error('Error al actualizar la imagen:', e);
-    throw e; // Lanza el error para manejarlo en la ruta si es necesario
-  }
-}
