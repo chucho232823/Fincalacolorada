@@ -60,7 +60,7 @@ fetch("/listado-de-eventos")
         editarTxt.appendChild(icono);
 
         const imagenEvento = document.createElement('img');
-        imagenEvento.src = `fincalacolorada.com/Eventos/${evento.imagen}`;
+        imagenEvento.src = `https://fincalacolorada.com/Eventos/${evento.imagen}`;
         imagenEvento.alt = "imagen evento";
 
         const titulo = document.createElement('span');
