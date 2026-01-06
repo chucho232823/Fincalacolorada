@@ -16,8 +16,6 @@ const ftp = require("basic-ftp");
 app.use(bodyParser.json()); // Para procesar JSON si es necesario
 const axios = require("axios");
 
-
-
 const { PDFDocument, rgb, degrees } = require('pdf-lib');
 (async () => {
   const pdfBytes = fs.readFileSync(
@@ -35,6 +33,60 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine','ejs');
 app.set('views', path.join(__dirname,'views'));
+
+const session = require("express-session");
+const bcrypt = require("bcryptjs");
+
+app.use(session({
+    name: "admin-session",
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 1000 * 60 * 60 * 4 // 4 horas
+    }
+}));
+
+app.post("/login", async (req, res) => {
+    const { usuario, password } = req.body;
+
+    if (usuario !== process.env.ADMIN_USER) {
+        return res.status(401).json({ error: "Credenciales incorrectas" });
+    }
+
+    const ok = await bcrypt.compare(
+        password,
+        process.env.ADMIN_PASSWORD_HASH
+    );
+
+    if (!ok) {
+        return res.status(401).json({ error: "Credenciales incorrectas" });
+    }
+
+    req.session.auth = true;
+    res.json({ success: true });
+});
+
+//middleWare de proteccion
+function requireAuth(req, res, next) {
+    if (req.session?.auth) {
+        return next();
+    }
+    res.status(401).send("No autorizado");
+}
+
+app.get("/admin", requireAuth, (req, res) => {
+    res.send("Panel admin");
+});
+
+app.post("/logout", (req, res) => {
+    req.session.destroy(() => {
+        res.clearCookie("admin-session");
+        res.json({ success: true });
+    });
+});
 
 
 //Para la subir los archivos al servidor
