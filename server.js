@@ -53,7 +53,6 @@ app.use(session({
 // Middleware para verificar si el usuario está autenticado
 function checkAuthentication(req, res, next) {
   if (req.session.auth) {
-    res.redirect('/');
     return next();
   }
   res.redirect('/login');
@@ -81,7 +80,6 @@ app.post("/login", async (req, res) => {
     }
 
     req.session.auth = true;
-    res.json({ success: true });
     res.redirect('/');
 });
 
