@@ -107,10 +107,12 @@ app.get('/', checkAuthentication, (req, res) => {
 });
 
 app.get('/', requireAuth, (req, res) => {
+  console.log("SESSION EN /:", req.session);
   res.sendFile(path.join(__dirname, 'public', 'eventosAdmin.html'));
 });
 
 app.get('/eventosPasados', requireAuth, (req, res) => {
+  console.log("SESSION EN /:", req.session);
   res.sendFile(path.join(__dirname, 'public', 'eventosPasados.html'));
 });
 
