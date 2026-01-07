@@ -59,7 +59,7 @@ function checkAuthentication(req, res, next) {
 }
 
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname,'public','eventosAdmin.html'));; // Asegúrate de tener un archivo login.html
+  res.sendFile(path.join(__dirname,'public','sesion.html'));; // Asegúrate de tener un archivo login.html
 });
 
 
