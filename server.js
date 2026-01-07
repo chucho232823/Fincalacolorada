@@ -82,7 +82,7 @@ app.post("/login", async (req, res) => {
     }
 
     req.session.auth = true;
-    alert("Sesión iniciada: ", req.session)
+    console.log("Sesión iniciada: ", req.session)
     return res.redirect('/');
 });
 
