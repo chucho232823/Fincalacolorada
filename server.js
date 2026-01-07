@@ -27,8 +27,8 @@ const { PDFDocument, rgb, degrees } = require('pdf-lib');
 })();
 
 
-app.use(express.static('public'));
-// app.use('/public', requireAuth, express.static('public'));
+// app.use(express.static('public'));
+app.use('/public', requireAuth, express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -93,9 +93,21 @@ app.post("/login", async (req, res) => {
     return res.redirect('/');
 });
 
+//middleWare de proteccion
+function requireAuth(req, res, next) {
+  if (req.session?.auth) {
+    return next();
+  }
+  return res.redirect('/login');
+}
+
 app.get('/', checkAuthentication, (req, res) => {
   console.log("SESSION EN /:", req.session);
   res.sendFile(path.join(__dirname,'public','eventosAdmin.html'));
+});
+
+app.get('/', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'eventosAdmin.html'));
 });
 
 app.get('/eventosPasados', requireAuth, (req, res) => {
@@ -116,12 +128,6 @@ app.get('/eventosPasados', requireAuth, (req, res) => {
 // });
 
 //middleWare de proteccion
-function requireAuth(req, res, next) {
-    if (req.session?.auth) {
-        return next();
-    }
-    res.status(401).send("No autorizado");
-}
 
 app.get("/admin", requireAuth, (req, res) => {
     res.send("Panel admin");
