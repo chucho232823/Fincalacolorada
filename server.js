@@ -67,7 +67,8 @@ app.post("/login", async (req, res) => {
     const { usuario, password } = req.body;
 
     if (usuario !== process.env.ADMIN_USER) {
-        return res.status(401).json({ error: "Credenciales incorrectas" });
+      res.redirect('/login');
+      return res.status(401).json({ error: "Credenciales incorrectas" });  
     }
 
     const ok = await bcrypt.compare(
@@ -76,11 +77,13 @@ app.post("/login", async (req, res) => {
     );
 
     if (!ok) {
-        return res.status(401).json({ error: "Credenciales incorrectas" });
+      res.redirect('/login');
+      return res.status(401).json({ error: "Credenciales incorrectas" });
     }
 
     req.session.auth = true;
-    res.redirect('/');
+    alert("Sesión iniciada: ", req.session)
+    return res.redirect('/');
 });
 
 app.get('/', checkAuthentication, (req, res) => {
