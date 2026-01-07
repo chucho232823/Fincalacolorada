@@ -37,6 +37,7 @@ app.set('views', path.join(__dirname,'views'));
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
 
+app.set('trust proxy', 1);
 app.use(session({
     name: "admin-session",
     secret: process.env.SESSION_SECRET,
@@ -44,7 +45,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: true, // SIEMPRE true en Render
         maxAge: 1000 * 60 * 60 * 4 // 4 horas
     }
 }));
@@ -67,8 +68,7 @@ app.post("/login", async (req, res) => {
     const { usuario, password } = req.body;
 
     if (usuario !== process.env.ADMIN_USER) {
-      res.redirect('/login');
-      return res.status(401).json({ error: "Credenciales incorrectas" });  
+      return res.redirect('/login');
     }
 
     const ok = await bcrypt.compare(
@@ -77,8 +77,7 @@ app.post("/login", async (req, res) => {
     );
 
     if (!ok) {
-      res.redirect('/login');
-      return res.status(401).json({ error: "Credenciales incorrectas" });
+      return res.redirect('/login');
     }
 
     req.session.auth = true;
@@ -87,7 +86,8 @@ app.post("/login", async (req, res) => {
 });
 
 app.get('/', checkAuthentication, (req, res) => {
-  res.sendFile(path.join(__dirname,'public','eventosAdmin.html')); // Asegúrate de tener un archivo index.html
+  console.log("SESSION EN /:", req.session);
+  res.sendFile(path.join(__dirname,'public','eventosAdmin.html'));
 });
 
 //middleWare de proteccion
