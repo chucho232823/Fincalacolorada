@@ -104,17 +104,17 @@ function requireAuth(req, res, next) {
 
 app.get('/', checkAuthentication, (req, res) => {
   console.log("SESSION EN /:", req.session);
-  res.sendFile(path.join(__dirname,'public','eventosAdmin.html'));
+  res.sendFile(path.join(__dirname,'private','eventosAdmin.html'));
 });
 
 app.get('/', requireAuth, (req, res) => {
   console.log("SESSION EN /:", req.session);
-  res.sendFile(path.join(__dirname, 'public', 'eventosAdmin.html'));
+  res.sendFile(path.join(__dirname, 'private', 'eventosAdmin.html'));
 });
 
 app.get('/eventosPasados', requireAuth, (req, res) => {
   console.log("SESSION EN /:", req.session);
-  res.sendFile(path.join(__dirname, 'public', 'eventosPasados.html'));
+  res.sendFile(path.join(__dirname, 'private', 'eventosPasados.html'));
 });
 
 
