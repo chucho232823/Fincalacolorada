@@ -82,6 +82,7 @@ app.post("/login", async (req, res) => {
 
     req.session.auth = true;
     res.json({ success: true });
+    res.redirect('/');
 });
 
 app.get('/', checkAuthentication, (req, res) => {
