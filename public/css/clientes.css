@@ -232,7 +232,7 @@ button{
     padding-bottom: 5px;
     padding-left: 30px;
     padding-right: 30px;
-    font-weight: bold;
+    font-weight: 600;
     font-size: 0.8rem;
     border: 1px solid #b17036;
 }
@@ -258,6 +258,8 @@ img{
     object-fit: fill;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
+    object-position: top;
+    object-fit: cover;
     /* object-fit: cover; */
 }
 

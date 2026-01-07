@@ -371,7 +371,7 @@ mesas.forEach(mesa => {
                 text: "Silla ocupada",
                 icon: 'warning', // puede ser 'success', 'error', 'warning', 'info', 'question'
                 confirmButtonColor: '#68AAFC',
-                confirmButtonText: 'Aceptar',
+                confirmButtonText: 'ACEPTAR',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 buttonsStyling: false,
