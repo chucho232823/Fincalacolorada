@@ -117,7 +117,6 @@ app.get('/eventosPasados', requireAuth, (req, res) => {
 });
 
 
-
 // function requireAuthApi(req, res, next) {
 //   if (req.session?.auth) {
 //     return next();
@@ -222,9 +221,6 @@ function generarPDFReserva(nombre, codigo, mesa, silla, idEvento) {
     doc.end();
 }
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'eventosAdmin.html'));
-});
 
 //Eventos 
 app.get('/evento',(req,res)=>{

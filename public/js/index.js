@@ -300,7 +300,7 @@ document.querySelector('.baile .contA .Anadir .evento #Agregar')
 });
 
 document.getElementById('eventosPasados').addEventListener('click', ()=> {
-    window.location.href = "eventosPasados.html";
+    window.location.href = "/eventosPasados";
 })
 
 const overlay = document.getElementById('cargando');
