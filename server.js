@@ -28,6 +28,7 @@ const { PDFDocument, rgb, degrees } = require('pdf-lib');
 
 
 app.use(express.static('public'));
+// app.use('/public', requireAuth, express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -60,6 +61,13 @@ function checkAuthentication(req, res, next) {
 }
 
 app.get('/login', (req, res) => {
+  if (req.session?.auth) {
+    return res.redirect('/');
+  }
+  res.sendFile(path.join(__dirname, 'public', 'sesion.html'));
+});
+
+app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname,'public','sesion.html'));; // Asegúrate de tener un archivo login.html
 });
 
@@ -90,6 +98,23 @@ app.get('/', checkAuthentication, (req, res) => {
   res.sendFile(path.join(__dirname,'public','eventosAdmin.html'));
 });
 
+app.get('/eventosPasados', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'eventosPasados.html'));
+});
+
+
+
+// function requireAuthApi(req, res, next) {
+//   if (req.session?.auth) {
+//     return next();
+//   }
+//   return res.status(401).json({ error: 'No autorizado' });
+// }
+
+// app.post('/api/crear-evento', requireAuthApi, (req, res) => {
+//   res.json({ ok: true });
+// });
+
 //middleWare de proteccion
 function requireAuth(req, res, next) {
     if (req.session?.auth) {
@@ -108,6 +133,8 @@ app.post("/logout", (req, res) => {
         res.json({ success: true });
     });
 });
+
+
 
 
 //Para la subir los archivos al servidor
