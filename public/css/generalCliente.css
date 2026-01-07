@@ -642,7 +642,7 @@ button:hover {
     gap: 10px;
 }
 
-#inicio > :nth-child(2){
+#inicio > :nth-child(1){
     display: flex;
     align-items: center;
     gap: 8px;
