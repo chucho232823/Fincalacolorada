@@ -52,10 +52,11 @@ app.use(session({
 //Autenticacion de usuario
 // Middleware para verificar si el usuario está autenticado
 function checkAuthentication(req, res, next) {
-  if (req.session.user) {
-    return next(); // Si el usuario está autenticado, pasa al siguiente middleware
+  if (req.session.auth) {
+    res.redirect('/');
+    return next();
   }
-  res.redirect('/login'); // Si no está autenticado, redirige al login
+  res.redirect('/login');
 }
 
 app.get('/login', (req, res) => {
