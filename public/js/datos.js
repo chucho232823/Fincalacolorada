@@ -18,6 +18,7 @@ console.log(consecutivas);
 console.log(agrupadasPorMesa);
 console.log(sembrado);
 
+let sumatoria
 Object.values(agrupadasPorMesa).forEach((grupo) => {
     sumatoria += grupo.total;
     console.log("Suma parcial:", sumatoria);
