@@ -300,10 +300,10 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
         const cod = codigo;
         await reservarMesa(silla,cod);
     }
-    const PUBLIC_BASE_URL_R = 'https://fincalacolorada.onrender.com';
+    //cambiar a endpoint
      // 2️⃣ Crear pago
     const pagoResponse = await fetch(
-      `${PUBLIC_BASE_URL_R}/api/pagos/crear-pago`,
+      `/api/pagos/crear-pago`,
       {
         method: 'POST',
         credentials: 'include',

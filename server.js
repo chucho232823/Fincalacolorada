@@ -202,7 +202,10 @@ const ftpDir = process.env.FTP_DIR;    // Ruta en tu servidor
 cron.schedule('* * * * *', async () => {
   const query = `
     UPDATE silla
-    SET enEspera = false,
+    SET 
+        estado = false,
+        bloqueada = false,
+        enEspera = false,
         enEsperaDesde = NULL
     WHERE enEspera = true
       AND enEsperaDesde < NOW() - INTERVAL 5 MINUTE;
