@@ -49,7 +49,7 @@ router.post('/mercadopago', async (req, res) => {
       if (!reserva || reserva.estado === 'pagada') {
         return res.sendStatus(200);
       }
-
+      console.log(`Pago aprobado para el código: ${codigo}`);
       // Confirmar reserva
       await pool.query(`
         UPDATE reserva
