@@ -907,10 +907,10 @@ app.put(`/cambio/:idEvento`, async (req, res) => {
       const Preferente = parseFloat(precio.Preferente);
       const General = parseFloat(precio.General);
       const Laterales = parseFloat(precio.Laterales);
-      const VIPD = parseFloat(precio.VIP);
-      const PreferenteD = parseFloat(precio.Preferente);
-      const GeneralD = parseFloat(precio.General);
-      const LateralesD = parseFloat(precio.Laterales);
+      const VIPD = parseFloat(precioD.VIP);
+      const PreferenteD = parseFloat(precioD.Preferente);
+      const GeneralD = parseFloat(precioD.General);
+      const LateralesD = parseFloat(precioD.Laterales);
 
       const queryPrecio = `
         UPDATE precioEvento
