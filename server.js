@@ -39,7 +39,7 @@ console.log("Directorio actual:", __dirname);
 app.use('/api/pagos', require('./routes/pagos'));
 app.use('/webhooks', require('./routes/webhook'));
 app.use('/api/reservas', require('./routes/reservas'));
-app.use('/api/reservas', require('./routes/reservaService'));
+// app.use('/api/reservas', require('./routes/reservaService'));
 
 
 
