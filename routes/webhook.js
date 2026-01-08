@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mercadopago = require('../services/mercadopago');
+const { Payment } = require('mercadopago');
 const pool = require('../database/dbpool');
 const { generarPDFBoleto } = require('../services/pdfService');
 const { confirmarReserva } = require('../services/reservaService');
@@ -84,3 +85,5 @@ router.post('/mercadopago', async (req, res) => {
     res.sendStatus(500);
   }
 });
+
+module.exports = router;

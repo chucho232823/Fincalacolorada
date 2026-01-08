@@ -201,7 +201,7 @@ const ftpDir = process.env.FTP_DIR;    // Ruta en tu servidor
     console.error('Error liberando sillas:', err); // Manejo de error
   }
 }); */
-
+//agregar clausula de espera para boletos en espera
 cron.schedule('* * * * *', async () => {
   const query = `
     UPDATE silla
