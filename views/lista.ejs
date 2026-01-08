@@ -18,6 +18,8 @@
           <th>Nombre</th>
           <th>Teléfono</th>
           <th>Boletos</th>
+          <th>Pago</th>
+          <th>Estado</th>
           <th>Código</th>
           <th>Descargar Boleto</th>
         </tr>
@@ -34,6 +36,8 @@
                   </span>
                 <% } %>
             </td>
+            <td><%= r.tipoPago %></td>
+            <td><%= r.estado %></td>
             <td><%= r.codigo %></td>
             <td><span class="descargar" id = "<%= r.codigo %>" >🎟️</span></td>
           </tr>
