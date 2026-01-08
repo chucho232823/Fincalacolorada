@@ -40,7 +40,8 @@ router.post('/mercadopago', async (req, res) => {
     // 3️⃣ Confirmar reserva
     await pool.query(`
       UPDATE reserva
-      SET estado = 'pagada'
+      SET estado = 'pagada',
+          tipoPago = 'Linea'
       WHERE codigo = ?
     `, [codigo]);
 
@@ -48,7 +49,7 @@ router.post('/mercadopago', async (req, res) => {
    const [result] = await pool.query(`
     UPDATE silla
     SET 
-      estado = CASE WHEN bloqueada = 0 THEN 1 ELSE estado END,
+      estado = CASE WHEN bloqueada = 1 THEN 0 ELSE 1 END,
       enEspera = 0,
       enEsperaDesde = NULL
       WHERE codigo = ?
