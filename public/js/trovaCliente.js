@@ -831,7 +831,7 @@ document.querySelector('.confirma-compra').addEventListener('click', function (e
         form.action = `/datos`
         const controlFilaObjeto = Object.fromEntries(controlFila);
         //console.log(controlFilaObjeto);
-
+        console.log("aaaaaaaaaaaaaaaaa",nombreEvento);
         document.getElementById('jsonData').value = JSON.stringify({
             nombre: nombreEvento,
             sembrado: sembrado,

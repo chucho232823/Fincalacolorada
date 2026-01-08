@@ -16,7 +16,7 @@ router.post('/crear-pago', async (req, res) => {
         }
       ],
       external_reference: codigo,
-      metadata: { codigo, idEvento },
+      metadata: { codigo, idEvento, nombre },
       back_urls: {
         success: '/pago-exitoso.html',
         failure: '/pago-fallido.html',
