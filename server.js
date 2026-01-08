@@ -749,7 +749,7 @@ app.get('/lista/:idEvento', async (req, res) => {
            JOIN mesa m ON m.idMesa = s.idMesa
            JOIN precioEvento p ON p.idPrecio = m.idPrecio
            JOIN evento e ON e.idEvento = p.idEvento
-           WHERE e.idEvento = ? AND r.codigo = ?;`,
+           WHERE e.idEvento = ? AND r.codigo = ? AND s.bloqueada = 0;`,
           [idEvento, reserva.codigo]
         );
 
