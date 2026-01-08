@@ -305,6 +305,7 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
     const pagoResponse = await fetch('/api/pagos/crear-pago', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({
         codigo,
         idEvento: sembrado,

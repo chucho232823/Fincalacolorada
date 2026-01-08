@@ -55,7 +55,8 @@ app.use(session({
     cookie: {
         httpOnly: true,
         secure: true, // SIEMPRE true en Render
-        maxAge: 1000 * 60 * 60 * 4 // 4 horas
+        maxAge: 1000 * 60 * 60 * 4, // 4 horas
+        sameSite: 'none'
     }
 }));
 
@@ -119,7 +120,7 @@ app.get('/', requireAuth, (req, res) => {
 });
 
 
-app.get('/clientes', requireAuth, (req, res) => {
+app.get('/clientes', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'clientes.html')) ;
 });
 
