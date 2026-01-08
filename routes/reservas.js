@@ -1,14 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { confirmarReserva } = require('../services/reservaService');
-
+const pool = require('../database/dbpool');
 router.post('/confirmar-directa', async (req, res) => {
     const { codigo } = req.body;
     
     if (!req.session.auth) {
         return res.status(401).json({ error: 'No autorizado' });
     }
-
     try {
         // 3️⃣ Confirmar reserva
         await pool.query(`
