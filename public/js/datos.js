@@ -378,6 +378,7 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
       console.log("Procesando reserva administrativa...");
       await confirmarReservaDirecta(codigo);
       await generarPDFBoleto(sembrado, codigo);
+      window.location.href = "/";
       return;
     }
 

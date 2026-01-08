@@ -13,10 +13,10 @@ router.post('/crear-pago', async (req, res) => {
     if (!codigo || !idEvento || !total) {
       return res.status(400).json({ error: 'Datos incompletos' });
     }
-    console.log('--- DEBUG PAGO ---');
-    console.log('Todo el objeto session:', req.session);
-    console.log('ID de sesión:', req.sessionID);
-    console.log('Cookies recibidas:', req.headers.cookie);
+    // console.log('--- DEBUG PAGO ---');
+    // console.log('Todo el objeto session:', req.session);
+    // console.log('ID de sesión:', req.sessionID);
+    // console.log('Cookies recibidas:', req.headers.cookie);
     if (req.session?.auth) {
       console.log("sesion iniciada");
       return res.json({
@@ -27,14 +27,14 @@ router.post('/crear-pago', async (req, res) => {
     const preferenceData = {
       items: [
         {
-          // title: `Reserva para: ${nombre}`,
-          // quantity: 1,
-          // unit_price: Number(total),
-          // currency_id: 'MXN'
-          title: `TEST PAGO`,
+          title: `Reserva para: ${nombre}`,
           quantity: 1,
-          unit_price: 1,
+          unit_price: Number(total),
           currency_id: 'MXN'
+          // title: `TEST PAGO`,
+          // quantity: 1,
+          // unit_price: 1,
+          // currency_id: 'MXN'
         }
       ],
 
