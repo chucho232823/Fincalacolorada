@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { generarPDFBoleto } = require('./services/pdfService');
+const { generarPDFBoleto } = require('.,/services/pdfService');
 
 router.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
   try {
