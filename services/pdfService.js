@@ -4,7 +4,7 @@ const path = require('path');
 const { PDFDocument, rgb, degrees } = require('pdf-lib');
 const fontkit = require('@pdf-lib/fontkit');
 const pool = require('./database/dbpool');
-const uploadToFtp = require('../utils/uploadToFtp'); // ajusta ruta
+const { uploadToFtp } = require('./ftpService');
 
 async function generarPDFBoleto(idEvento, codigo) {
 
