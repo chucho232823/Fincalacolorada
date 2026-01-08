@@ -3,12 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <title>Pago exitoso</title>
+  <style>
+    .btn-descarga {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .loading { color: #666; font-style: italic; }
+  </style>
 </head>
 <body>
   <h1>✅ Pago realizado con éxito</h1>
-  <p>Tu pago fue aprobado.</p>
-  <p>En breve se descargara un pdf.</p>
+  <p>Tu pago fue aprobado. Gracias por tu compra.</p>
+  
+  <div id="contenedor-descarga">
+    <p class="loading">Preparando tu descarga...</p>
+  </div>
 
+  <br>
   <a href="/clientes">Volver al inicio</a>
+
+  <script>
+    // 1. Extraer los parámetros de la URL (?idEvento=...&codigo=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const idEvento = urlParams.get('idEvento');
+    const codigo = urlParams.get('codigo');
+
+    const contenedor = document.getElementById('contenedor-descarga');
+
+    if (idEvento && codigo) {
+      // 2. Construir el enlace que solicitaste
+      const hrefDescarga = `/descargar-boleto?idEvento=${idEvento}&codigo=${codigo}`;
+      
+      contenedor.innerHTML = `
+        <p>Tu boleto ya está disponible:</p>
+        <a href="${hrefDescarga}" class="btn-descarga">
+           📥 Descargar Boleto PDF
+        </a>
+      `;
+
+      // OPCIONAL: Descarga automática tras 3 segundos
+      setTimeout(() => {
+        window.location.href = hrefDescarga;
+      }, 3000);
+
+    } else {
+      contenedor.innerHTML = "<p>⚠️ No se pudieron obtener los detalles del boleto.</p>";
+    }
+  </script>
 </body>
 </html>

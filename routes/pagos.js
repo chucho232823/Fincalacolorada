@@ -50,10 +50,11 @@ router.post('/crear-pago', async (req, res) => {
 
       // ✅ URLs ABSOLUTAS (frontend)
       back_urls: {
-        success: `${process.env.PUBLIC_BASE_URL_R}/exitoso.html`,
+        success: `${process.env.PUBLIC_BASE_URL_R}/exitoso.html?idEvento=${idEvento}&codigo=${codigo}`,
         failure: `${process.env.PUBLIC_BASE_URL_R}/fallido.html`,
         pending: `${process.env.PUBLIC_BASE_URL_R}/pendiente.html`
       },
+      external_reference: codigo, // <--- Esto es vital
 
       auto_return: 'approved',
 
