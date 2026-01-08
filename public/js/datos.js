@@ -69,6 +69,7 @@ controlFilaReconstruido.forEach(async (num, mesa) => {
       silla: idSilla[0]
     };
     await esperaSilla(idSilla[0], mesa, sembrado);
+    await bloqueo(relleno);
     sillasExtra.push(relleno);
 
   }
@@ -90,8 +91,9 @@ controlFilaReconstruido.forEach(async (num, mesa) => {
       silla: idSilla[0]
     };
     await esperaSilla(idSilla[0], mesa, sembrado);
+    await bloqueo(relleno);
     console.log(relleno);
-    sillasExtra.push(relleno);
+    sillasExtra.push(relleno); 
     //console.log(listaMesaSilla);
     //console.log(relleno);
   }
@@ -209,7 +211,7 @@ const bloqueo = async (silla) => {
 /**
  * enviar datos
  */
-async function enviarDatos(codigo,nombre,apellidos,telefono,mesasJuntadas) {
+/*async function enviarDatos(codigo,nombre,apellidos,telefono,mesasJuntadas) {
   try {
     const resFecha = await fetch(`/fechaP/${sembrado}`);
     const data = await resFecha.json();
@@ -226,12 +228,15 @@ async function enviarDatos(codigo,nombre,apellidos,telefono,mesasJuntadas) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ codigo, nombre,apellidos, telefono, fechaP, mesasJuntadas})
+      body: JSON.stringify({ codigo, nombre, apellidos, telefono, fechaP, mesasJuntadas})
     });
 
     const resultado = await response.json();
     //console.log(mesasJuntadas);
-    console.log('Datos enviados correctamente:', resultado);
+    //console.log('Datos enviados correctamente:', resultado);
+    
+    //aqui se hace el metodo de pago
+    
 
     for (const silla of listaMesaSilla){
         const cod = codigo;
@@ -239,6 +244,57 @@ async function enviarDatos(codigo,nombre,apellidos,telefono,mesasJuntadas) {
     }
   } catch (error) {
     console.error('Error en el proceso:', error);
+  }
+} */
+
+async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
+  try {
+    const resFecha = await fetch(`/fechaP/${sembrado}`);
+    const data = await resFecha.json();
+
+    if (data.length === 0) {
+      console.warn('No se encontró fecha para ese sembrado');
+      return;
+    }
+
+    const fechaP = data[0].fechaP;
+
+    const response = await fetch('/codigo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        codigo,
+        nombre,
+        apellidos,
+        telefono,
+        fechaP,
+        mesasJuntadas,
+        listaMesaSilla,
+        sembrado
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al crear la reserva');
+    }
+    const resultado = await response.json();
+
+    for (const silla of listaMesaSilla){
+        const cod = codigo;
+        await reservarMesa(silla,cod);
+    }
+    // REDIRIGIR A MERCADO PAGO (AQUÍ va el pago)
+    if (resultado.init_point) {
+      window.location.href = resultado.init_point;
+    } else {
+      throw new Error('No se recibió link de pago');
+    }
+
+  } catch (error) {
+    console.error('Error en el proceso:', error);
+    alert('Ocurrió un error al iniciar el pago');
   }
 }
 
@@ -286,7 +342,7 @@ document.getElementById('reservar').addEventListener('click', async function() {
 
 
         //no usar foreach con async
-        for (const [mesa, num] of controlFilaReconstruido.entries()){
+        /*for (const [mesa, num] of controlFilaReconstruido.entries()){
           //console.log(`mesa: ${mesa} Reservas: ${num}`);
           console.log(!(mesa >= 215 && mesa <= 219));
           if(num === 3 && !(mesa >= 215 && mesa <= 219)){
@@ -332,24 +388,10 @@ document.getElementById('reservar').addEventListener('click', async function() {
             //console.log(relleno);
           }          
         }
-        // alert('Reservacion hecha!');
+        // alert('Reservacion hecha!'); */
 
         //generacion del pdf
-        await fetch(`/creaPDFBoleto/${sembrado}/${codigo}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Error al generar el PDF');
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log('PDF generado correctamente');
-          window.location.href='/';
-        })
-        .catch(error => {
-          console.error('❌ Error al generar el PDF:', error);
-          alert('Reservacion hecha!');
-        });
+       
         // setTimeout(()=>{
         //   alert('Reservacion hecha!');
         //  

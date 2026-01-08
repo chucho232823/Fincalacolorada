@@ -16,6 +16,10 @@ const ftp = require("basic-ftp");
 app.use(bodyParser.json()); // Para procesar JSON si es necesario
 const axios = require("axios");
 
+app.use('/api/pagos', require('./routes/pagos'));
+app.use('/webhooks', require('./routes/webhook'));
+
+
 const { PDFDocument, rgb, degrees } = require('pdf-lib');
 (async () => {
   const pdfBytes = fs.readFileSync(
@@ -90,7 +94,7 @@ app.post("/login", async (req, res) => {
     }
 
     req.session.auth = true;
-    console.log("Sesión iniciada: ", req.session)
+    // console.log("Sesión iniciada: ", req.session)
     return res.redirect('/');
 });
 
@@ -108,12 +112,14 @@ app.get('/', checkAuthentication, (req, res) => {
 });
 
 app.get('/', requireAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, 'private', 'eventosAdmin.html'));
+  res.sendFile(path.join(__dirname, 'private', 'eventosAdmin.html')) ;
 });
 
 app.get('/eventosPasados', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'private', 'eventosPasados.html'));
 });
+
+module.exports = mercadopago;
 
 
 // function requireAuthApi(req, res, next) {
@@ -195,30 +201,6 @@ cron.schedule('* * * * *', async () => {
     console.error('Error liberando sillas:', err); // Manejo de error
   }
 });
-
-/**
- * funcion para generar pdf
- */
-function generarPDFReserva(nombre, codigo, mesa, silla, idEvento) {
-    const dir = path.join(__dirname,'public' ,'boletosEventos', `evento_${idEvento}`);
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
-
-    const pdfPath = path.join(dir, `${codigo}.pdf`);
-    const doc = new PDFDocument();
-
-    doc.pipe(fs.createWriteStream(pdfPath));
-    doc.fontSize(18).text('🎫 Boleto de Reserva', { align: 'center' });
-    doc.moveDown();
-    doc.fontSize(14).text(`Código de reserva: ${codigo}`);
-    doc.text(`Nombre: ${nombre}`);
-    doc.text(`Mesa: ${mesa}`);
-    doc.text(`Silla: ${silla}`);
-    doc.text(`Evento ID: ${idEvento}`);
-
-    doc.end();
-}
 
 
 //Eventos 
@@ -541,7 +523,6 @@ app.put('/reservar/:idEvento', async (req, res) => {
     JOIN mesa m ON m.idMesa = s.idMesa
     JOIN precioEvento p ON p.idPrecio = m.idPrecio
     JOIN evento e ON e.idEvento = p.idEvento
-    SET s.estado = true,
         s.codigo = ?
     WHERE m.numero = ?
     AND e.idEvento = ?
@@ -609,6 +590,7 @@ app.put('/bloqueo/:idEvento', async (req, res) => {
     res.status(500).json({ error: 'Error al actualizar los datos' });
   }
 });
+
 /**
  * Enviando los datos para el formulario de los datos del usuario
  */
@@ -629,12 +611,8 @@ app.post('/datos', (req,res) => {
 async function obtenerConteo(idEvento) {
   const [rows] = await pool.execute(
     `SELECT COUNT(*) AS numero
-     FROM silla s
-     JOIN mesa m ON m.idMesa = s.idMesa
-     JOIN precioEvento p ON p.idPrecio = m.idPrecio
-     JOIN evento e ON e.idEvento = p.idEvento
-     WHERE estado = true AND e.idEvento = ?`,
-    [idEvento]
+     FROM reserva WHERE codigo LIKE ?;`,
+    [`${idEvento}-%`]
   );
   console.log(`conteo: ${rows[0].numero}`)
   return rows[0].numero;
@@ -658,7 +636,7 @@ app.get('/conteo/:idEvento', async (req, res) => {
  * Insercion del codigo y el nombre de quien reserva
  */
 app.post('/codigo', async (req, res) => {
-  const { codigo, nombre, apellidos, telefono, fechaP, mesasJuntadas } = req.body;
+  const { codigo, nombre, apellidos, telefono, fechaP, mesasJuntadas} = req.body;
 
   // Validar que los parámetros requeridos estén presentes
   if (!codigo || !nombre || !apellidos || !telefono) {
@@ -1014,7 +992,7 @@ async function conteoReservas(idEvento,codigo) {
     JOIN mesa m ON m.idMesa = s.idMesa
     JOIN precioEvento p ON p.idPrecio = m.idPrecio
     JOIN evento e ON e.idEvento = p.idEvento
-    WHERE e.idEvento = 4 AND r.codigo = 52;`,
+    WHERE e.idEvento = ? AND r.codigo = ?;`,
     [idEvento,codigo]
   );
   return rows[0].boletos;
