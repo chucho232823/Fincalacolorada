@@ -261,6 +261,56 @@ const bloqueo = async (silla) => {
   }
 } */
 
+async function generarPDFBoleto(idEvento, codigo) {
+    try {
+        console.log(`Generando PDF para Evento: ${idEvento}, Código: ${codigo}...`);
+        
+        const response = await fetch(`/creaPDFBoleto/${idEvento}/${codigo}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Error al generar el PDF del boleto');
+        }
+
+        const resultado = await response.json();
+        console.log('✅ PDF generado y subido:', resultado.message);
+        return resultado;
+
+    } catch (error) {
+        console.error('❌ Error en generarPDFBoleto:', error);
+        // Opcional: mostrar una alerta al usuario
+        throw error; 
+    }
+}
+
+async function confirmarReservaDirecta(codigo) {
+    try {
+        const response = await fetch('/api/reservas/confirmar-directa', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ codigo })
+        });
+
+        if (!response.ok) {
+            throw new Error('No se pudo confirmar la reserva en la base de datos');
+        }
+
+        const data = await response.json();
+        console.log('✅ Reserva confirmada en BD:', data.message);
+        return data;
+    } catch (error) {
+        console.error('❌ Error en confirmarReservaDirecta:', error);
+        throw error;
+    }
+}
+
 async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
   try {
     const resFecha = await fetch(`/fechaP/${sembrado}`);
@@ -325,6 +375,7 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
 
     if (pago.modo === 'directo') {
       // ✅ Usuario autenticado → reservar directo
+      console.log("Procesando reserva administrativa...");
       await confirmarReservaDirecta(codigo);
       await generarPDFBoleto(sembrado, codigo);
       return;
