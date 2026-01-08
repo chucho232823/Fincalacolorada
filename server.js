@@ -115,6 +115,7 @@ app.get('/', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'private', 'eventosAdmin.html')) ;
 });
 
+
 app.get('/clientes', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'private', 'clientes.html')) ;
 });
@@ -148,7 +149,16 @@ app.post("/logout", (req, res) => {
     });
 });
 
-
+//funcion volver mapa de mesas
+app.get('/volverEventos', (req, res) => {
+  if (req.session?.auth) {
+    // Está logueado
+    return res.redirect('/eventosAdmin');
+  } else {
+    // No está logueado
+    return res.redirect('/clientes.html');
+  }
+});
 
 
 //Para la subir los archivos al servidor

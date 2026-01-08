@@ -840,7 +840,7 @@ console.error('Error al cargar los precios:', err);
 
 document.getElementById('inicio').addEventListener('click',(e) => {
     e.preventDefault();
-    window.location.href = "/";
+    window.location.href = "/volverEventos";
 })
 
 // Para control de sillas
