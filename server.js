@@ -788,7 +788,6 @@ app.get('/precios/:idEvento', async (req, res) => {
     JOIN evento e ON p.idEvento = e.idEvento
     WHERE e.idEvento = ?;
   `;
-
   try {
     // Ejecutar la consulta con Promesas
     const [resultado] = await pool.query(query, [idEvento]);

@@ -15,11 +15,8 @@ router.post('/mercadopago', async (req, res) => {
 
     // 1️⃣ Obtener info real del pago
     const payment = await mercadopago.payment.get({ id: paymentId });
-
-    if (payment.status !== 'approved') {
-      return res.sendStatus(200);
-    }
-
+    
+    // Extraemos la metadata temprano para usarla en ambos casos (aprobado/rechazado)
     const { codigo, idEvento } = payment.metadata || {};
 
     if (!codigo || !idEvento) {
@@ -27,40 +24,59 @@ router.post('/mercadopago', async (req, res) => {
       return res.sendStatus(400);
     }
 
-    // 2️⃣ Verificar si ya fue procesado (idempotencia)
-    const [[reserva]] = await pool.query(
-      'SELECT estado FROM reserva WHERE codigo = ?',
-      [codigo]
-    );
+    // 2️⃣ MANEJO DE PAGO RECHAZADO
+    if (payment.status === 'rejected') {
+      console.log(`Pago rechazado para el código: ${codigo}`);
+      await pool.query(`
+        UPDATE reserva
+        SET estado = 'rechazado',
+            tipoPago = 'Linea'
+        WHERE codigo = ?
+      `, [codigo]);
+      
+      return res.sendStatus(200); // Respondemos 200 para que MP no reintente
+    }
 
-    if (!reserva || reserva.estado === 'pagada') {
+    // 3️⃣ MANEJO DE PAGO APROBADO
+    if (payment.status === 'approved') {
+      // Verificar si ya fue procesado para evitar duplicidad
+      const [[reserva]] = await pool.query(
+        'SELECT estado FROM reserva WHERE codigo = ?',
+        [codigo]
+      );
+
+      if (!reserva || reserva.estado === 'pagada') {
+        return res.sendStatus(200);
+      }
+
+      // Confirmar reserva
+      await pool.query(`
+        UPDATE reserva
+        SET estado = 'pagada',
+            tipoPago = 'Linea'
+        WHERE codigo = ?
+      `, [codigo]);
+
+      // Confirmar sillas
+      const [result] = await pool.query(`
+        UPDATE silla
+        SET 
+          estado = CASE WHEN bloqueada = 0 THEN 1 ELSE estado END,
+          enEspera = 0,
+          enEsperaDesde = NULL
+        WHERE codigo = ?
+        AND enEspera = 1
+      `, [codigo]);
+
+      console.log(`Sillas confirmadas: ${result.affectedRows}`);
+
+      // Generar PDF
+      await generarPDFBoleto(idEvento, codigo);
+      
       return res.sendStatus(200);
     }
 
-    // 3️⃣ Confirmar reserva
-    await pool.query(`
-      UPDATE reserva
-      SET estado = 'pagada',
-          tipoPago = 'Linea'
-      WHERE codigo = ?
-    `, [codigo]);
-
-    // 4️⃣ Confirmar sillas
-   const [result] = await pool.query(`
-    UPDATE silla
-    SET 
-      estado = CASE WHEN bloqueada = 1 THEN 0 ELSE 1 END,
-      enEspera = 0,
-      enEsperaDesde = NULL
-      WHERE codigo = ?
-      AND enEspera = 1
-  `, [codigo]);
-
-    console.log(`Sillas confirmadas: ${result.affectedRows}`);
-
-    // 5️⃣ Generar PDF
-    await generarPDFBoleto(idEvento, codigo);
-
+    // Para cualquier otro estado (pending, in_process), solo avisamos a MP que recibimos el aviso
     res.sendStatus(200);
 
   } catch (error) {
@@ -68,5 +84,3 @@ router.post('/mercadopago', async (req, res) => {
     res.sendStatus(500);
   }
 });
-
-module.exports = router;
