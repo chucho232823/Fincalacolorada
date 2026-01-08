@@ -18,9 +18,9 @@ router.post('/crear-pago', async (req, res) => {
       external_reference: codigo,
       metadata: { codigo, idEvento, nombre },
       back_urls: {
-        success: '/public/pago-exitoso.html',
-        failure: '/public/pago-fallido.html',
-        pending: '/public/pago-pendiente.html'
+        success: '/public/exitoso.html',
+        failure: '/public/fallido.html',
+        pending: '/public/pendiente.html'
       },
       auto_return: 'approved',
       notification_url: `${process.env.PUBLIC_BASE_URL_R}/api/pagos/mercadopago`

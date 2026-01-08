@@ -696,7 +696,7 @@ compra.addEventListener('click', async () => {
 //nombre que se recibira 
 const sembrado = window.evento.idEvento;
 const nombreEvento = window.evento.nombre;
-
+console.log(`${sembrado}: ${nombreEvento}`);
 /**
  * Verificando el estado de la silla
  */
