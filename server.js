@@ -1057,6 +1057,7 @@ app.get('/verBoleto/:codigo', async (req, res) => {
         reserva r ON s.codigo = r.codigo
     WHERE 
         r.codigo = ?;
+    AND s.bloqueada = 0;
   `;
 
   try {

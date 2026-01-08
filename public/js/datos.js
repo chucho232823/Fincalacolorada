@@ -350,6 +350,11 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
         const cod = codigo;
         await reservarMesa(silla,cod);
     }
+
+    for(const silla of sillasExtra){
+       const cod = codigo;
+       await reservarMesa(silla,cod);
+    }
     //cambiar a endpoint
      // 2️⃣ Crear pago
     const pagoResponse = await fetch(
