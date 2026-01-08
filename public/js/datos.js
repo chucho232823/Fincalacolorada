@@ -321,11 +321,13 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
       // ✅ Usuario autenticado → reservar directo
       await confirmarReservaDirecta(codigo);
       await generarPDFBoleto(sembrado, codigo);
+      return;
     }
 
     // REDIRIGIR A MERCADO PAGO (AQUÍ va el pago)
     if (pago.init_point) {
       window.location.href = pago.init_point;
+      return;
     } else {
       throw new Error('No se recibió link de pago');
     }

@@ -61,8 +61,7 @@ router.post('/crear-pago', async (req, res) => {
     const preference = new Preference(mpClient);
     const response = await preference.create({
       body: preferenceData
-    });
-    console.log(response);  
+    }); 
     res.json({
       init_point: response.init_point
     });
