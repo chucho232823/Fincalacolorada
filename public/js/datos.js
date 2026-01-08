@@ -1,7 +1,6 @@
 //console.log("Datos recibidos");
 //console.log(window.sembrado);
 //console.log(window.listaMesaSilla);
-const { generarPDFBoleto } = require('../services/pdfService');
 const sembrado = parseInt(window.sembrado);
 const nombreEvento = window.nombre;
 const listaMesaSilla = window.listaMesaSilla;
