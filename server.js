@@ -119,8 +119,6 @@ app.get('/eventosPasados', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'private', 'eventosPasados.html'));
 });
 
-module.exports = mercadopago;
-
 
 // function requireAuthApi(req, res, next) {
 //   if (req.session?.auth) {
