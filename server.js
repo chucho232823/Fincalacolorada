@@ -521,11 +521,13 @@ app.put('/reservar/:idEvento', async (req, res) => {
     JOIN mesa m ON m.idMesa = s.idMesa
     JOIN precioEvento p ON p.idPrecio = m.idPrecio
     JOIN evento e ON e.idEvento = p.idEvento
-        s.codigo = ?
+    SET  s.codigo = ?
     WHERE m.numero = ?
     AND e.idEvento = ?
     AND s.letra = ?;
   `;
+
+    "    AND s.le...' at line 5"
 
   try {
     // Ejecutar la consulta usando pool.query y await
