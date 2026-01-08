@@ -115,6 +115,10 @@ app.get('/', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'private', 'eventosAdmin.html')) ;
 });
 
+app.get('/clientes', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'private', 'clientes.html')) ;
+});
+
 app.get('/eventosPasados', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'private', 'eventosPasados.html'));
 });

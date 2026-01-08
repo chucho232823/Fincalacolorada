@@ -51,7 +51,8 @@ router.post('/crear-pago', async (req, res) => {
     const response = await preference.create({
       body: preferenceData
     });
-
+    console.log(response);
+    console.error(error?.cause || error);
     res.json({
       init_point: response.init_point
     });
