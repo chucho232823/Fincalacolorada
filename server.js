@@ -16,10 +16,6 @@ const ftp = require("basic-ftp");
 app.use(bodyParser.json()); // Para procesar JSON si es necesario
 const axios = require("axios");
 
-app.use('/api/pagos', require('./routes/pagos'));
-app.use('/webhooks', require('./routes/webhook'));
-
-
 const { PDFDocument, rgb, degrees } = require('pdf-lib');
 (async () => {
   const pdfBytes = fs.readFileSync(
@@ -39,6 +35,10 @@ app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 // app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine','ejs');
 app.set('views', path.join(__dirname,'views'));
+console.log("Directorio actual:", __dirname);
+app.use('/api/pagos', require('./routes/pagos'));
+app.use('/webhooks', require('./routes/webhook'));
+
 
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
