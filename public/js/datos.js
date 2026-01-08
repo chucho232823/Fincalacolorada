@@ -18,6 +18,7 @@ console.log(typeof(listaMesaSilla));
 console.log(consecutivas);
 console.log(agrupadasPorMesa);
 console.log(sembrado);
+console.log(nombreEvento);
 
 let sumatoria = 0;
 Object.values(agrupadasPorMesa).forEach((grupo) => {

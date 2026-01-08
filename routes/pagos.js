@@ -18,12 +18,12 @@ router.post('/crear-pago', async (req, res) => {
       external_reference: codigo,
       metadata: { codigo, idEvento, nombre },
       back_urls: {
-        success: '/pago-exitoso.html',
-        failure: '/pago-fallido.html',
-        pending: '/pago-pendiente.html'
+        success: '/public/pago-exitoso.html',
+        failure: '/public/pago-fallido.html',
+        pending: '/public/pago-pendiente.html'
       },
       auto_return: 'approved',
-      notification_url: `${process.env.PUBLIC_BASE_URL_2}/api/pagos/mercadopago`
+      notification_url: `${process.env.PUBLIC_BASE_URL_R}/api/pagos/mercadopago`
     };
 
     const preference = new Preference(mpClient);

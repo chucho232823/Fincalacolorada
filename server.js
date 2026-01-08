@@ -27,8 +27,8 @@ const { PDFDocument, rgb, degrees } = require('pdf-lib');
 })();
 
 
-// app.use(express.static('public'));
-app.use('/public', requireAuth, express.static('public'));
+app.use(express.static('public'));
+// app.use('/public', requireAuth, express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public'), { index: false }));
