@@ -302,17 +302,22 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
     }
 
      // 2️⃣ Crear pago
-    const pagoResponse = await fetch('/api/pagos/crear-pago', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        codigo,
-        idEvento: sembrado,
-        total: sumatoria, // 👈 asegúrate que exista
-        nombre: nombreEvento
-      })
-    });
+    const pagoResponse = await fetch(
+      '${process.env.PUBLIC_BASE_URL_R}/api/pagos/crear-pago',
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          codigo,
+          idEvento: sembrado,
+          total: sumatoria,
+          nombre: nombreEvento
+        })
+      }
+    );
 
     const pago = await pagoResponse.json();
 
