@@ -1056,7 +1056,7 @@ app.get('/verBoleto/:codigo', async (req, res) => {
     INNER JOIN 
         reserva r ON s.codigo = r.codigo
     WHERE 
-        r.codigo = ?;
+        r.codigo = ?
     AND s.bloqueada = 0;
   `;
 
