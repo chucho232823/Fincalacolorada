@@ -18,6 +18,16 @@ console.log(consecutivas);
 console.log(agrupadasPorMesa);
 console.log(sembrado);
 
+let sumatoria = 0;
+agrupadasPorMesa.forEach( (grupo) => {
+    sumatoria += grupo.total;
+    console.log(sumatoria);
+});
+console.log(sumatoria);
+
+
+
+
 const arrayDePares = Object.entries(controlFila);
 
 // PASO 2: Reconstruir el Map
