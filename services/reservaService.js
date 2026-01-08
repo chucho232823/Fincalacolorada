@@ -1,4 +1,5 @@
 const pool = require('../database/dbpool');
+const router = express.Router();
 
 async function confirmarReserva(codigo) {
   // 1️⃣ Marcar reserva como pagada
