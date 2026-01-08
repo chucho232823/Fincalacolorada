@@ -20,7 +20,7 @@ router.post('/confirmar-directa', async (req, res) => {
         await pool.query(`
             UPDATE silla
             SET 
-                estado = CASE WHEN bloqueada = 0 THEN 1 ELSE estado END,
+                estado = CASE WHEN bloqueada = 1 THEN 0 ELSE 1 END,
                 enEspera = 0,
                 enEsperaDesde = NULL
             WHERE codigo = ?
