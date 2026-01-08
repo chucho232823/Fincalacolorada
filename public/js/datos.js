@@ -18,9 +18,11 @@ console.log(consecutivas);
 console.log(agrupadasPorMesa);
 console.log(sembrado);
 
-let sumatoria
+let sumatoria = 0;
 Object.values(agrupadasPorMesa).forEach((grupo) => {
     sumatoria += grupo.total;
+    console.log(`${grupo.sillas} - ${grupo.total}`);
+
     console.log("Suma parcial:", sumatoria);
 });
 
@@ -287,15 +289,33 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
       })
     });
 
+    console.log('Resultado completo:', resultado);
     if (!response.ok) {
       throw new Error('Error al crear la reserva');
     }
-    const resultado = await response.json();
+    
+    // const resultado = await response.json();
 
     for (const silla of listaMesaSilla){
         const cod = codigo;
         await reservarMesa(silla,cod);
     }
+
+     // 2️⃣ Crear pago
+    const pagoResponse = await fetch('/api/pagos/crear-pago', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        codigo,
+        idEvento: sembrado,
+        total: sumatoria // 👈 asegúrate que exista
+      })
+    });
+
+    const pago = await pagoResponse.json();
+
+    console.log('Respuesta pago:', pago); // 🔥 DEBUG
+
     // REDIRIGIR A MERCADO PAGO (AQUÍ va el pago)
     if (resultado.init_point) {
       window.location.href = resultado.init_point;
