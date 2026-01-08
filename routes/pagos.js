@@ -51,13 +51,13 @@ router.post('/crear-pago', async (req, res) => {
     const response = await preference.create({
       body: preferenceData
     });
-    console.log(response);
-    console.error(error?.cause || error);
+    console.log(response);  
     res.json({
       init_point: response.init_point
     });
 
   } catch (error) {
+    console.error(error?.cause || error);
     console.error('❌ Error al crear pago:', error);
     res.status(500).json({ error: 'Error al crear pago' });
   }
