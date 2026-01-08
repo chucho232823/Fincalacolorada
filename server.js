@@ -36,8 +36,8 @@ app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 app.set('view engine','ejs');
 app.set('views', path.join(__dirname,'views'));
 console.log("Directorio actual:", __dirname);
-app.use('/api/pagos', require('./routes/pagos'));
-app.use('/webhooks', require('./routes/webhook'));
+app.use('/api/pagos', require('../routes/pagos'));
+app.use('/webhooks', require('../routes/webhook'));
 
 
 const session = require("express-session");
