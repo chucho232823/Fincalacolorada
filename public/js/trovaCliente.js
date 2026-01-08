@@ -695,6 +695,7 @@ compra.addEventListener('click', async () => {
 //console.log('id del Evento: ', window.evento.idEvento);
 //nombre que se recibira 
 const sembrado = window.evento.idEvento;
+const nombreEvento = window.evento.nombre;
 
 /**
  * Verificando el estado de la silla
@@ -832,6 +833,7 @@ document.querySelector('.confirma-compra').addEventListener('click', function (e
         //console.log(controlFilaObjeto);
 
         document.getElementById('jsonData').value = JSON.stringify({
+            nombre: nombreEvento,
             sembrado: sembrado,
             listaMesaSilla: listaMesaSilla,
             controlFila: controlFilaObjeto,

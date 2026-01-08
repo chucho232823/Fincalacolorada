@@ -5,12 +5,12 @@ const mpClient = require('../services/mercadopago');
 
 router.post('/crear-pago', async (req, res) => {
   try {
-    const { codigo, idEvento, total } = req.body;
+    const { codigo, idEvento, total , nombre} = req.body;
 
     const preferenceData = {
       items: [
         {
-          title: `Reserva evento ${idEvento}`,
+          title: `Reserva evento ${nombre}`,
           quantity: 1,
           unit_price: Number(total)
         }
@@ -23,7 +23,7 @@ router.post('/crear-pago', async (req, res) => {
         pending: '/pago-pendiente.html'
       },
       auto_return: 'approved',
-      notification_url: `${process.env.PUBLIC_BASE_URL}/api/pagos/mercadopago`
+      notification_url: `${process.env.PUBLIC_BASE_URL_2}/api/pagos/mercadopago`
     };
 
     const preference = new Preference(mpClient);

@@ -596,13 +596,14 @@ app.put('/bloqueo/:idEvento', async (req, res) => {
  */
 app.post('/datos', (req,res) => {
     const reserva = JSON.parse(req.body.jsonData);
+    const nombre = reserva.nombre;
     const sembrado = reserva.sembrado;
     const listaMesaSilla = reserva.listaMesaSilla;
     const controlFila = reserva.controlFila;
     const tipo = reserva.tipo;
     const consecutivas = reserva.consecutivas;
     const agrupadasPorMesa = reserva.agrupadasPorMesa;
-    res.render( 'datos' , { sembrado, listaMesaSilla, controlFila, tipo, consecutivas, agrupadasPorMesa} );
+    res.render( 'datos' , {nombre, sembrado, listaMesaSilla, controlFila, tipo, consecutivas, agrupadasPorMesa} );
 })
 
 /**

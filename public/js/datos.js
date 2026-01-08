@@ -3,6 +3,7 @@
 //console.log(window.listaMesaSilla);
 
 const sembrado = parseInt(window.sembrado);
+const nombreEvento = window.nombre;
 const listaMesaSilla = window.listaMesaSilla;
 const tipo = window.tipo;
 const controlFila = window.controlFila;
@@ -307,7 +308,8 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
       body: JSON.stringify({
         codigo,
         idEvento: sembrado,
-        total: sumatoria // 👈 asegúrate que exista
+        total: sumatoria, // 👈 asegúrate que exista
+        nombre: nombreEvento
       })
     });
 
