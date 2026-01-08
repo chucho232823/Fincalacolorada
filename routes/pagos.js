@@ -3,31 +3,54 @@ const router = express.Router();
 const { Preference } = require('mercadopago');
 const mpClient = require('../services/mercadopago');
 
+/**
+ * POST /api/pagos/crear-pago
+ */
 router.post('/crear-pago', async (req, res) => {
   try {
-    const { codigo, idEvento, total , nombre} = req.body;
+    const { codigo, idEvento, total, nombre } = req.body;
+
+    if (!codigo || !idEvento || !total) {
+      return res.status(400).json({ error: 'Datos incompletos' });
+    }
 
     const preferenceData = {
       items: [
         {
-          title: `Reserva evento ${nombre}`,
+          title: `Reserva para: ${nombre}`,
           quantity: 1,
-          unit_price: Number(total)
+          unit_price: Number(total),
+          currency_id: 'MXN'
         }
       ],
+
+      // 🔑 Identificador único
       external_reference: codigo,
-      metadata: { codigo, idEvento, nombre },
-      back_urls: {
-        success: '/exitoso.html',
-        failure: '/fallido.html',
-        pending: '/pendiente.html'
+
+      // 🔑 Datos que leerá el webhook
+      metadata: {
+        codigo,
+        idEvento,
+        nombre
       },
+
+      // ✅ URLs ABSOLUTAS (frontend)
+      back_urls: {
+        success: `${process.env.PUBLIC_BASE_URL}/exitoso.html`,
+        failure: `${process.env.PUBLIC_BASE_URL}/fallido.html`,
+        pending: `${process.env.PUBLIC_BASE_URL}/pendiente.html`
+      },
+
       auto_return: 'approved',
+
+      // 🔔 Webhook (backend Render)
       notification_url: `${process.env.PUBLIC_BASE_URL_R}/api/pagos/mercadopago`
     };
 
     const preference = new Preference(mpClient);
-    const response = await preference.create({ body: preferenceData });
+    const response = await preference.create({
+      body: preferenceData
+    });
 
     res.json({
       init_point: response.init_point
