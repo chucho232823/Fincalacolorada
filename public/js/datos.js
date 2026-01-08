@@ -318,8 +318,8 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
     console.log('Respuesta pago:', pago); // 🔥 DEBUG
 
     // REDIRIGIR A MERCADO PAGO (AQUÍ va el pago)
-    if (resultado.init_point) {
-      window.location.href = resultado.init_point;
+    if (pago.init_point) {
+      window.location.href = pago.init_point;
     } else {
       throw new Error('No se recibió link de pago');
     }
