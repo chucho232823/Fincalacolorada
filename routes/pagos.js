@@ -17,9 +17,13 @@ router.post('/crear-pago', async (req, res) => {
     const preferenceData = {
       items: [
         {
-          title: `Reserva para: ${nombre}`,
+          // title: `Reserva para: ${nombre}`,
+          // quantity: 1,
+          // unit_price: Number(total),
+          // currency_id: 'MXN'
+          title: `TEST PAGO`,
           quantity: 1,
-          unit_price: Number(total),
+          unit_price: 1,
           currency_id: 'MXN'
         }
       ],
