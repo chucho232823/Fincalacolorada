@@ -13,14 +13,14 @@ router.post('/crear-pago', async (req, res) => {
     if (!codigo || !idEvento || !total) {
       return res.status(400).json({ error: 'Datos incompletos' });
     }
-
+    console.log(`Sesion iniciada?: ${req.session?.auth}`)
     if (req.session?.auth) {
       console.log("sesion iniciada");
       return res.json({
         modo: 'directo' // 👈 clave
       });
     }
-
+    
     const preferenceData = {
       items: [
         {
