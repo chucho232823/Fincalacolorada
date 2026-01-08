@@ -1,43 +1,54 @@
 form {
-    background: #ffffff;
-    padding: 25px;
-    width: 300px;
+    background-color: #ffffff;
+    padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    width: 300px;
 }
 
-/* Inputs */
-form input {
-    width: 100%;
-    padding: 5px 0px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
+/* El título "Inicio de Sesión" */
+span {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #333;
 }
 
-form input:focus {
-    border-color: #4a90e2;
-    outline: none;
-}
-
-/* Botón */
-form button {
-    width: 100%;
+/* Estilo de los campos de texto */
+input {
+    margin-bottom: 1rem;
     padding: 10px;
-    background: #4a90e2;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+/* Efecto al hacer clic en los inputs */
+input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+/* Estilo del botón */
+button {
+    background-color: #007bff;
     color: white;
+    padding: 10px;
     border: none;
-    border-radius: 5px;
-    font-size: 15px;
+    border-radius: 4px;
+    font-size: 1rem;
     cursor: pointer;
-    font-weight: 600;
+    transition: background-color 0.3s;
 }
 
-form button:hover {
-    background: #357abd;
+/* Efecto al pasar el mouse por el botón */
+button:hover {
+    background-color: #0056b3;
 }
-
 body{
     display: flex;
     align-items: center;

@@ -720,7 +720,7 @@ app.get('/lista/:idEvento', async (req, res) => {
     JOIN precioEvento p ON p.idPrecio = m.idPrecio
     JOIN evento e ON e.idEvento = p.idEvento
     WHERE e.idEvento = ?
-    AND estado = "pagada"
+    AND r.estado = "pagada"
     ORDER BY r.nombre;
   `;
 
