@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const mercadopago = require('../services/mercadopago');
+const { Preference } = require('mercadopago');
+const mpClient = require('../services/mercadopago');
 
 router.post('/crear-pago', async (req, res) => {
   try {
     const { codigo, idEvento, total } = req.body;
 
-    const preference = {
+    const preferenceData = {
       items: [
         {
           title: `Reserva evento ${idEvento}`,
@@ -25,9 +26,9 @@ router.post('/crear-pago', async (req, res) => {
       notification_url: `${process.env.PUBLIC_BASE_URL}/api/pagos/mercadopago`
     };
 
-    const response = await mercadopago.preferences.create(preference);
-    console.log(response);
-    // ✅ OJO AQUÍ
+    const preference = new Preference(mpClient);
+    const response = await preference.create({ body: preferenceData });
+
     res.json({
       init_point: response.init_point
     });
@@ -37,6 +38,5 @@ router.post('/crear-pago', async (req, res) => {
     res.status(500).json({ error: 'Error al crear pago' });
   }
 });
-
 
 module.exports = router;
