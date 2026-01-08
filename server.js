@@ -12,6 +12,10 @@ const cron = require('node-cron'); //para cronometro
 const fontkit = require('@pdf-lib/fontkit');
 const formidable = require('formidable');
 const ftp = require("basic-ftp");
+
+const session = require("express-session");
+const bcrypt = require("bcryptjs");
+
 // Middleware para parsear los datos del formulario
 app.use(bodyParser.json()); // Para procesar JSON si es necesario
 const axios = require("axios");
@@ -58,25 +62,6 @@ app.use('/webhooks', require('./routes/webhook'));
 app.use('/api/reservas', require('./routes/reservas'));
 // app.use('/api/reservas', require('./routes/reservaService'));
 
-
-
-const session = require("express-session");
-const bcrypt = require("bcryptjs");
-
-app.set('trust proxy', 1); // Debe ir antes de la sesión
-
-app.use(session({
-    name: "admin-session",
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        httpOnly: true,
-        secure: true, // Obligatorio para sameSite: 'none'
-        maxAge: 1000 * 60 * 60 * 4,
-        sameSite: 'none' // Permitir cookies entre dominios/pestañas si es necesario
-    }
-}));
 
 //Autenticacion de usuario
 // Middleware para verificar si el usuario está autenticado
