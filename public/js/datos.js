@@ -1,7 +1,7 @@
 //console.log("Datos recibidos");
 //console.log(window.sembrado);
 //console.log(window.listaMesaSilla);
-
+const { generarPDFBoleto } = require('../services/pdfService');
 const sembrado = parseInt(window.sembrado);
 const nombreEvento = window.nombre;
 const listaMesaSilla = window.listaMesaSilla;
@@ -315,10 +315,14 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
     });
 
     const pago = await pagoResponse.json();
-    
-
 
     console.log('Respuesta pago:', pago); // 🔥 DEBUG
+
+    if (pago.modo === 'directo') {
+      // ✅ Usuario autenticado → reservar directo
+      await confirmarReservaDirecta(codigo);
+      await generarPDFBoleto(sembrado, codigo);
+    }
 
     // REDIRIGIR A MERCADO PAGO (AQUÍ va el pago)
     if (pago.init_point) {

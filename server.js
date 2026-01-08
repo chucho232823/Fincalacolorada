@@ -38,6 +38,9 @@ app.set('views', path.join(__dirname,'views'));
 console.log("Directorio actual:", __dirname);
 app.use('/api/pagos', require('./routes/pagos'));
 app.use('/webhooks', require('./routes/webhook'));
+app.use('/api/reservas', require('./routes/reservas'));
+app.use('/api/reservas', require('./routes/reservaService'));
+
 
 
 const session = require("express-session");
@@ -153,10 +156,10 @@ app.post("/logout", (req, res) => {
 app.get('/volverEventos', (req, res) => {
   if (req.session?.auth) {
     // Está logueado
-    return res.redirect('/eventosAdmin');
+    return res.redirect('/');
   } else {
     // No está logueado
-    return res.redirect('/clientes.html');
+    return res.redirect('/clientes');
   }
 });
 

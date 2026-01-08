@@ -3,6 +3,7 @@ const router = express.Router();
 const mercadopago = require('../services/mercadopago');
 const pool = require('../database/dbpool');
 const { generarPDFBoleto } = require('../services/pdfService');
+const { confirmarReserva } = require('../services/reservaService');
 
 router.post('/mercadopago', async (req, res) => {
   try {
@@ -44,16 +45,15 @@ router.post('/mercadopago', async (req, res) => {
     `, [codigo]);
 
     // 4️⃣ Confirmar sillas
-    const [result] = await pool.query(`
-      UPDATE silla
-      SET 
-        estado = 1,
-        bloqueada = 1,
-        enEspera = 0,
-        enEsperaDesde = NULL
+   const [result] = await pool.query(`
+    UPDATE silla
+    SET 
+      estado = CASE WHEN bloqueada = 0 THEN 1 ELSE estado END,
+      enEspera = 0,
+      enEsperaDesde = NULL
       WHERE codigo = ?
-        AND enEspera = 1
-    `, [codigo]);
+      AND enEspera = 1
+  `, [codigo]);
 
     console.log(`Sillas confirmadas: ${result.affectedRows}`);
 
