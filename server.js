@@ -595,7 +595,7 @@ app.put('/bloqueo/:idEvento', async (req, res) => {
     WHERE m.numero = ?
     AND e.idEvento = ?
     AND s.letra = ?;
-  `;
+  `; 
 
   try {
     // Ejecutar la consulta usando async/await
