@@ -288,8 +288,7 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
         sembrado
       })
     });
-
-    console.log('Resultado completo:', resultado);
+    console.log('Resultado completo:', response);
     if (!response.ok) {
       throw new Error('Error al crear la reserva');
     }
@@ -313,6 +312,8 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
     });
 
     const pago = await pagoResponse.json();
+    
+
 
     console.log('Respuesta pago:', pago); // 🔥 DEBUG
 
