@@ -869,12 +869,19 @@ fetch(`/precios/${sembrado}`)
 const tbody = document.querySelector('#tablaPrecios tbody');
 data.forEach(row => {
     const tr = document.createElement('tr');
+
+    const fechaPreventa = new Date(row.fechaP);
+    //console.log(fechaPreventa)
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
+    const mostrarPrecio = (fechaPreventa < hoy) ? row.precioD : row.precio;
+
     tr.innerHTML = `
     <td>
-    <span id = 'bolita${row.tipo}'></span>
-    ${row.tipo}
+        <span id='bolita${row.tipo}'></span>
+        ${row.tipo}
     </td>
-    <td>$${row.precio}</td>
+    <td>$${mostrarPrecio}</td>
     `;
     tbody.appendChild(tr);
 });
