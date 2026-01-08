@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mercadopago = require('../services/mercadopago');
 
-app.post('/crear-pago', async (req, res) => {
+router.post('/crear-pago', async (req, res) => {
   const { codigo, idEvento, total } = req.body;
 
   const preference = {
