@@ -418,6 +418,7 @@ document.getElementById('reservar').addEventListener('click', async function() {
     const telefono = document.getElementById('telefono').value;
     if (telefono.length < 12) {
       alert("El teléfono debe de ser de 10 digitos");
+      overlay.style.display = 'flex';
       return; 
     }
     let i = 0;
