@@ -13,8 +13,10 @@ router.post('/crear-pago', async (req, res) => {
     if (!codigo || !idEvento || !total) {
       return res.status(400).json({ error: 'Datos incompletos' });
     }
-    console.log('Session ID:', req.sessionID);
-    console.log(`Sesion iniciada?: ${req.session?.auth}`)
+    console.log('--- DEBUG PAGO ---');
+    console.log('Todo el objeto session:', req.session);
+    console.log('ID de sesión:', req.sessionID);
+    console.log('Cookies recibidas:', req.headers.cookie);
     if (req.session?.auth) {
       console.log("sesion iniciada");
       return res.json({

@@ -27,6 +27,23 @@ const { PDFDocument, rgb, degrees } = require('pdf-lib');
 })();
 
 
+app.set('trust proxy', 1); // Debe ir antes de la sesión
+
+app.use(session({
+    name: "admin-session",
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: true, // Obligatorio para sameSite: 'none'
+        maxAge: 1000 * 60 * 60 * 4,
+        sameSite: 'lax' // Permitir cookies entre dominios/pestañas si es necesario
+    }
+}));
+
+
+
 app.use(express.static('public'));
 // app.use('/public', requireAuth, express.static('public'));
 app.use(express.urlencoded({ extended: true }));
@@ -46,7 +63,8 @@ app.use('/api/reservas', require('./routes/reservas'));
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
 
-app.set('trust proxy', 1);
+app.set('trust proxy', 1); // Debe ir antes de la sesión
+
 app.use(session({
     name: "admin-session",
     secret: process.env.SESSION_SECRET,
@@ -54,9 +72,9 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: true, // SIEMPRE true en Render
-        maxAge: 1000 * 60 * 60 * 4, // 4 horas
-        sameSite: 'none'
+        secure: true, // Obligatorio para sameSite: 'none'
+        maxAge: 1000 * 60 * 60 * 4,
+        sameSite: 'none' // Permitir cookies entre dominios/pestañas si es necesario
     }
 }));
 
