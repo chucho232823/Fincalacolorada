@@ -15,6 +15,7 @@ router.post('/crear-pago', async (req, res) => {
     }
 
     if (req.session?.auth) {
+      console.log("sesion iniciada");
       return res.json({
         modo: 'directo' // 👈 clave
       });
@@ -56,18 +57,6 @@ router.post('/crear-pago', async (req, res) => {
       // 🔔 Webhook (backend Render)
       notification_url: `${process.env.PUBLIC_BASE_URL_R}/api/pagos/mercadopago`
     };
-
-    if (pago.modo === 'directo') {
-      await fetch('/api/reservas/confirmar-directa', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          codigo,
-          idEvento: sembrado
-        })
-      });
-      window.location.href = `/`;
-    }
 
     const preference = new Preference(mpClient);
     const response = await preference.create({
