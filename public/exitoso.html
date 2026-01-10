@@ -38,7 +38,7 @@
 
     if (idEvento && codigo) {
       // 2. Construir el enlace que solicitaste
-      const hrefDescarga = `/descargar-boleto?idEvento=${idEvento}&codigo=${codigo}`;
+      const hrefDescarga = `https://fincalacolorada.com/Eventos/boletos/evento_${idEvento}/${codigo}.pdf`;
       
       contenedor.innerHTML = `
         <p>Tu boleto ya está disponible:</p>
@@ -48,9 +48,9 @@
       `;
 
       // OPCIONAL: Descarga automática tras 3 segundos
-      setTimeout(() => {
-        window.location.href = hrefDescarga;
-      }, 3000);
+      // setTimeout(() => {
+      //   window.location.href = hrefDescarga;
+      // }, 3000);
 
     } else {
       contenedor.innerHTML = "<p>⚠️ No se pudieron obtener los detalles del boleto.</p>";

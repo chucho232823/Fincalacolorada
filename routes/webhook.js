@@ -7,6 +7,7 @@ const { generarPDFBoleto } = require('../services/pdfService');
 const { confirmarReserva } = require('../services/reservaService');
 
 router.post('/mercadopago', async (req, res) => {
+  console.log("Volviendo de mercado pago")
   try {
     const paymentId = req.body?.data?.id;
 
@@ -16,7 +17,7 @@ router.post('/mercadopago', async (req, res) => {
 
     // 1️⃣ Obtener info real del pago
     const payment = await mercadopago.payment.get({ id: paymentId });
-    
+     console.log(`payment estado: ${payment.status}`);
     // Extraemos la metadata temprano para usarla en ambos casos (aprobado/rechazado)
     const { codigo, idEvento } = payment.metadata || {};
 

@@ -1509,7 +1509,10 @@ app.post('/liberar-sillas/:idEvento', express.text(), async (req, res) => {
       JOIN mesa m ON m.idMesa = s.idMesa
       JOIN precioEvento pe ON m.idPrecio = pe.idPrecio
       JOIN evento e ON e.idEvento = pe.idEvento
-      SET s.enEspera = false
+      SET estado = false,
+          bloqueada = false,
+          enEspera = false,
+          enEsperaDesde = NULL
       WHERE (s.letra, m.numero) IN (? )
         AND e.idEvento = ?;
     `;
