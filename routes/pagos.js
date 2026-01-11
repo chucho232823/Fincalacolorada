@@ -59,7 +59,8 @@ router.post('/crear-pago', async (req, res) => {
       auto_return: 'approved',
 
       // 🔔 Webhook (backend Render)
-      notification_url: `${process.env.PUBLIC_BASE_URL_R}/api/pagos/mercadopago`
+      notification_url: `${process.env.PUBLIC_BASE_URL_R}/api/webhook/mercadopago`
+      // notification_url: "https://webhook.site/tu-id-unico";
     };
 
     const preference = new Preference(mpClient);
