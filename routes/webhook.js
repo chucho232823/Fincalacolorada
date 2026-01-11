@@ -17,7 +17,7 @@ router.post('/mercadopago', async (req, res) => {
 
     // 1️⃣ Obtener info real del pago
     const payment = await mercadopago.payment.get({ id: paymentId });
-     console.log(`payment estado: ${payment.status}`);
+    console.log(`payment estado: ${payment.status}`);
     // Extraemos la metadata temprano para usarla en ambos casos (aprobado/rechazado)
     const { codigo, idEvento } = payment.metadata || {};
 
