@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const mercadopago = require('../services/mercadopago');
+const mpClient = require('../services/mercadopago');
 const { Payment } = require('mercadopago');
 const pool = require('../database/dbpool');
 const { generarPDFBoleto } = require('../services/pdfService');
