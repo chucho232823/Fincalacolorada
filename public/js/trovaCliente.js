@@ -1,3 +1,21 @@
+let sesion;
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const res = await fetch('/api/session/estado', {
+            credentials: 'include' // MUY IMPORTANTE
+        });
+
+        sesion = await res.json();
+
+        if (sesion.autenticado) {
+            document.querySelector('.metodoPago').hidden = false;
+        } else {
+            document.querySelector('.metodoPago').hidden = true;
+        }
+    } catch (error) {
+        console.error('Error verificando sesión', error);
+    }
+});
 
 function generateTables(container, totalTables, tablesPerColumn, numFila,zona, chairsPerTable = 4) {
     for (let col = 0; col < Math.ceil(totalTables / tablesPerColumn); col++) {
@@ -595,6 +613,7 @@ let agrupadasPorMesa = {};
  */
 compra.addEventListener('click', async () => {
     // Obtener todas las sillas activas
+    
     listaMesaSilla = [];
     agrupadasPorMesa = {};
     const sillasActivas = document.querySelectorAll('.chair.activa, .chair3.activa, .chair2.activa');
@@ -686,7 +705,6 @@ compra.addEventListener('click', async () => {
 
     //confirma.appendChild(totalCompra);
     confirma.style.display = 'flex';
-
     fondo.style.position = 'fixed';
     document.querySelector('.main-container').style.pointerEvents = 'none';
 })
@@ -827,11 +845,18 @@ document.querySelector('.confirma-compra').addEventListener('click', function (e
     if (event.target.classList.contains('confirmar')) {
         //ir a formulario de compra para ir a metodo de pago o reservacion
         const tipo = window.evento.tipo;
+        let tipoPago;
         const form = document.getElementById('jsonform');
         form.action = `/datos`
         const controlFilaObjeto = Object.fromEntries(controlFila);
         //console.log(controlFilaObjeto);
-        console.log("aaaaaaaaaaaaaaaaa",nombreEvento);
+        // console.log("aaaaaaaaaaaaaaaaa",nombreEvento);
+        const  metodoPago = document.querySelector('.metodoPago');
+        if(metodoPago.hidden){
+            tipoPago = "Linea";
+        }else if(!metodoPago.hidden){
+            tipoPago = document.querySelector('input[name="eleccion"]:checked').value;
+        }
         document.getElementById('jsonData').value = JSON.stringify({
             nombre: nombreEvento,
             sembrado: sembrado,
@@ -839,7 +864,8 @@ document.querySelector('.confirma-compra').addEventListener('click', function (e
             controlFila: controlFilaObjeto,
             tipo: tipo,
             consecutivas: consecutivas,
-            agrupadasPorMesa: agrupadasPorMesa
+            agrupadasPorMesa: agrupadasPorMesa,
+            tipoPago, tipoPago
         });
         //Enviar los datos
         form.submit();

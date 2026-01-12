@@ -8,16 +8,17 @@ const tipo = window.tipo;
 const controlFila = window.controlFila;
 const consecutivas = window.consecutivas;
 const agrupadasPorMesa = window.agrupadasPorMesa;
+const tipoPago = window.tipoPago;
 let mesasJuntadas = [];
 let cancelarLiberacion = false;
 
 // PASO 1: Convertir el objeto a un array de pares [ [clave, valor], ... ]
-console.log(listaMesaSilla);
-console.log(typeof(listaMesaSilla));
-console.log(consecutivas);
-console.log(agrupadasPorMesa);
-console.log(sembrado);
-console.log(nombreEvento);
+// console.log(listaMesaSilla);
+// console.log(typeof(listaMesaSilla));
+// console.log(consecutivas);
+// console.log(agrupadasPorMesa);
+// console.log(sembrado);
+// console.log(nombreEvento);
 
 let sumatoria = 0;
 Object.values(agrupadasPorMesa).forEach((grupo) => {
@@ -311,7 +312,7 @@ async function confirmarReservaDirecta(codigo) {
     }
 }
 
-async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
+async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas,tipoPago) {
   try {
     const resFecha = await fetch(`/fechaP/${sembrado}`);
     const data = await resFecha.json();
@@ -336,7 +337,8 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas) {
         fechaP,
         mesasJuntadas,
         listaMesaSilla,
-        sembrado
+        sembrado,
+        tipoPago
       })
     });
     console.log('Resultado completo:', response);
@@ -442,7 +444,7 @@ document.getElementById('reservar').addEventListener('click', async function() {
         
         // Paso 1: Obtener fechaP primero
         
-        await enviarDatos(codigo,nombre,apellidos,telefono,mesasJuntadas);
+        await enviarDatos(codigo,nombre,apellidos,telefono,mesasJuntadas,tipoPago);
 
 
         //no usar foreach con async

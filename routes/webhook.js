@@ -22,18 +22,18 @@ router.post('/mercadopago', async (req, res) => {
     // Extraemos la metadata temprano para usarla en ambos casos (aprobado/rechazado)
     const { codigo, idEvento } = payment.metadata || {};
     // const { codigo, idEvento } = payment.metadata || payment.body?.metadata || {};
-
+    
     if (!codigo || !idEvento) {
       console.error('Pago sin metadata completa');
       return res.sendStatus(400);
     }
-
+    
     // 2️⃣ MANEJO DE PAGO RECHAZADO
     if (payment.status === 'rejected') {
       console.log(`Pago rechazado para el código: ${codigo}`);
       await pool.query(`
         UPDATE reserva
-        SET estado = 'rechazado',
+        SET estado = 'rechazada',
             tipoPago = 'Linea'
         WHERE codigo = ?
       `, [codigo]);

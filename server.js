@@ -63,6 +63,13 @@ app.use('/api/reservas', require('./routes/reservas'));
 // app.use('/api/reservas', require('./routes/reservaService'));
 
 
+app.get('/api/session/estado', (req, res) => {
+    if (req.session && req.session.usuario) {
+        return res.json({ autenticado: true });
+    } else {
+        return res.json({ autenticado: false });
+    }
+});
 //Autenticacion de usuario
 // Middleware para verificar si el usuario está autenticado
 function checkAuthentication(req, res, next) {
@@ -627,7 +634,8 @@ app.post('/datos', (req,res) => {
     const tipo = reserva.tipo;
     const consecutivas = reserva.consecutivas;
     const agrupadasPorMesa = reserva.agrupadasPorMesa;
-    res.render( 'datos' , {nombre, sembrado, listaMesaSilla, controlFila, tipo, consecutivas, agrupadasPorMesa} );
+    const tipoPago = reserva.tipoPago;
+    res.render( 'datos' , {nombre, sembrado, listaMesaSilla, controlFila, tipo, consecutivas, agrupadasPorMesa, tipoPago} );
 })
 
 /**
@@ -661,7 +669,11 @@ app.get('/conteo/:idEvento', async (req, res) => {
  * Insercion del codigo y el nombre de quien reserva
  */
 app.post('/codigo', async (req, res) => {
-  const { codigo, nombre, apellidos, telefono, fechaP, mesasJuntadas} = req.body;
+  const { codigo, nombre, apellidos, telefono, fechaP, mesasJuntadas, tipoPago} = req.body;
+
+  const tPago = (tipoPago === "Transferencia") ? 'Mostrador(Transferencia)' : 
+                (tipoPago  === "Efectivo") ? 'Mostrador(Efectivo)' : 
+                (tipoPago  === "Baucher") ? 'Mostrador(Baucher)': 'Linea';
 
   // Validar que los parámetros requeridos estén presentes
   if (!codigo || !nombre || !apellidos || !telefono) {
@@ -689,13 +701,13 @@ app.post('/codigo', async (req, res) => {
 
   // Consulta para insertar la reserva
   const query = `
-    INSERT INTO reserva (codigo, nombre, apellido, telefono, preventa, juntar)
-    VALUES (?, ?, ?, ?, ?, ?);
+    INSERT INTO reserva (codigo, nombre, apellido, telefono, preventa, juntar, tipoPago)
+    VALUES (?, ?, ?, ?, ?, ?, ?);
   `;
 
   try {
     // Ejecutar la consulta para insertar los datos
-    const [result] = await pool.query(query, [codigo, nombre, apellidos, telefono, preventa ? 1 : 0, cadena]);
+    const [result] = await pool.query(query, [codigo, nombre, apellidos, telefono, preventa ? 1 : 0, cadena, tPago]);
 
     // Verificar si se insertaron filas
     if (result.affectedRows === 0) {

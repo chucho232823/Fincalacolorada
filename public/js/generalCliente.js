@@ -1,3 +1,22 @@
+let sesion;
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const res = await fetch('/api/session/estado', {
+            credentials: 'include' // MUY IMPORTANTE
+        });
+
+        sesion = await res.json();
+
+        if (sesion.autenticado) {
+            document.querySelector('.metodoPago').hidden = false;
+        } else {
+            document.querySelector('.metodoPago').hidden = true;
+        }
+    } catch (error) {
+        console.error('Error verificando sesión', error);
+    }
+});
+
 function generateTables(container, totalTables, tablesPerColumn, numFila, zona, chairsPerTable = 4) {
     for (let col = 0; col < Math.ceil(totalTables / tablesPerColumn); col++) {
         
@@ -775,10 +794,17 @@ document.querySelector('.confirma-compra').addEventListener('click', function (e
         //ir a formulario de compra para ir a metodo de pago o reservacion
         const tipo = window.evento.tipo;
         const form = document.getElementById('jsonform');
+        let tipoPago;
         form.action = `/datos`
         const controlFilaObjeto = Object.fromEntries(controlFila);
         //console.log(controlFilaObjeto);
-
+        
+        const  metodoPago = document.querySelector('.metodoPago');
+        if(metodoPago.hidden){
+            tipoPago = "Linea";
+        }else if(!metodoPago.hidden){
+            tipoPago = document.querySelector('input[name="eleccion"]:checked').value;
+        }
 
         document.getElementById('jsonData').value = JSON.stringify({
             nombre: nombreEvento,
@@ -787,7 +813,8 @@ document.querySelector('.confirma-compra').addEventListener('click', function (e
             controlFila: controlFilaObjeto,
             tipo: tipo,
             consecutivas: consecutivas,
-            agrupadasPorMesa: agrupadasPorMesa
+            agrupadasPorMesa: agrupadasPorMesa,
+            tipoPago, tipoPago
         });
         //Enviar los datos
         form.submit();
