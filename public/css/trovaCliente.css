@@ -471,6 +471,7 @@ h1 {
 .confirma-compra div{
     display: flex;
     justify-content: space-between;
+    padding: 10px 20px;
 }
 
 .volver{
@@ -765,4 +766,15 @@ button:hover {
 
 .alert-boton :hover{
     cursor: pointer !important;
+}
+
+.metodoPago{
+    display: flex;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 16px;
+    color: #333;
+    justify-content: center;
+    align-items: baseline;
+    gap: 10px;
 }
