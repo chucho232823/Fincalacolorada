@@ -593,6 +593,23 @@ document.getElementById("Modal-Edita-Trova").addEventListener("submit", async fu
         },
         body: JSON.stringify(enviarDatos)
       });
+      //subiendo imagen para actualizar
+        const imagen = data.get("imagen"); 
+        console.log(imagen && imagen.size > 0);
+        if (imagen && imagen.size > 0) {
+            
+            const imageFormData = new FormData();
+            imageFormData.append("imagen", imagen);
+            imageFormData.append("idEvento", idEvento); 
+
+            // Enviamos la imagen al servidor
+            await fetch('/subir-imagen', { // Ajusta a tu endpoint real
+                method: 'POST',
+                body: imageFormData
+            });
+        } else {
+            console.log("No se seleccionó imagen, se usara una por defecto");
+        }
 
       if (!response.ok) {
         const error = await response.json();
