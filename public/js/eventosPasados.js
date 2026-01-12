@@ -87,12 +87,17 @@ fetch("/listado-de-eventos-pasados")
         botonVentas.classList.add('ventas');
         botonVentas.dataset.eventoId = evento.idEvento;
 
+        const botonReservas = document.createElement('button');
+        botonReservas.textContent = 'RESERVAS';
+        botonReservas.classList.add('reservas');
+        botonReservas.dataset.eventoId = evento.idEvento;
+
         const botonEliminar = document.createElement('button');
         botonEliminar.textContent = 'ELIMINAR';
         botonEliminar.classList.add('eliminar');
         botonEliminar.dataset.eventoId = evento.idEvento;
 
-        botones.append(botonVentas,botonEliminar);
+        botones.append(botonVentas,botonReservas,botonEliminar);
 
         //agregando todo al div evento
         swiperSlide.append(imagenEvento,titulo,subTitulo,fechayHora,botones)
@@ -111,6 +116,13 @@ fetch("/listado-de-eventos-pasados")
 
             // Redirige directamente a la ruta del servidor
             window.location.href = `/reporte/${idEvento}`;
+        });
+
+        //funcion del boton Reservas
+        botonReservas.addEventListener('click', (e) => {
+            e.preventDefault();
+            const idEvento = e.currentTarget.dataset.eventoId;
+            window.location.href = `/lista/${idEvento}`;
         });
 
         //funcion del boton eliminar

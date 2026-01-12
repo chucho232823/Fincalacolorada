@@ -258,7 +258,7 @@ app.get('/listado-de-eventos', async (req, res) => {
     await pool.query("SET lc_time_names = 'es_ES'");
     
     const query = `
-      SELECT e.idEvento AS idEvento, e.nombre AS nombre, t.tipo AS tipo, e.estado
+      SELECT e.idEvento AS idEvento, e.nombre AS nombre, t.tipo AS tipo, e.estado AS estado
              DATE_FORMAT(e.fecha, '%d de %M de %Y') AS fecha,
              TIME_FORMAT(e.hora, '%H:%i') AS hora, e.imagen AS imagen, e.subtitulo AS subtitulo 
       FROM evento e
@@ -292,7 +292,7 @@ app.get('/listado-de-eventos-pasados', async (req, res) => {
 
     // Luego, la consulta para obtener los eventos pasados
     const query = `
-      SELECT e.idEvento AS idEvento, e.nombre AS nombre, t.tipo AS tipo, e.estado
+      SELECT e.idEvento AS idEvento, e.nombre AS nombre, t.tipo AS tipo, e.estado AS estado
              DATE_FORMAT(e.fecha, '%d de %M de %Y') AS fecha,
              TIME_FORMAT(e.hora, '%H:%i') AS hora, e.imagen AS imagen, e.subtitulo AS subtitulo 
       FROM evento e
