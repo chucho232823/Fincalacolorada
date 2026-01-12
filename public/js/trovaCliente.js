@@ -2,7 +2,7 @@ let sesion;
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         const res = await fetch('/api/session/estado', {
-            credentials: 'include' // MUY IMPORTANTE
+            credentials: 'include'
         });
 
         sesion = await res.json();

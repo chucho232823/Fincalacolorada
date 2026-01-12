@@ -9,8 +9,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (sesion.autenticado) {
             document.querySelector('.metodoPago').hidden = false;
+            console.log("Autenticado");
         } else {
             document.querySelector('.metodoPago').hidden = true;
+            console.log("No autenticado");
         }
     } catch (error) {
         console.error('Error verificando sesión', error);
