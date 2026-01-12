@@ -1615,7 +1615,7 @@ app.post(`/cancelar-evento/:idEvento`, async (req, res) => {
       WHERE idEvento = ?
     `;
 
-    const values = [idEvento];
+    const values = [parseInt(idEvento)];
 
     // Usamos await para ejecutar la consulta
     const [result] = await pool.query(query, values);
