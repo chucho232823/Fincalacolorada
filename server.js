@@ -1585,8 +1585,8 @@ app.post("/descargar-boleto", async (req, res) => {
 
 app.post(`/quitar-reserva/:codigo`, async (req, res) => {
   try {
-    const codigo = req.params.idEvento;
-
+    const codigo = req.params.codigo;
+    console.log(`codigo a borrar:${codigo}`);
     const query = `
       UPDATE silla s 
       SET s.estado = 0,

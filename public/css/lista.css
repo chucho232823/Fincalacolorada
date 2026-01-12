@@ -130,4 +130,7 @@ a:hover {
     text-decoration: none;
 }
 
+.borrar{
+  cursor: pointer;
+}
     
