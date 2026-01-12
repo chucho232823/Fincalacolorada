@@ -64,8 +64,11 @@ app.use('/api/reservas', require('./routes/reservas'));
 
 
 app.get('/api/session/estado', (req, res) => {
-    if (req.session && req.session.usuario) {
-        return res.json({ autenticado: true });
+    if (req.session && req.session.auth) {
+        return res.json({ 
+            autenticado: true,
+            expira: req.session.cookie.maxAge 
+        });
     } else {
         return res.json({ autenticado: false });
     }
