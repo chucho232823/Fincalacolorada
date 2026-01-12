@@ -2,23 +2,23 @@ let sesion;
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         const res = await fetch('/api/session/estado', {
-            credentials: 'include' // MUY IMPORTANTE
+            credentials: 'include'
         });
 
         sesion = await res.json();
-
+        
+        const divPago = document.querySelector('.metodoPago');
         if (sesion.autenticado) {
-            document.querySelector('.metodoPago').hidden = false;
+            divPago.style.display = "flex"; // o "flex" según tu diseño
             console.log("Autenticado");
         } else {
-            document.querySelector('.metodoPago').hidden = true;
+            divPago.style.display = "none";
             console.log("No autenticado");
-        }
+}
     } catch (error) {
         console.error('Error verificando sesión', error);
     }
 });
-
 function generateTables(container, totalTables, tablesPerColumn, numFila, zona, chairsPerTable = 4) {
     for (let col = 0; col < Math.ceil(totalTables / tablesPerColumn); col++) {
         
@@ -800,12 +800,17 @@ document.querySelector('.confirma-compra').addEventListener('click', function (e
         form.action = `/datos`
         const controlFilaObjeto = Object.fromEntries(controlFila);
         //console.log(controlFilaObjeto);
-        
-        const  metodoPago = document.querySelector('.metodoPago');
-        if(metodoPago.hidden){
+        const metodoPago = document.querySelector('.metodoPago');
+        // Obtenemos el estilo que realmente está aplicando el navegador
+        const estiloActual = window.getComputedStyle(metodoPago).display;
+
+        if (estiloActual === "none") {
+            // Si el display es none, significa que no es administrador (Pago en Línea)
             tipoPago = "Linea";
-        }else if(!metodoPago.hidden){
-            tipoPago = document.querySelector('input[name="eleccion"]:checked').value;
+        } else {
+            // Si se está mostrando, obtenemos el valor del radio seleccionado
+            const seleccionado = document.querySelector('input[name="eleccion"]:checked');
+            tipoPago = seleccionado ? seleccionado.value : "Linea"; 
         }
 
         document.getElementById('jsonData').value = JSON.stringify({
