@@ -660,9 +660,11 @@ compra.addEventListener('click', async () => {
     // viendo sillas activas
     const cantidad = consecutivas.length;
     //console.log(`posibles juntadas ${cantidad}`);
+    juntar.innerHTML = '';
     for (let i = 0; i < cantidad; i++) {
         const juntar = document.querySelector('.confirma-compra span');
-        juntar.innerHTML = `Puede solicitar juntar las mesas ${consecutivas[i]} pero para ello debe comprar al menos ${consecutivas[i].length*4-1} boletos entre ambas mesas`;
+        juntar.innerHTML = juntar.innerHTML +
+        `Puede solicitar juntar las mesas ${consecutivas[i]} pero para ello debe comprar al menos ${consecutivas[i].length*4-1} boletos entre ambas mesas\n`;
     }
     //console.log('compra: ');
     sillasActivas.forEach(silla => {
@@ -670,7 +672,15 @@ compra.addEventListener('click', async () => {
         const mesa = wrapper.querySelector('.table');
         const idMesa = mesa.id;
         //console.log(precios);
-        const precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa.id) && b.silla === silla.id)
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
+        let precioSilla;
+        if(fechaPreventa < hoy){
+            precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa.id) && b.silla === silla.id)
+        }else{
+            precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa.id) && b.silla === silla.id)
+        }
+        
         //console.log(precioSilla.precio);
         //console.log(`Mesa: ${mesa.id} Silla: ${silla.id} Precio: ${2}`);
         // Agrupar por mesa
@@ -715,6 +725,7 @@ compra.addEventListener('click', async () => {
 //nombre que se recibira 
 const sembrado = window.evento.idEvento;
 const nombreEvento = window.evento.nombre;
+const fechaPreventa = window.evento.fecha;
 console.log(`${sembrado}: ${nombreEvento}`);
 /**
  * Verificando el estado de la silla
@@ -784,6 +795,7 @@ async function cargarEstadoSillas() {
         mesa: item.Mesa,
         silla: item.Silla,
         precio: item.precio,
+        precioD: item.precioD,
         tipo: item.tipo
       };
       precios.push(precioSilla);

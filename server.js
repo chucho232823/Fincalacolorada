@@ -342,7 +342,7 @@ app.get('/estado-sillas/:idEvento', async (req, res) => {
   const idEvento = req.params.idEvento;
 
   const query = `
-    SELECT e.nombre, m.numero AS Mesa, s.letra AS Silla, s.estado, p.precio, s.bloqueada, s.enEspera, tm.tipo
+    SELECT e.nombre, m.numero AS Mesa, s.letra AS Silla, s.estado, p.precio, p.precioD, s.bloqueada, s.enEspera, tm.tipo
     FROM evento e 
     JOIN precioEvento p ON e.idEvento = p.idEvento
     JOIN tipoMesa tm ON tm.idTipoMesa = p.idTipoMesa
