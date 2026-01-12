@@ -18,16 +18,16 @@ router.post('/mercadopago', async (req, res) => {
     // 1️⃣ Obtener info real del pago
     const paymentInstance = new Payment(mpClient);
     const payment = await paymentInstance.get({ id: paymentId });
-    console.log("OBJETO PAYMENT COMPLETO:", JSON.stringify(payment, null, 2));
+    //console.log("OBJETO PAYMENT COMPLETO:", JSON.stringify(payment, null, 2));
     console.log(`payment estado: ${payment.status}`);
     // Extraemos la metadata temprano para usarla en ambos casos (aprobado/rechazado)
     // Intentamos obtener metadata de la raíz o del cuerpo (body) del objeto
     const metadata = payment.metadata || payment.body?.metadata || {};
     const codigo = metadata.codigo || payment.external_reference || payment.body?.external_reference;
-    const idEvento = metadata.idEvento;
-
+    const idEvento = metadata.idEvento || metadata.id_evento; 
     console.log("Debug Metadata:", metadata);
     console.log("Debug Codigo:", codigo);
+    console.log("Debug Evento:", idEvento);
     //
 
     if (!codigo || !idEvento) {
