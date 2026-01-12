@@ -467,7 +467,7 @@ h1 {
   color: #333;
 }
 
-.confirma-compra div{
+.confirma-compra div:last-child{
     display: flex;
     justify-content: space-between;
     padding: 10px 20px;
