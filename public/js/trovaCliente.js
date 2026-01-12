@@ -660,9 +660,9 @@ compra.addEventListener('click', async () => {
     // viendo sillas activas
     const cantidad = consecutivas.length;
     //console.log(`posibles juntadas ${cantidad}`);
+    const juntar = document.querySelector('.confirma-compra span');
     juntar.innerHTML = '';
     for (let i = 0; i < cantidad; i++) {
-        const juntar = document.querySelector('.confirma-compra span');
         juntar.innerHTML = juntar.innerHTML +
         `Puede solicitar juntar las mesas ${consecutivas[i]} pero para ello debe comprar al menos ${consecutivas[i].length*4-1} boletos entre ambas mesas\n`;
     }
@@ -672,14 +672,8 @@ compra.addEventListener('click', async () => {
         const mesa = wrapper.querySelector('.table');
         const idMesa = mesa.id;
         //console.log(precios);
-        const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
-        let precioSilla;
-        if(fechaPreventa < hoy){
-            precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa.id) && b.silla === silla.id)
-        }else{
-            precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa.id) && b.silla === silla.id)
-        }
+        
+        const precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa.id) && b.silla === silla.id);
         
         //console.log(precioSilla.precio);
         //console.log(`Mesa: ${mesa.id} Silla: ${silla.id} Precio: ${2}`);
@@ -692,9 +686,16 @@ compra.addEventListener('click', async () => {
         }
 
         agrupadasPorMesa[idMesa].sillas.push(silla.id);
-        agrupadasPorMesa[idMesa].total += precioSilla.precio;
-
-        total += precioSilla.precio;
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
+        if(fechaPreventa < hoy){
+            agrupadasPorMesa[idMesa].total += precioSilla.precio;
+            total += precioSilla.precio;
+        }else{
+            agrupadasPorMesa[idMesa].total += precioSilla.precioD;
+            total += precioSilla.precioD;
+        }
+        
         //lista.appendChild(item);
         //console.log(`Mesa: ${mesa.id} Silla: ${silla.id} Precio: ${p.precio}`);  
         const MesaSilla = {
