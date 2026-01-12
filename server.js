@@ -297,7 +297,7 @@ app.get('/listado-de-eventos-pasados', async (req, res) => {
              TIME_FORMAT(e.hora, '%H:%i') AS hora, e.imagen AS imagen, e.subtitulo AS subtitulo 
       FROM evento e
       JOIN tipoEvento t ON e.idTipoEVento = t.idTipoEvento
-      WHERE e.fecha < CURDATE()
+      WHERE e.fecha < CURDATE() OR e.estado = "cancelado"
       ORDER BY e.fecha ASC;
     `;
     
@@ -1619,8 +1619,7 @@ app.post(`/cancelar-evento/:idEvento`, async (req, res) => {
 
     // Usamos await para ejecutar la consulta
     const [result] = await pool.query(query, values);
-    console.log(`Evento cancelado`);
-    res.sendStatus(200);
+    res.status(200).json({ status: 'success', message: 'Evento cancelado' });
   } catch (e) {
     console.error('Error procesando solicitud:', e);
     res.sendStatus(400);

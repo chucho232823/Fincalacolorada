@@ -47,7 +47,7 @@ fetch("/listado-de-eventos-pasados")
         const imagenEvento = document.createElement('img');
         imagenEvento.src = `https://fincalacolorada.com/Eventos/${evento.imagen}`;
         imagenEvento.alt = "imagen evento";
-
+        
         const titulo = document.createElement('span');
         titulo.className = "titulo";
         if(evento.estado === "cancelado")

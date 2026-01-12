@@ -214,7 +214,7 @@ fetch("/listado-de-eventos")
                 // 3. Alerta de error
                 Swal.fire({
                     title: 'Error',
-                    text: 'Hubo un error al eliminar el evento.',
+                    text: 'Hubo un error al cancelar el evento.',
                     icon: 'error',
                     confirmButtonText: 'Cerrar',
                     buttonsStyling: false,
