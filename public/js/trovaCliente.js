@@ -530,12 +530,19 @@ mesas.forEach(mesa => {
             // mesaElegida.innerText = `Zona ${zona.tipo} (mesa ${mesa})`;   
             spanSillas.innerHTML = `Mesa ${mesa} Silla(s) `;
             let totalMesa = 0;
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
+        
             for (let i = 0; i < sillas.length; i++) {
                 if(sillas[i].classList.contains('activa')){
                     const precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa) && b.silla === sillas[i].id)
                     //console.log(sillas[i].id);
                     //console.log(precioSilla);
-                    totalMesa += precioSilla.precio;
+                    if(fechaPreventa < hoy){
+                        totalMesa += precioSilla.precio;
+                    }else{
+                        totalMesa += precioSilla.precioD;
+                    }
                     spanSillas.innerHTML += `${sillas[i].id} `;
                 } 
             }

@@ -488,12 +488,18 @@ mesas.forEach(mesa => {
             // mesaElegida.innerText = `Zona ${zona.tipo} (mesa ${mesa})`;   
             spanSillas.innerHTML = `Mesa ${mesa} Silla(s) `;
             let totalMesa = 0;
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
             for (let i = 0; i < sillas.length; i++) {
                 if(sillas[i].classList.contains('activa')){
                     const precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa) && b.silla === sillas[i].id)
                     //console.log(sillas[i].id);
                     //console.log(precioSilla);
-                    totalMesa += precioSilla.precio;
+                    if(fechaPreventa < hoy){
+                        totalMesa += precioSilla.precio;
+                    }else{
+                        totalMesa += precioSilla.precioD;
+                    }
                     spanSillas.innerHTML += `${sillas[i].id} `;
                 } 
             }
@@ -619,9 +625,11 @@ compra.addEventListener('click', async () => {
     // viendo sillas activas
     const cantidad = consecutivas.length;
     //console.log(`posibles juntadas ${cantidad}`);
+    const juntar = document.querySelector('.confirma-compra span');
+    juntar.innerHTML = '';
     for (let i = 0; i < cantidad; i++) {
-        const juntar = document.querySelector('.confirma-compra span');
-        juntar.innerHTML = `Puede solicitar juntar las mesas ${consecutivas[i]} pero para ello debe comprar al menos ${consecutivas[i].length*4-1} boletos entre ambas mesas`;
+        juntar.innerHTML = juntar.innerHTML +
+        `Puede solicitar juntar las mesas ${consecutivas[i]} pero para ello debe comprar al menos ${consecutivas[i].length*4-1} boletos entre ambas mesas\n`;
     }
     //console.log('compra: ');
     sillasActivas.forEach(silla => {
@@ -640,10 +648,15 @@ compra.addEventListener('click', async () => {
             };
         }
 
-        agrupadasPorMesa[idMesa].sillas.push(silla.id);
-        agrupadasPorMesa[idMesa].total += precioSilla.precio;
-
-        total += precioSilla.precio;
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
+        if(fechaPreventa < hoy){
+            agrupadasPorMesa[idMesa].total += precioSilla.precio;
+            total += precioSilla.precio;
+        }else{
+            agrupadasPorMesa[idMesa].total += precioSilla.precioD;
+            total += precioSilla.precioD;
+        }
         //lista.appendChild(item);
         ////console.log(`Mesa: ${mesa.id} Silla: ${silla.id} Precio: ${p.precio}`);  
         const MesaSilla = {
