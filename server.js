@@ -1611,7 +1611,7 @@ app.post(`/cancelar-evento/:idEvento`, async (req, res) => {
     const idEvento = req.params.idEvento;
     const query = `
       UPDATE evento
-      SET estado = "cancelado";
+      SET estado = "cancelado"
       WHERE idEvento = ?
     `;
 
