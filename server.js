@@ -673,7 +673,6 @@ app.get('/conteo/:idEvento', async (req, res) => {
  */
 app.post('/codigo', async (req, res) => {
   const { codigo, nombre, apellidos, telefono, fechaP, mesasJuntadas, tipoPago} = req.body;
-  console.log("Metodo de pago: ", tipoPago);
   const tPago = (tipoPago === "Transferencia") ? 'Mostrador(Transferencia)' : 
                 (tipoPago  === "Efectivo") ? 'Mostrador(Efectivo)' : 
                 (tipoPago  === "Baucher") ? 'Mostrador(Baucher)': 'Linea';
@@ -1560,7 +1559,7 @@ app.post('/liberar-sillas/:idEvento', express.text(), async (req, res) => {
 /**
  * Descargas de boletos pdf
  */
-app.get("/descargar-boleto", async (req, res) => {
+app.post("/descargar-boleto", async (req, res) => {
     const { idEvento, codigo } = req.query;
 
     try {
@@ -1582,4 +1581,28 @@ app.get("/descargar-boleto", async (req, res) => {
         console.error("Error al descargar el boleto:", error.message);
         res.status(404).send("El boleto no existe o no está disponible.");
     }
+});
+
+app.post(`/quitar-reserva/:codigo`, async (req, res) => {
+  try {
+    const codigo = req.params.idEvento;
+
+    const query = `
+      UPDATE silla s 
+      SET s.estado = 0,
+          s.bloqueada = 0,
+          s.codigo = NULL
+      WHERE s.codigo = ?
+    `;
+
+    const values = [codigo];
+
+    // Usamos await para ejecutar la consulta
+    const [result] = await pool.query(query, values);
+
+    res.sendStatus(200);
+  } catch (e) {
+    console.error('Error procesando solicitud:', e);
+    res.sendStatus(400);
+  }
 });

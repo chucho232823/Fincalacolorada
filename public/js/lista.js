@@ -91,3 +91,68 @@ const volver = document.getElementById('volver');
 volver.addEventListener("click",() => {
     window.location.href = "/"
 })
+
+
+async function eliminaReserva(codigo) {
+    if (!confirm(`¿Estás seguro de que deseas eliminar la reserva ${codigo}?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/quitar-reserva/${codigo}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            alert('Reserva eliminada correctamente');
+            // Aquí puedes recargar la página o quitar el elemento del DOM
+            location.reload(); 
+        } else {
+            const error = await response.json();
+            alert('Error: ' + (error.error || 'No se pudo eliminar'));
+        }
+    } catch (error) {
+        console.error('Error al llamar a eliminaReserva:', error);
+        alert('Ocurrió un error en la conexión');
+    }
+}
+
+const borrar = document.querySelectorAll('.borrar');
+borrar.forEach(boton => {
+    boton.addEventListener("click", async (e) => {
+        // Obtenemos el código directamente del ID del elemento clickeado
+        const codigo = e.currentTarget.id;
+
+        // Confirmación estética
+        const confirmar = confirm(`¿Estás seguro de eliminar la reserva: ${codigo}?`);
+        
+        if (confirmar) {
+            try {
+                const response = await fetch(`/quitar-reserva/${codigo}`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    // Eliminamos la fila (tr) de la tabla visualmente
+                    const fila = e.currentTarget.closest('tr');
+                    fila.style.transition = "opacity 0.5s";
+                    fila.style.opacity = "0";
+                    
+                    setTimeout(() => {
+                        fila.remove();
+                    }, 500);
+                    
+                    console.log(`Reserva ${codigo} eliminada con éxito.`);
+                } else {
+                    alert("No se pudo eliminar la reserva en el servidor.");
+                }
+            } catch (error) {
+                console.error("Error en la petición:", error);
+                alert("Error de conexión al intentar eliminar.");
+            }
+        }
+    });
+});

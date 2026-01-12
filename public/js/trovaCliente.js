@@ -9,11 +9,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const divPago = document.querySelector('.metodoPago');
         if (sesion.autenticado) {
-            divPago.style.display = "flex"; // o "flex" según tu diseño
-            console.log("Autenticado");
+            divPago.style.display = "flex";
         } else {
             divPago.style.display = "none";
-            console.log("No autenticado");
 }
     } catch (error) {
         console.error('Error verificando sesión', error);
@@ -866,7 +864,7 @@ document.querySelector('.confirma-compra').addEventListener('click', function (e
             const seleccionado = document.querySelector('input[name="eleccion"]:checked');
             tipoPago = seleccionado ? seleccionado.value : "Linea"; 
         }
-        
+
         document.getElementById('jsonData').value = JSON.stringify({
             nombre: nombreEvento,
             sembrado: sembrado,
