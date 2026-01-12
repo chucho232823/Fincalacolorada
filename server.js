@@ -1599,7 +1599,7 @@ app.post(`/quitar-reserva/:codigo`, async (req, res) => {
 
     // Usamos await para ejecutar la consulta
     const [result] = await pool.query(query, values);
-
+    console.log(`reserva:${result} deshecha`);
     res.sendStatus(200);
   } catch (e) {
     console.error('Error procesando solicitud:', e);

@@ -136,16 +136,7 @@ borrar.forEach(boton => {
                 });
 
                 if (response.ok) {
-                    // Eliminamos la fila (tr) de la tabla visualmente
-                    const fila = e.currentTarget.closest('tr');
-                    fila.style.transition = "opacity 0.5s";
-                    fila.style.opacity = "0";
-                    
-                    setTimeout(() => {
-                        fila.remove();
-                    }, 500);
-                    
-                    console.log(`Reserva ${codigo} eliminada con éxito.`);
+                    location.reload();
                 } else {
                     alert("No se pudo eliminar la reserva en el servidor.");
                 }
