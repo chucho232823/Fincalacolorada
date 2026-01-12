@@ -1608,7 +1608,7 @@ app.post(`/quitar-reserva/:codigo`, async (req, res) => {
 
 app.post(`/cancelar-evento/:idEvento`, async (req, res) => {
   try {
-    const idEvento = req.params.codigo;
+    const idEvento = req.params.idEvento;
     const query = `
       UPDATE evento
       SET estado = "cancelado";
