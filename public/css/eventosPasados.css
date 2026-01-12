@@ -366,11 +366,13 @@ h5,h4{
 .reservas{
     grid-area: reservas;
     background-color: #e69900;
+    color: white;
 }
 
 .eliminar{
     grid-area: eliminar;
     background-color: #bf0d0d;
+    color: white;
 }
 
 .swiper-wrapper{
@@ -606,8 +608,7 @@ input[type=number] {
     justify-self: center;
 }
 
-
-
 #volver:hover{
     cursor: pointer;
 }
+

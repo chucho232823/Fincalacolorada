@@ -14,30 +14,32 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    const hrefDescarga = `https://fincalacolorada.com/Eventos/boletos/evento_${idEvento}/${codigo}.pdf`;
+    const hrefDescarga = `/descargar-boleto?idEvento=${idEvento}&codigo=${codigo}`;
 
     const verificarArchivo = async () => {
-        intentosRealizados++;
+    intentosRealizados++;
+    console.log(`Intento ${intentosRealizados} de ${MAX_INTENTOS}`);
+
+    try {
+        // Al ser una ruta relativa, el navegador no lo bloquea por CORS
+        const respuesta = await fetch(hrefDescarga, { method: 'HEAD' });
         
-        try {
-            // Hacemos una petición HEAD para ver si el archivo existe (devuelve 200 OK)
-            const respuesta = await fetch(hrefDescarga, { method: 'HEAD' });
-            
-            if (respuesta.ok) {
-                mostrarBotonDescarga(hrefDescarga);
-            } else if (intentosRealizados < MAX_INTENTOS) {
-                // Si no existe, esperamos y reintentamos
-                setTimeout(verificarArchivo, INTERVALO);
-            } else {
-                mostrarErrorTiempo();
-            }
-        } catch (error) {
-            console.error("Error al verificar archivo:", error);
-            if (intentosRealizados < MAX_INTENTOS) {
-                setTimeout(verificarArchivo, INTERVALO);
-            }
+        if (respuesta.ok) {
+            console.log("¡Archivo encontrado!");
+            mostrarBotonDescarga(hrefDescarga);
+        } else if (intentosRealizados < MAX_INTENTOS) {
+            setTimeout(verificarArchivo, INTERVALO);
+        } else {
+            mostrarErrorTiempo();
         }
-    };
+    } catch (error) {
+        console.error("Error en fetch:", error);
+        // Si hay error de red, seguimos intentando hasta el límite
+        if (intentosRealizados < MAX_INTENTOS) {
+            setTimeout(verificarArchivo, INTERVALO);
+        }
+    }
+};
 
     const mostrarBotonDescarga = (url) => {
         contenedor.innerHTML = `

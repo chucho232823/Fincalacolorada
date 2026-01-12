@@ -65,7 +65,6 @@ descargar.forEach(boleto => {
         const url = `/descargar-boleto?idEvento=${idEvento}&codigo=${codigo}`;
         // 3. Redirigimos para iniciar la descarga
         window.location.href = url;
-        
     });
 });
 

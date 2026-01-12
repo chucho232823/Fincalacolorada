@@ -1559,7 +1559,7 @@ app.post('/liberar-sillas/:idEvento', express.text(), async (req, res) => {
 /**
  * Descargas de boletos pdf
  */
-app.post("/descargar-boleto", async (req, res) => {
+app.get("/descargar-boleto", async (req, res) => {
     const { idEvento, codigo } = req.query;
 
     try {
