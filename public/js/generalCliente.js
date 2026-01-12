@@ -494,7 +494,7 @@ mesas.forEach(mesa => {
                 if(sillas[i].classList.contains('activa')){
                     const precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa) && b.silla === sillas[i].id)
                     //console.log(sillas[i].id);
-                    //console.log(precioSilla);
+                    console.log(precioSilla);
                     if(fechaPreventa < hoy){
                         totalMesa += precioSilla.precio;
                     }else{
@@ -744,6 +744,7 @@ async function cargarEstadoSillas() {
         mesa: item.Mesa,
         silla: item.Silla,
         precio: item.precio,
+        precioD: item.precioD,
         tipo: item.tipo
       };
       precios.push(precioSilla);
