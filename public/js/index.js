@@ -37,10 +37,15 @@ fetch("/listado-de-eventos")
             fecha: evento.fecha,
             hora: evento.hora,
             subtitulo: evento.subtitulo,
-            imagen: evento.imagen
+            imagen: evento.imagen,
+            estado: evento.estado
         }
         datosEventos.push(ev);
-
+        if(evento.estado === "cancelado"){
+            console.log(`Evento: ${evento.nombre} cancelado`)
+            return;
+        }
+            
         //inicio de creacion de la tarjeta de evento
         const swiperSlide = document.createElement('div');
         swiperSlide.className = 'swiper-slide';
@@ -160,8 +165,8 @@ fetch("/listado-de-eventos")
                 text: "Esta acción no se puede deshacer",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'ELIMINAR',
-                cancelButtonText: 'CANCELAR',
+                confirmButtonText: 'CANCELAR',
+                cancelButtonText: 'MANTENER',
                 buttonsStyling: false,
                 customClass: {
                     popup: 'alert-popup',
@@ -176,8 +181,8 @@ fetch("/listado-de-eventos")
             
 
             try {
-                const response = await fetch(`/eliminar/${idEvento}`, {
-                    method: 'DELETE'
+                const response = await fetch(`/cancelar-evento/${idEvento}`, {
+                    method: 'POST'
                 });
 
                 if (!response.ok) throw new Error('Error al eliminar');
@@ -187,7 +192,7 @@ fetch("/listado-de-eventos")
                 // 2. Alerta de éxito (usando tu estilo personalizado)
                 await Swal.fire({
                     title: 'Finca la colorada dice:',
-                    text: data.message || 'Evento eliminado correctamente',
+                    text: data.message || 'Evento cancelado correctamente',
                     icon: 'success',
                     confirmButtonColor: '#68AAFC',
                     confirmButtonText: 'Aceptar',

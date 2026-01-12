@@ -33,7 +33,8 @@ fetch("/listado-de-eventos-pasados")
             fecha: evento.fecha,
             hora: evento.hora,
             subtitulo: evento.subtitulo,
-            imagen: evento.imagen
+            imagen: evento.imagen,
+            estado: evento.estado
         }
         datosEventos.push(ev);
 
@@ -49,7 +50,10 @@ fetch("/listado-de-eventos-pasados")
 
         const titulo = document.createElement('span');
         titulo.className = "titulo";
-        titulo.innerHTML = evento.nombre;
+        if(evento.estado === "cancelado")
+            titulo.innerHTML = `${evento.nombre}(cancelado)`;
+        else
+            titulo.innerHTML = evento.nombre;
 
         const subTitulo = document.createElement('span');
         subTitulo.className = "subtitulo";
@@ -94,7 +98,7 @@ fetch("/listado-de-eventos-pasados")
         swiperSlide.append(imagenEvento,titulo,subTitulo,fechayHora,botones)
         
         //agregando al swiper-wrapper correspondiente
-        if(evento.tipo === "General")
+        if(evento.tipo === "Baile")
             eventoBaile.appendChild(swiperSlide);
         if(evento.tipo === "Trova")
             eventoTrova.appendChild(swiperSlide);

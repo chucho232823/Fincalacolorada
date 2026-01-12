@@ -258,7 +258,7 @@ app.get('/listado-de-eventos', async (req, res) => {
     await pool.query("SET lc_time_names = 'es_ES'");
     
     const query = `
-      SELECT e.idEvento AS idEvento, e.nombre AS nombre, t.tipo AS tipo, 
+      SELECT e.idEvento AS idEvento, e.nombre AS nombre, t.tipo AS tipo, e.estado
              DATE_FORMAT(e.fecha, '%d de %M de %Y') AS fecha,
              TIME_FORMAT(e.hora, '%H:%i') AS hora, e.imagen AS imagen, e.subtitulo AS subtitulo 
       FROM evento e
@@ -292,7 +292,7 @@ app.get('/listado-de-eventos-pasados', async (req, res) => {
 
     // Luego, la consulta para obtener los eventos pasados
     const query = `
-      SELECT e.idEvento AS idEvento, e.nombre AS nombre, t.tipo AS tipo, 
+      SELECT e.idEvento AS idEvento, e.nombre AS nombre, t.tipo AS tipo, e.estado
              DATE_FORMAT(e.fecha, '%d de %M de %Y') AS fecha,
              TIME_FORMAT(e.hora, '%H:%i') AS hora, e.imagen AS imagen, e.subtitulo AS subtitulo 
       FROM evento e
@@ -1586,7 +1586,6 @@ app.post("/descargar-boleto", async (req, res) => {
 app.post(`/quitar-reserva/:codigo`, async (req, res) => {
   try {
     const codigo = req.params.codigo;
-    console.log(`codigo a borrar:${codigo}`);
     const query = `
       UPDATE silla s 
       SET s.estado = 0,
@@ -1600,6 +1599,27 @@ app.post(`/quitar-reserva/:codigo`, async (req, res) => {
     // Usamos await para ejecutar la consulta
     const [result] = await pool.query(query, values);
     console.log(`reserva:${result} deshecha`);
+    res.sendStatus(200);
+  } catch (e) {
+    console.error('Error procesando solicitud:', e);
+    res.sendStatus(400);
+  }
+});
+
+app.post(`/cancelar-evento/:idEvento`, async (req, res) => {
+  try {
+    const idEvento = req.params.codigo;
+    const query = `
+      UPDATE evento
+      SET estado = "cancelado";
+      WHERE idEvento = ?
+    `;
+
+    const values = [idEvento];
+
+    // Usamos await para ejecutar la consulta
+    const [result] = await pool.query(query, values);
+    console.log(`Evento cancelado`);
     res.sendStatus(200);
   } catch (e) {
     console.error('Error procesando solicitud:', e);
