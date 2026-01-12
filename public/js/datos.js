@@ -11,7 +11,7 @@ const agrupadasPorMesa = window.agrupadasPorMesa;
 const tipoPago = window.tipoPago;
 let mesasJuntadas = [];
 let cancelarLiberacion = false;
-
+console.log("tipo Pago",tipoPago);
 // PASO 1: Convertir el objeto a un array de pares [ [clave, valor], ... ]
 // console.log(listaMesaSilla);
 // console.log(typeof(listaMesaSilla));

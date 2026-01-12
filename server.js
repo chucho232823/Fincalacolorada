@@ -670,7 +670,7 @@ app.get('/conteo/:idEvento', async (req, res) => {
  */
 app.post('/codigo', async (req, res) => {
   const { codigo, nombre, apellidos, telefono, fechaP, mesasJuntadas, tipoPago} = req.body;
-
+  console.log("Metodo de pago: ", tipoPago);
   const tPago = (tipoPago === "Transferencia") ? 'Mostrador(Transferencia)' : 
                 (tipoPago  === "Efectivo") ? 'Mostrador(Efectivo)' : 
                 (tipoPago  === "Baucher") ? 'Mostrador(Baucher)': 'Linea';
