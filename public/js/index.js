@@ -107,7 +107,7 @@ fetch("/listado-de-eventos")
         botonReservas.dataset.eventoId = evento.idEvento;
 
         const botonEliminar = document.createElement('button');
-        botonEliminar.textContent = 'ELIMINAR';
+        botonEliminar.textContent = 'CANCELAR';
         botonEliminar.classList.add('eliminar');
         botonEliminar.dataset.eventoId = evento.idEvento;
 
