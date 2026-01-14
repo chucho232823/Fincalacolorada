@@ -546,12 +546,13 @@ function agruparClavesConsecutivas(mapa) {
 
   const secuencias = [];
   let actual = [clavesNumericas[0]];
+  const espacios = new Set([415, 425, 435, 445]);
 
   for (let i = 1; i < clavesNumericas.length; i++) {
     if(clavesNumericas[i] < 300){
         continue;
     }
-    if (clavesNumericas[i] === clavesNumericas[i - 1] + 1) {
+    if (clavesNumericas[i] === clavesNumericas[i - 1] + 1 && !espacios.has(clavesnumericas[i])) {
       actual.push(clavesNumericas[i]);
     } else {
       if (actual.length > 1) {

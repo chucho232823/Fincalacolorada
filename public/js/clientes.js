@@ -26,10 +26,6 @@ fetch("/listado-de-eventos")
 .then(data => {
     const eventos = document.querySelector('.principal .swiper .swiper-wrapper');
     data.forEach(evento => {
-        // console.log(`id: ${evento.idEvento} nombre: ${evento.nombre} tipo: ${evento.tipo} fecha: ${evento.fecha}`);
-        // console.log(`hora: ${evento.hora} descripcion:${evento.descripcion} imagen:${evento.imagen}`);
-        // console.log(`Fecha evento ${evento.fecha}`);
-        // console.log(`Fecha ${hoy}`);
         const ev = {
             idEvento: evento.idEvento,
             nombre: evento.nombre,
