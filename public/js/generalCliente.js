@@ -552,7 +552,7 @@ function agruparClavesConsecutivas(mapa) {
     if(clavesNumericas[i] < 300){
         continue;
     }
-    if (clavesNumericas[i] === clavesNumericas[i - 1] + 1 && !espacios.has(clavesnumericas[i])) {
+    if (clavesNumericas[i] === clavesNumericas[i - 1] + 1 && !espacios.has(clavesNumericas[i])) {
       actual.push(clavesNumericas[i]);
     } else {
       if (actual.length > 1) {
