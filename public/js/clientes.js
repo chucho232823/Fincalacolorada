@@ -26,10 +26,10 @@ fetch("/listado-de-eventos")
 .then(data => {
     const eventos = document.querySelector('.principal .swiper .swiper-wrapper');
     data.forEach(evento => {
-        console.log(`id: ${evento.idEvento} nombre: ${evento.nombre} tipo: ${evento.tipo} fecha: ${evento.fecha}`);
-        console.log(`hora: ${evento.hora} descripcion:${evento.descripcion} imagen:${evento.imagen}`);
-        console.log(`Fecha evento ${evento.fecha}`);
-        console.log(`Fecha ${hoy}`);
+        // console.log(`id: ${evento.idEvento} nombre: ${evento.nombre} tipo: ${evento.tipo} fecha: ${evento.fecha}`);
+        // console.log(`hora: ${evento.hora} descripcion:${evento.descripcion} imagen:${evento.imagen}`);
+        // console.log(`Fecha evento ${evento.fecha}`);
+        // console.log(`Fecha ${hoy}`);
         const ev = {
             idEvento: evento.idEvento,
             nombre: evento.nombre,
@@ -40,7 +40,8 @@ fetch("/listado-de-eventos")
             imagen: evento.imagen
         }
         datosEventos.push(ev);
-
+        if(evento.estado === "cancelado")
+            return;
         //inicio de creacion de la tarjeta de evento
         const swiperSlide = document.createElement('div');
         swiperSlide.className = 'swiper-slide';
