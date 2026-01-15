@@ -429,26 +429,26 @@ mesas.forEach(mesa => {
 
             silla.classList.toggle('activa');
             ////console.log('hijos: ',mesa.children.length); esto se queda
-            if(numero === 2 && mesa.id >= 215 && mesa.id <= 219 && mesa.children.length === 3){
-                const respuesta = confirm("Puedes agregar una silla mas, ¿Deseas agregarla?");
-                if(respuesta){
-                    //console.log('se agrego una silla');
-                    const chair = document.createElement('div');
-                    chair.id = 'C'
-                    chair.classList.add('chair3');
-                    mesa.appendChild(chair);
-                    // Seleccionar todos los hijos con clase "chair2 activa"
-                    const sillasL = mesa.querySelectorAll(".chair2.activa");
-                    // Recorrer y cambiar la clase
-                    sillasL.forEach((silla) => {
-                        silla.classList.remove("chair2");
-                        silla.classList.add("chair3");
-                    });
-                    sillas = document.querySelectorAll('.chair, .chair3, .chair2');
-                }else{
-                    //console.log('no se agrego nadota');
-                }
-            }
+            // if(numero === 2 && mesa.id >= 215 && mesa.id <= 219 && mesa.children.length === 3){
+            //     const respuesta = confirm("Puedes agregar una silla mas, ¿Deseas agregarla?");
+            //     if(respuesta){
+            //         //console.log('se agrego una silla');
+            //         const chair = document.createElement('div');
+            //         chair.id = 'C'
+            //         chair.classList.add('chair3');
+            //         mesa.appendChild(chair);
+            //         // Seleccionar todos los hijos con clase "chair2 activa"
+            //         const sillasL = mesa.querySelectorAll(".chair2.activa");
+            //         // Recorrer y cambiar la clase
+            //         sillasL.forEach((silla) => {
+            //             silla.classList.remove("chair2");
+            //             silla.classList.add("chair3");
+            //         });
+            //         sillas = document.querySelectorAll('.chair, .chair3, .chair2');
+            //     }else{
+            //         //console.log('no se agrego nadota');
+            //     }
+            // }
         }
         //mostrar mesas elegidas en el boletaje
         //console.log(controlFila);
@@ -546,7 +546,7 @@ function agruparClavesConsecutivas(mapa) {
 
   const secuencias = [];
   let actual = [clavesNumericas[0]];
-  const espacios = new Set([415, 425, 435, 445]);
+  const espacios = new Set([415, 425, 435, 445, 515]);
 
   for (let i = 1; i < clavesNumericas.length; i++) {
     if(clavesNumericas[i] < 300){
@@ -629,8 +629,9 @@ compra.addEventListener('click', async () => {
     const juntar = document.querySelector('.confirma-compra span');
     juntar.innerHTML = '';
     for (let i = 0; i < cantidad; i++) {
+        const sillasSobrantes = consecutivas[i].length >= 4 ? 2 : 1;
         juntar.innerHTML = juntar.innerHTML +
-        `Puede solicitar juntar las mesas ${consecutivas[i]} pero para ello debe comprar al menos ${consecutivas[i].length*4-1} boletos entre ambas mesas\n`;
+        `Puede solicitar juntar las mesas ${consecutivas[i]} pero para ello debe comprar al menos ${consecutivas[i].length*4-sillasSobrantes} boletos entre ambas mesas\n`;
     }
     //console.log('compra: ');
     sillasActivas.forEach(silla => {
