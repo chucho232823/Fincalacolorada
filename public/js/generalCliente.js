@@ -1098,12 +1098,11 @@ const mes = meses[partesFecha[1].toLowerCase()]; // El segundo es el mes, conver
 document.getElementById("mes").innerText = mes;
 document.getElementById("dia").innerText = dia;
 
-window.addEventListener('pageshow', function(event) {
-    if (event.persisted) {
-        console.log('La página fue cargada desde la caché (posiblemente con el botón de volver atrás)');
-        this.document.getElementById("inputBoletos").value = 2;
-        // Aquí puedes ejecutar acciones específicas, como refrescar datos o restablecer un formulario
-    } else {
+window.addEventListener("pageshow", function () {
+    const navEntries = performance.getEntriesByType("navigation");
 
+    if (navEntries.length > 0 && navEntries[0].type === "back_forward") {
+        console.log("La página se cargó usando las flechas del navegador");
+        document.getElementById("inputBoletos").value = 2;
     }
 });
