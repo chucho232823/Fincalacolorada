@@ -649,6 +649,7 @@ compra.addEventListener('click', async () => {
             };
         }
 
+        agrupadasPorMesa[idMesa].sillas.push(silla.id);
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
         if(fechaPreventa < hoy){
@@ -679,7 +680,6 @@ compra.addEventListener('click', async () => {
 
     //confirma.appendChild(totalCompra);
     confirma.style.display = 'flex';
-
     fondo.style.position = 'fixed';
     document.querySelector('.main-container').style.pointerEvents = 'none';
 })
