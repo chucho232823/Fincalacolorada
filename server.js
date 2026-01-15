@@ -235,6 +235,27 @@ cron.schedule('* * * * *', async () => {
 });
 
 
+// poner evento como terminado si ya paso 12 horas despues de que paso el evento 
+cron.schedule('0 * * * *', async () => {
+  const query = `
+    UPDATE evento
+    SET estado = 'terminado'
+    WHERE estado 0 'venta'
+      AND NOW() >= DATE_ADD(DATE(fecha), INTERVAL 36 HOUR);
+  `;
+
+  try {
+    const [result] = await pool.query(query);
+    if (result.affectedRows > 0) {
+      console.log(`Eventos terminados: ${result.affectedRows}`);
+    }
+  } catch (err) {
+    console.error('Error en cron de evento:', err);
+  }
+});
+
+
+
 //Eventos 
 app.get('/evento',(req,res)=>{
   const query = 'SELECT * FROM evento';
@@ -1515,6 +1536,8 @@ app.post('/liberar-sillas/:idEvento', express.text(), async (req, res) => {
     if (!Array.isArray(sillas) || sillas.length === 0) {
       return res.status(400).send('No hay sillas para liberar');
     }
+    console.log("Sillas liberadas desde datos");
+    console.log("Sillas: ", sillas);
 
     const values = sillas.map(({ letra, numeroMesa }) => [letra, idEvento, numeroMesa]);
 

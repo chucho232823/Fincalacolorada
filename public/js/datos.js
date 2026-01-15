@@ -11,7 +11,7 @@ const agrupadasPorMesa = window.agrupadasPorMesa;
 const tipoPago = window.tipoPago;
 let mesasJuntadas = [];
 let cancelarLiberacion = false;
-console.log("tipo Pago",tipoPago);
+// console.log("tipo Pago",tipoPago);
 // PASO 1: Convertir el objeto a un array de pares [ [clave, valor], ... ]
 // console.log(listaMesaSilla);
 // console.log(typeof(listaMesaSilla));
@@ -24,7 +24,6 @@ let sumatoria = 0;
 Object.values(agrupadasPorMesa).forEach((grupo) => {
     sumatoria += grupo.total;
     console.log(`${grupo.sillas} - ${grupo.total}`);
-
     console.log("Suma parcial:", sumatoria);
 });
 
@@ -53,7 +52,7 @@ async function esperaSilla( letra, numeroMesa, idEvento ) {
     });
 
     if (!response.ok) {
-      throw new Error('Error al liberar la silla');
+      throw new Error('Error al poner silla en espera');
     }
 
     console.log('✅ Silla espera correctamente');
@@ -137,7 +136,9 @@ function liberaTodasLasSillas(listaMesaSilla, idEvento) {
 
   navigator.sendBeacon(`/liberar-sillas/${idEvento}`, payload);
 }
-
+console.log("Sillas Extra: ", sillasExtra);
+console.log("lista mesa silla",listaMesaSilla);
+ 
 function manejarLiberacion() {
   if (cancelarLiberacion) return;
   liberaTodasLasSillas(sillasExtra,sembrado);
