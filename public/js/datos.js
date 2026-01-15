@@ -559,7 +559,9 @@ consecutivas.forEach( con =>{
   })
   //console.log(conteo);
   //console.log(con.length * 4 - 1);
-  if(conteo < (con.length * 4 -1 )){
+  console.log(con);
+  const sillasSobrantes = con.length >= 4 ? 2 : 1;
+  if(conteo < (con.length * 4 - sillasSobrantes )){
     return;
   } 
 

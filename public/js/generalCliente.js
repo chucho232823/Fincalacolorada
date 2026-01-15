@@ -631,7 +631,7 @@ compra.addEventListener('click', async () => {
     for (let i = 0; i < cantidad; i++) {
         const sillasSobrantes = consecutivas[i].length >= 4 ? 2 : 1;
         juntar.innerHTML = juntar.innerHTML +
-        `Puede solicitar juntar las mesas ${consecutivas[i]} pero para ello debe comprar al menos ${consecutivas[i].length*4-sillasSobrantes} boletos entre ambas mesas\n`;
+        `Puede solicitar juntar las mesas ${consecutivas[i]} pero para ello debe comprar al menos ${consecutivas[i].length*4-sillasSobrantes} boletos entre ambas mesas<br>`;
     }
     //console.log('compra: ');
     sillasActivas.forEach(silla => {
