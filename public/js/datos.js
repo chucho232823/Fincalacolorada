@@ -135,6 +135,7 @@ controlFilaReconstruido.forEach(async (num, mesa) => {
       if (silla.mesa == mesa) {
         const indice = idSilla.indexOf(silla.silla);
         if (indice > -1) {
+          console.log(`Silla a bloquear: ${silla.silla}`)
           // Borrar 1 elemento a partir de ese índice
           idSilla.splice(indice, 1);
         }
