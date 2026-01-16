@@ -405,7 +405,22 @@ mesas.forEach(mesa => {
 
             //Verificar si aun se pueden seleccionar sillas
             if(sillasSeleccionadas >= sillasMaximas && !silla.classList.contains('activa')){
-                alert('Para seleccionar mas sillas aumenta el numero de boletos');
+                alerta = await Swal.fire({
+                    title: 'Finca la colorada dice:',
+                    text:'Para seleccionar mas sillas aumenta el numero de boletos',
+                    icon: 'success', // puede ser 'success', 'error', 'warning', 'info', 'question'
+                    confirmButtonColor: '#68AAFC',
+                    confirmButtonText: 'ACEPTAR',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    buttonsStyling: false,
+                    customClass: {
+                        popup: 'alert-popup',
+                        title: 'alert-titulo',
+                        confirmButton: 'alert-boton'
+                    },
+                });
+                // alert('Para seleccionar mas sillas aumenta el numero de boletos');
                 //console.log(`Sillas seleccionadas = ${sillasSeleccionadas}`);
                 // insertSortedKey(mesa.id, --numero);
                 //console.log(controlFila);
@@ -538,6 +553,7 @@ mesas.forEach(mesa => {
                     const precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa) && b.silla === sillas[i].id)
                     //console.log(sillas[i].id);
                     //console.log(precioSilla);
+                     console.log(`Precio preventa: ${precioSilla.precio} Precio normal: ${precioSilla.precioD}`)
                     if(fechaPreventa < hoy){
                         totalMesa += precioSilla.precio;
                     }else{
@@ -734,6 +750,8 @@ compra.addEventListener('click', async () => {
 const sembrado = window.evento.idEvento;
 const nombreEvento = window.evento.nombre;
 const fechaPreventa = window.evento.fecha;
+fechaPreventa.setHours(0, 0, 0, 0);
+fechaPreventa.setDate(fechaPreventa.getDate() + 1);
 /**
  * Verificando el estado de la silla
  */

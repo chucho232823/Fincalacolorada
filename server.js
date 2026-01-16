@@ -1003,7 +1003,7 @@ app.put(`/cambio/:idEvento`, async (req, res) => {
         return res.status(404).json({ message: 'No se encontró el registro de precio para el evento' });
       }
 
-      return res.status(200).json({ message: 'Evento y precios actualizados correctamente' });
+      return res.status(200).json({ message: 'Evento actualizado correctamente' });
 
     } else {
       return res.status(200).json({ message: 'Evento actualizado correctamente' });

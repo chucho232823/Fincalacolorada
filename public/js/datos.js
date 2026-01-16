@@ -459,7 +459,22 @@ document.getElementById('reservar').addEventListener('click', async function() {
     const apellidos = document.getElementById('apellidos').value;
     const telefono = document.getElementById('telefono').value;
     if (telefono.length < 12) {
-      alert("El teléfono debe de ser de 10 digitos");
+      // alert("El teléfono debe de ser de 10 digitos");
+      alerta = await Swal.fire({
+          title: 'Finca la colorada dice:',
+          text:"El teléfono debe de ser de 10 digitos",
+          icon: 'success', // puede ser 'success', 'error', 'warning', 'info', 'question'
+          confirmButtonColor: '#68AAFC',
+          confirmButtonText: 'ACEPTAR',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          buttonsStyling: false,
+          customClass: {
+              popup: 'alert-popup',
+              title: 'alert-titulo',
+              confirmButton: 'alert-boton'
+          },
+      });
       overlay.style.display = 'none';
       return; 
     }
