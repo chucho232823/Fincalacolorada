@@ -924,7 +924,6 @@ data.forEach(row => {
     const tr = document.createElement('tr');
 
     const fechaPreventa = new Date(row.fechaP + 'T00:00:00Z');
-    const fecha = new Date(row.fecha + 'T00:00:00Z');
     //console.log(fechaPreventa)
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
