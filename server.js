@@ -141,7 +141,6 @@ app.get('/eventosPasados', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'private', 'eventosPasados.html'));
 });
 
-
 // function requireAuthApi(req, res, next) {
 //   if (req.session?.auth) {
 //     return next();
@@ -1432,7 +1431,7 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
 /**
  * Generacion de reporte
  */
-app.get('/reporte/:idEvento', async (req, res) => {
+app.get('/reporte/:idEvento', requireAuth , async (req, res) => {
     const idEvento = req.params.idEvento;
 
     try {
