@@ -550,7 +550,6 @@ app.post('/sembrado/:nombre',(req,res) => {
   if (!raw) {
     return res.status(400).send("No se recibió 'data' en el cuerpo del formulario.");
   }
-
   const evento = JSON.parse(req.body.data);
   res.render(evento.tipo.toLowerCase(), { evento });
 })

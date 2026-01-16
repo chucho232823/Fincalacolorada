@@ -35,6 +35,7 @@ fetch("/listado-de-eventos")
             nombre: evento.nombre,
             tipo: evento.tipo,
             fecha: evento.fecha,
+            fecha: evento.fechaP,
             hora: evento.hora,
             subtitulo: evento.subtitulo,
             imagen: evento.imagen,
