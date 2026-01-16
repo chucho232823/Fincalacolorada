@@ -23,11 +23,9 @@ console.log(consecutivas);
 let sumatoria = 0;
 Object.values(agrupadasPorMesa).forEach((grupo) => {
     sumatoria += grupo.total;
-    console.log(`${grupo.sillas} - ${grupo.total}`);
-    console.log("Suma parcial:", sumatoria);
+    // console.log(`${grupo.sillas} - ${grupo.total}`);
+    // console.log("Suma parcial:", sumatoria);
 });
-
-console.log("Total final:", sumatoria);
 
 
 
@@ -63,8 +61,8 @@ async function esperaSilla( letra, numeroMesa, idEvento ) {
 
 let sillasExtra = [];
 controlFilaReconstruido.forEach(async (num, mesa) => {
-  //console.log(`mesa: ${mesa} Reservas: ${num}`);
-  //console.log(!(mesa >= 215 && mesa <= 219));
+  console.log(`mesa: ${mesa} Reservas: ${num}`);
+  console.log(!(mesa >= 215 && mesa <= 219));
   if (num === 3 && !(mesa >= 215 && mesa <= 219)) {
     const idSilla = ['A', 'B', 'C', 'D'];
     console.log(listaMesaSilla);
@@ -100,7 +98,7 @@ controlFilaReconstruido.forEach(async (num, mesa) => {
       }
     });
     console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`);
-    if(num === 2 && consecutivas.length >= 4){
+    if(num === 2 && !(mesa >= 215 && mesa <= 219) && consecutivas.length >= 4){
       //aqui se ponen en sillas exra las que falten cuando son mas de 3 mesas
       console.log("Apartando 4 mesas");
       const idSilla = ['A', 'B', 'C', 'D'];
@@ -578,7 +576,7 @@ consecutivas.forEach( con =>{
   let juntar;
   let conteo = 0;
   con.forEach(can => {
-    console.log(can);
+    //console.log(can);
     conteo += controlFilaReconstruido.get(can);
   })
   //console.log(conteo);
