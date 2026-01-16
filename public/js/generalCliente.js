@@ -864,8 +864,9 @@ const tbody = document.querySelector('#tablaPrecios tbody');
 data.forEach(row => {
     const tr = document.createElement('tr');
 
-    console.log(row.fechaP);
-    const fechaPreventa = new Date(row.fechaP + 'T00:00:00Z');
+    
+    const fechaPreventa = new Date(row.fechaP);
+    fechaPreventa.setHours(0, 0, 0, 0);
     console.log(fechaPreventa)
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
