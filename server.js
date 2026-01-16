@@ -240,7 +240,7 @@ cron.schedule('0 * * * *', async () => {
   const query = `
     UPDATE evento
     SET estado = 'terminado'
-    WHERE estado 0 'venta'
+    WHERE estado = 'venta'
       AND NOW() >= DATE_ADD(DATE(fecha), INTERVAL 36 HOUR);
   `;
 

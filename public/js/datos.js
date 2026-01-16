@@ -135,19 +135,20 @@ controlFilaReconstruido.forEach(async (num, mesa) => {
       if (silla.mesa == mesa) {
         const indice = idSilla.indexOf(silla.silla);
         if (indice > -1) {
-          console.log(`Silla a bloquear: ${silla.silla}`)
           // Borrar 1 elemento a partir de ese índice
           idSilla.splice(indice, 1);
         }
       }
     });
-    const relleno = {
-      mesa: mesa,
-      silla: idSilla[0]
-    };
     await esperaSilla(idSilla[0], mesa, sembrado);
-    await bloqueo(relleno);
-    sillasExtra.push(relleno);
+    for (let index = 0; index < idSilla.length; index++) {
+      const relleno = {
+        mesa: mesa,
+        silla: idSilla[index]
+      };     
+      await bloqueo(relleno);
+      sillasExtra.push(relleno);
+    }    
   }
 })
 
