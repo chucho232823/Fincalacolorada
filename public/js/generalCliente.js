@@ -705,8 +705,9 @@ compra.addEventListener('click', async () => {
 const sembrado = window.evento.idEvento;
 const nombreEvento = window.evento.nombre;
 const fechaPreventa = window.evento.fecha;
-fechaPreventa.setHours(0, 0, 0, 0);
-fechaPreventa.setDate(fechaPreventa.getDate() + 1);
+console.log(fechaPreventa);
+// fechaPreventa.setHours(0, 0, 0, 0);
+// fechaPreventa.setDate(fechaPreventa.getDate() + 1);
 /**
  * Verificando el estado de la silla
  */
