@@ -140,12 +140,12 @@ controlFilaReconstruido.forEach(async (num, mesa) => {
         }
       }
     });
-    await esperaSilla(idSilla[0], mesa, sembrado);
     for (let index = 0; index < idSilla.length; index++) {
       const relleno = {
         mesa: mesa,
         silla: idSilla[index]
       };     
+      await esperaSilla(idSilla[index], mesa, sembrado);
       await bloqueo(relleno);
       sillasExtra.push(relleno);
     }    
@@ -599,7 +599,7 @@ consecutivas.forEach( con =>{
   })
   //console.log(conteo);
   //console.log(con.length * 4 - 1);
-  console.log(con);
+  // console.log(con);
   const sillasSobrantes = con.length >= 4 ? 2 : 1;
   if(conteo < (con.length * 4 - sillasSobrantes )){
     return;
