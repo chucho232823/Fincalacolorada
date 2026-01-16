@@ -332,21 +332,21 @@ document.getElementById("Modal-Trova").addEventListener("submit", async function
     const vipD = data.get("vipD");    
 
     // Ejemplo: mostrar en consola
-    console.log({
-        nombre,
-        subtitulo,
-        fecha,
-        fechaPreventa,
-        hora,
-        laterales,
-        lateralesD,
-        general,
-        generalD,
-        preferente,
-        preferenteD,
-        vip,
-        vipD
-    });
+    // console.log({
+    //     nombre,
+    //     subtitulo,
+    //     fecha,
+    //     fechaPreventa,
+    //     hora,
+    //     laterales,
+    //     lateralesD,
+    //     general,
+    //     generalD,
+    //     preferente,
+    //     preferenteD,
+    //     vip,
+    //     vipD
+    // });
     // Enviando al backend
     const enviarDatos = {
         nombre: nombre,
