@@ -868,10 +868,8 @@ data.forEach(row => {
     const fechaPreventa = new Date(row.fechaP);
     fechaPreventa.setHours(0, 0, 0, 0);
     fechaPreventa.setDate(fechaPreventa.getDate() + 1);
-    console.log(fechaPreventa)
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
-    console.log(`Hoy: ${hoy} preventa: ${fechaPreventa}`);
     const mostrarPrecio = (fechaPreventa < hoy) ? row.precioD : row.precio;
 
     tr.innerHTML = `

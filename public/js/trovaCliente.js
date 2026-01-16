@@ -923,11 +923,11 @@ const tbody = document.querySelector('#tablaPrecios tbody');
 data.forEach(row => {
     const tr = document.createElement('tr');
 
-    const fechaPreventa = new Date(row.fechaP + 'T00:00:00Z');
-    //console.log(fechaPreventa)
+    const fechaPreventa = new Date(row.fechaP);
+    fechaPreventa.setHours(0, 0, 0, 0);
+    fechaPreventa.setDate(fechaPreventa.getDate() + 1);
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
-    console.log(`Hoy: ${hoy} fecha evento: ${fecha} fecha preventa: ${fechaPreventa}`)
     const mostrarPrecio = (fechaPreventa < hoy) ? row.precioD : row.precio;
 
     tr.innerHTML = `
