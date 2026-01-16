@@ -704,8 +704,10 @@ compra.addEventListener('click', async () => {
 //nombre que se recibira 
 const sembrado = window.evento.idEvento;
 const nombreEvento = window.evento.nombre;
-const fechaPreventa = window.evento.fecha;
-console.log(fechaPreventa);
+const fecha = window.evento.fecha;
+const fechaPreventa = window.evento.fechaP;
+console.log("fecha: ", fecha);
+console.log("fecha preventa: ",fechaPreventa);
 // fechaPreventa.setHours(0, 0, 0, 0);
 // fechaPreventa.setDate(fechaPreventa.getDate() + 1);
 /**
