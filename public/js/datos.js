@@ -98,8 +98,8 @@ controlFilaReconstruido.forEach(async (num, mesa) => {
           idSilla.splice(indice, 1);
         }
       }
-    });}
-    console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`)
+    });
+    console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`);
     if(num === 2 && consecutivas.length >= 4){
       //aqui se ponen en sillas exra las que falten cuando son mas de 3 mesas
       console.log("Apartando 4 mesas");
@@ -114,14 +114,14 @@ controlFilaReconstruido.forEach(async (num, mesa) => {
             idSilla.splice(indice, 1);
           }
         }
-    });
-    const relleno = {
-      mesa: mesa,
-      silla: idSilla[0]
-    };
-    await esperaSilla(idSilla[0], mesa, sembrado);
-    await bloqueo(relleno);
-    sillasExtra.push(relleno);
+      });
+      const relleno = {
+        mesa: mesa,
+        silla: idSilla[0]
+      };
+      await esperaSilla(idSilla[0], mesa, sembrado);
+      await bloqueo(relleno);
+      sillasExtra.push(relleno);
     }
     const relleno = {
       mesa: mesa,
