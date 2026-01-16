@@ -493,8 +493,6 @@ mesas.forEach(mesa => {
             for (let i = 0; i < sillas.length; i++) {
                 if(sillas[i].classList.contains('activa')){
                     const precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa) && b.silla === sillas[i].id)
-                    //console.log(sillas[i].id);
-                    console.log(precioSilla);
                     if(fechaPreventa < hoy){
                         totalMesa += precioSilla.precio;
                     }else{
@@ -870,6 +868,7 @@ data.forEach(row => {
     //console.log(fechaPreventa)
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
+    console.log(`Hoy: ${Hoy} fecha preventa: ${fechaPreventa}`)
     const mostrarPrecio = (fechaPreventa < hoy) ? row.precioD : row.precio;
 
     tr.innerHTML = `
@@ -1100,9 +1099,7 @@ document.getElementById("dia").innerText = dia;
 
 window.addEventListener("pageshow", function () {
     const navEntries = performance.getEntriesByType("navigation");
-
     if (navEntries.length > 0 && navEntries[0].type === "back_forward") {
-        console.log("La página se cargó usando las flechas del navegador");
         document.getElementById("inputBoletos").value = 2;
     }
 });

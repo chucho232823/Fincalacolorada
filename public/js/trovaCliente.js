@@ -927,6 +927,7 @@ data.forEach(row => {
     //console.log(fechaPreventa)
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
+    console.log(`Hoy: ${Hoy} fecha preventa: ${fechaPreventa}`)
     const mostrarPrecio = (fechaPreventa < hoy) ? row.precioD : row.precio;
 
     tr.innerHTML = `
@@ -1162,7 +1163,6 @@ window.addEventListener("pageshow", function () {
     const navEntries = performance.getEntriesByType("navigation");
 
     if (navEntries.length > 0 && navEntries[0].type === "back_forward") {
-        console.log("La página se cargó usando las flechas del navegador");
         document.getElementById("inputBoletos").value = 2;
     }
 });

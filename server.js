@@ -1538,20 +1538,6 @@ app.post('/liberar-sillas/:idEvento', express.text(), async (req, res) => {
     }
 
     const values = sillas.map(({ letra, numeroMesa }) => [letra, idEvento, numeroMesa]);
-
-    const query = `
-      UPDATE silla s 
-      JOIN mesa m ON m.idMesa = s.idMesa
-      JOIN precioEvento pe ON m.idPrecio = pe.idPrecio
-      JOIN evento e ON e.idEvento = pe.idEvento
-      SET estado = false,
-          bloqueada = false,
-          enEspera = false,
-          enEsperaDesde = NULL
-      WHERE (s.letra, m.numero) IN (? )
-        AND e.idEvento = ?;
-    `;
-
     // Generamos los placeholders para el IN
     const letrasYMesas = sillas.map(s => [s.letra, s.numeroMesa]);
     const placeholders = letrasYMesas.map(() => '(?, ?)').join(', ');
