@@ -509,6 +509,7 @@ mesas.forEach(mesa => {
                 if(sillas[i].classList.contains('activa')){
                     const precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa) && b.silla === sillas[i].id)
                     console.log(`Precio preventa: ${precioSilla.precio} Precio normal: ${precioSilla.precioD}`)
+                    console.log(`Hoy: ${hoy} fecha Preventa: ${fechaPreventa}`)
                     if(fechaPreventa < hoy){
                         totalMesa += precioSilla.precio;
                     }else{
@@ -706,8 +707,8 @@ const sembrado = window.evento.idEvento;
 const nombreEvento = window.evento.nombre;
 const fecha = window.evento.fecha;
 const fechaPreventa = window.evento.fechaP;
-console.log("fecha: ", fecha);
-console.log("fecha preventa: ",fechaPreventa);
+// console.log("fecha: ", fecha);
+// console.log("fecha preventa: ",fechaPreventa);
 // fechaPreventa.setHours(0, 0, 0, 0);
 // fechaPreventa.setDate(fechaPreventa.getDate() + 1);
 /**
