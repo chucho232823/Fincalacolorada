@@ -125,7 +125,7 @@ controlFilaReconstruido.forEach(async (num, mesa) => {
     console.log('Mesa no encontrada');
   }
 
-  if(num === 2 && !(mesa >= 215 && mesa <= 219) && cantidadValores.length >= 4){
+  if(num === 2 && !(mesa >= 215 && mesa <= 219) && cantidadValores >= 4){
     //aqui se ponen en sillas exra las que falten cuando son mas de 3 mesas
     console.log("Apartando 4 mesas");
     const idSilla = ['A', 'B', 'C', 'D'];
