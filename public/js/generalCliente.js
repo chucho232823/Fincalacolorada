@@ -863,7 +863,8 @@ fetch(`/precios/${sembrado}`)
 const tbody = document.querySelector('#tablaPrecios tbody');
 data.forEach(row => {
     const tr = document.createElement('tr');
-
+    console.log("FechaBD :", row.fecha);
+    console.log("FechaPBD :", row.fechaP);
     const fechaPreventa = new Date(row.fechaP + 'T00:00:00Z');
     const fecha = new Date(row.fecha + 'T00:00:00Z');
     //console.log(fechaPreventa)
