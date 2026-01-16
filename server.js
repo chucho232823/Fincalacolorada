@@ -744,7 +744,7 @@ app.post('/codigo', async (req, res) => {
   }
 });
 
-app.get('/lista/:idEvento', async (req, res) => {
+app.get('/lista/:idEvento', requireAuth, async (req, res) => {
   const { idEvento } = req.params;
   const queryReservas = `
     SELECT DISTINCT r.nombre, r.telefono, r.codigo, r.juntar, r.tipoPago, r.estado
