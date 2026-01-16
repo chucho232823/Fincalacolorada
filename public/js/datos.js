@@ -15,7 +15,7 @@ let cancelarLiberacion = false;
 // PASO 1: Convertir el objeto a un array de pares [ [clave, valor], ... ]
 // console.log(listaMesaSilla);
 // console.log(typeof(listaMesaSilla));
-// console.log(consecutivas);
+console.log(consecutivas);
 // console.log(agrupadasPorMesa);
 // console.log(sembrado);
 // console.log(nombreEvento);
@@ -85,7 +85,6 @@ controlFilaReconstruido.forEach(async (num, mesa) => {
     await esperaSilla(idSilla[0], mesa, sembrado);
     await bloqueo(relleno);
     sillasExtra.push(relleno);
-
   }
   if (num === 2 && (mesa >= 215 && mesa <= 219)) {
     const idSilla = ['A', 'B', 'C'];
@@ -99,7 +98,31 @@ controlFilaReconstruido.forEach(async (num, mesa) => {
           idSilla.splice(indice, 1);
         }
       }
+    });}
+    console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`)
+    if(num === 2 && consecutivas.length >= 4){
+      //aqui se ponen en sillas exra las que falten cuando son mas de 3 mesas
+      console.log("Apartando 4 mesas");
+      const idSilla = ['A', 'B', 'C', 'D'];
+      console.log(listaMesaSilla);
+      //console.log(idSilla);
+      listaMesaSilla.forEach(silla => {
+        if (silla.mesa == mesa) {
+          const indice = idSilla.indexOf(silla.silla);
+          if (indice > -1) {
+            // Borrar 1 elemento a partir de ese índice
+            idSilla.splice(indice, 1);
+          }
+        }
     });
+    const relleno = {
+      mesa: mesa,
+      silla: idSilla[0]
+    };
+    await esperaSilla(idSilla[0], mesa, sembrado);
+    await bloqueo(relleno);
+    sillasExtra.push(relleno);
+    }
     const relleno = {
       mesa: mesa,
       silla: idSilla[0]

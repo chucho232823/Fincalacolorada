@@ -1536,8 +1536,6 @@ app.post('/liberar-sillas/:idEvento', express.text(), async (req, res) => {
     if (!Array.isArray(sillas) || sillas.length === 0) {
       return res.status(400).send('No hay sillas para liberar');
     }
-    console.log("Sillas liberadas desde datos");
-    console.log("Sillas: ", sillas);
 
     const values = sillas.map(({ letra, numeroMesa }) => [letra, idEvento, numeroMesa]);
 
