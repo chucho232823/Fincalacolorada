@@ -747,7 +747,7 @@ app.post('/codigo', async (req, res) => {
 app.get('/lista/:idEvento', requireAuth, async (req, res) => {
   const { idEvento } = req.params;
   const queryReservas = `
-    SELECT DISTINCT r.nombre, r.telefono, r.codigo, r.juntar, r.tipoPago, r.estado
+    SELECT DISTINCT r.nombre, r.apellido, r.telefono, r.codigo, r.juntar, r.tipoPago, r.estado
     FROM reserva r
     JOIN silla s ON s.codigo = r.codigo
     JOIN mesa m ON m.idMesa = s.idMesa

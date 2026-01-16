@@ -28,7 +28,7 @@
       <tbody>
         <% reservas.forEach(r => { %>
           <tr>
-            <td><%= r.nombre %></td>
+            <td><%= r.nombre %> <%= r.apellido %></td>
             <td><%= r.telefono %></td>
             <td><%= r.boletos %> <span class="ver" id = "<%= r.codigo %>">🎟️</span>
                 <% if(r.juntar != "") {%>
