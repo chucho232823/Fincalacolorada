@@ -699,7 +699,7 @@ compra.addEventListener('click', async () => {
     document.querySelector('.main-container').style.pointerEvents = 'none';
 })
 
-//console.log('evento recibido: ', window.evento);
+console.log('evento recibido: ', window.evento);
 //console.log('id del Evento: ', window.evento.idEvento);
 //nombre que se recibira 
 const sembrado = window.evento.idEvento;
