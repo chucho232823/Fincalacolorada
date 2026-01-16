@@ -62,7 +62,8 @@ async function esperaSilla( letra, numeroMesa, idEvento ) {
 let sillasExtra = [];
 controlFilaReconstruido.forEach(async (num, mesa) => {
   console.log(`mesa: ${mesa} Reservas: ${num}`);
-  console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`);
+  // console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`);
+
   if (num === 3 && !(mesa >= 215 && mesa <= 219)) {
     const idSilla = ['A', 'B', 'C', 'D'];
     console.log(listaMesaSilla);
@@ -97,8 +98,21 @@ controlFilaReconstruido.forEach(async (num, mesa) => {
         }
       }
     });
-    
-    if(num === 2 && !(mesa >= 215 && mesa <= 219) && consecutivas.length >= 4){
+    const buscarMesa = mesa;
+
+    // Buscar la posición donde se encuentra la mesa
+    const indice = consecutivas.findIndex(arr => arr.includes(buscarMesa));
+
+    // Si encontramos la mesa, contamos los valores en esa posición
+    let cantidadValores;
+    if (indice !== -1) {
+      cantidadValores = consecutivas[indice].length;
+      console.log(cantidadValores); // Muestra el número de valores en la posición
+    } else {
+      console.log('Mesa no encontrada');
+    }
+
+    if(num === 2 && !(mesa >= 215 && mesa <= 219) && cantidadValores.length >= 4){
       //aqui se ponen en sillas exra las que falten cuando son mas de 3 mesas
       console.log("Apartando 4 mesas");
       const idSilla = ['A', 'B', 'C', 'D'];
