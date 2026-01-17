@@ -705,7 +705,21 @@ document.getElementById("Modal-Edita-Baile").addEventListener("submit", async fu
       const result = await response.json();
       console.log("Evento actualizado:", result);
 
-      alert("Evento actualizado correctamente");
+      alerta = await Swal.fire({
+            title: 'Finca la colorada dice:',
+            text: result.message,
+            icon: 'success', // puede ser 'success', 'error', 'warning', 'info', 'question'
+            confirmButtonColor: '#68AAFC',
+            confirmButtonText: 'Aceptar',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            buttonsStyling: false,
+            customClass: {
+                popup: 'alert-popup',
+                title: 'alert-titulo',
+                confirmButton: 'alert-boton'
+            },
+        });
       location.reload();
     } catch (error) {
       console.error("Error:", error.message);
