@@ -548,16 +548,18 @@ mesas.forEach(mesa => {
             const hoy = new Date();
             hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
         
+            let preventa = new Date(fechaPreventa);
+            preventa.setHours(0, 0, 0, 0);
+            preventa.setDate(preventa.getDate() + 1);
             for (let i = 0; i < sillas.length; i++) {
                 if(sillas[i].classList.contains('activa')){
                     const precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa) && b.silla === sillas[i].id)
-                    //console.log(sillas[i].id);
-                    //console.log(precioSilla);
-                     console.log(`Precio preventa: ${precioSilla.precio} Precio normal: ${precioSilla.precioD}`)
-                    if(fechaPreventa < hoy){
-                        totalMesa += precioSilla.precio;
-                    }else{
+                    console.log(`Precio preventa: ${precioSilla.precio} Precio normal: ${precioSilla.precioD}`)
+                    console.log(`Hoy: ${hoy} fecha Preventa: ${preventa}`)
+                    if(preventa < hoy){
                         totalMesa += precioSilla.precioD;
+                    }else{
+                        totalMesa += precioSilla.precio;
                     }
                     spanSillas.innerHTML += `${sillas[i].id} `;
                 } 
@@ -711,12 +713,15 @@ compra.addEventListener('click', async () => {
         agrupadasPorMesa[idMesa].sillas.push(silla.id);
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
-        if(fechaPreventa < hoy){
-            agrupadasPorMesa[idMesa].total += precioSilla.precio;
-            total += precioSilla.precio;
-        }else{
+        let preventa = new Date(fechaPreventa);
+        preventa.setHours(0, 0, 0, 0);
+        preventa.setDate(preventa.getDate() + 1);
+        if(preventa < hoy){
             agrupadasPorMesa[idMesa].total += precioSilla.precioD;
             total += precioSilla.precioD;
+        }else{
+            agrupadasPorMesa[idMesa].total += precioSilla.precio;
+            total += precioSilla.precio;
         }
         
         //lista.appendChild(item);

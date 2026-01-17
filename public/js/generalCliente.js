@@ -672,7 +672,10 @@ compra.addEventListener('click', async () => {
         agrupadasPorMesa[idMesa].sillas.push(silla.id);
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
-        if(fechaPreventa < hoy){
+        let preventa = new Date(fechaPreventa);
+        preventa.setHours(0, 0, 0, 0);
+        preventa.setDate(preventa.getDate() + 1);
+        if(preventa < hoy){
             agrupadasPorMesa[idMesa].total += precioSilla.precioD;
             total += precioSilla.precioD;
         }else{
