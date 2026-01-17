@@ -669,7 +669,7 @@ async function obtenerConteo(idEvento) {
      FROM reserva WHERE codigo LIKE ?;`,
     [`${idEvento}-%`]
   );
-  console.log(`conteo: ${rows[0].numero}`)
+  // console.log(`conteo: ${rows[0].numero}`)
   return rows[0].numero;
 }
 /**
@@ -850,7 +850,7 @@ app.get('/fechaP/:idEvento', async (req, res) => {
   try {
     // Usar await para ejecutar la consulta con mysql2/promise
     const [resultado] = await pool.query(query, [idEvento]);
-    console.log(resultado);
+    // console.log(resultado);
     if (resultado.length === 0) {
       return res.status(404).json({ error: 'Evento no encontrado' });
     }
@@ -1125,7 +1125,7 @@ async function actualizarImagenEvento(idEvento, nombreImagen) {
       //console.log(`Imagen para evento ${idEvento} actualizada correctamente.`);
       return true; // Indica que la actualización fue exitosa
     } else {
-      console.log(`No se encontró el evento con id ${idEvento}.`);
+      // console.log(`No se encontró el evento con id ${idEvento}.`);
       return false; // Si no se encontró el evento
     }
   } catch (e) {
@@ -1144,16 +1144,16 @@ async function uploadToFtp(rutaLocal, nombreRemoto, accion,idEvento) {
 
     try {
         // Conectar al servidor FTP
-        console.log("Conectando al servidor FTP...");
+        // console.log("Conectando al servidor FTP...");
         await client.access({
             host: ftpHost,
             user: ftpUser,
             password: ftpPass,
         });
 
-        console.log("Conectado al servidor FTP");
-        console.log("Ruta local del archivo:", rutaLocal);
-        console.log("Nombre remoto del archivo:", nombreRemoto);
+        // console.log("Conectado al servidor FTP");
+        // console.log("Ruta local del archivo:", rutaLocal);
+        // console.log("Nombre remoto del archivo:", nombreRemoto);
 
         // Cambiar al directorio donde quieres subir el archivo
         if (accion === "PDF") {
@@ -1171,7 +1171,7 @@ async function uploadToFtp(rutaLocal, nombreRemoto, accion,idEvento) {
         // Subir el archivo al servidor
        
         await client.uploadFrom(rutaLocal, nombreRemoto);
-        console.log(`Archivo ${nombreRemoto} subido al FTP correctamente`);
+        // console.log(`Archivo ${nombreRemoto} subido al FTP correctamente`);
 
     } catch (error) {
         console.error("Error al subir el archivo:", error);
@@ -1606,7 +1606,7 @@ app.post(`/quitar-reserva/:codigo`, async (req, res) => {
 
     // Usamos await para ejecutar la consulta
     const [result] = await pool.query(query, values);
-    console.log(`reserva:${result} deshecha`);
+    // console.log(`reserva:${result} deshecha`);
     res.sendStatus(200);
   } catch (e) {
     console.error('Error procesando solicitud:', e);

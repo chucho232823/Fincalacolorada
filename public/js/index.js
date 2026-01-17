@@ -26,7 +26,7 @@ fetch("/listado-de-eventos")
     const eventoTrova = document.querySelector('.trova .swiper .swiper-wrapper');
     const eventoBaile = document.querySelector('.baile .swiper .swiper-wrapper');
     data.forEach(evento => {
-        console.log(`id: ${evento.idEvento} nombre: ${evento.nombre} tipo: ${evento.tipo} fecha: ${evento.fecha} fecha Preventa: ${evento.fechaP}`);
+        //console.log(`id: ${evento.idEvento} nombre: ${evento.nombre} tipo: ${evento.tipo} fecha: ${evento.fecha} fecha Preventa: ${evento.fechaP}`);
         //console.log(`hora: ${evento.hora} descripcion:${evento.descripcion} imagen:${evento.imagen}`);
         //console.log(`Fecha evento ${evento.fecha}`);
         //console.log(`Fecha ${hoy}`);
@@ -43,7 +43,7 @@ fetch("/listado-de-eventos")
         }
         datosEventos.push(ev);
         if(evento.estado === "cancelado"){
-            console.log(`Evento: ${evento.nombre} cancelado`)
+            // console.log(`Evento: ${evento.nombre} cancelado`)
             return;
         }
             
@@ -123,7 +123,7 @@ fetch("/listado-de-eventos")
         eventoDiv.append(editarTxt,imagenEvento,titulo,subTitulo,fechayHora,botones);
         swiperSlide.appendChild(eventoDiv);
         //agregando al swiper-wrapper correspondiente
-        console.log(evento.tipo)
+        // console.log(evento.tipo)
         if(evento.tipo === "Baile")
             eventoBaile.appendChild(swiperSlide);
         if(evento.tipo === "Trova")
@@ -156,7 +156,7 @@ fetch("/listado-de-eventos")
         //funcion del boton eliminar
         botonEliminar.addEventListener('click', async (e) => {
             e.preventDefault();
-            console.log("evento id: " , e.currentTarget.dataset.eventoId)
+            // console.log("evento id: " , e.currentTarget.dataset.eventoId)
 
             const idEvento = e.currentTarget.dataset.eventoId;
 
@@ -276,7 +276,7 @@ fetch("/listado-de-eventos")
                 });
             }
 
-            console.log("Evento cargado en modal:", data);
+            // console.log("Evento cargado en modal:", data);
         });
     });
 })
@@ -284,9 +284,7 @@ fetch("/listado-de-eventos")
     console.error('Error al cargar datos', error);
 });
 
-console.log(datosEventos);
-
-//console.log(datosEventos);
+// console.log(datosEventos);
 
 
 //Agregar Trova
@@ -380,12 +378,12 @@ document.getElementById("Modal-Trova").addEventListener("submit", async function
             body: JSON.stringify(enviarDatos)
         });
         const respuesta = await res.json();
-        console.log("📥 Respuesta servidor:", respuesta);
+        // console.log("📥 Respuesta servidor:", respuesta);
 
         // Cargando la imagen
         const idEvento = respuesta.idEvento; 
         const imagen = data.get("imagen"); 
-        console.log(imagen && imagen.size > 0);
+        // console.log(imagen && imagen.size > 0);
         if (imagen && imagen.size > 0) {
             const imageFormData = new FormData();
             imageFormData.append("imagen", imagen);
@@ -397,7 +395,7 @@ document.getElementById("Modal-Trova").addEventListener("submit", async function
                 body: imageFormData
             });
         } else {
-            console.log("No se seleccionó imagen, se usara una por defecto");
+            // console.log("No se seleccionó imagen, se usara una por defecto");
         }
 
         alerta = await Swal.fire({
@@ -446,20 +444,20 @@ document.getElementById("Modal-Baile").addEventListener("submit", async function
     const vipD = data.get("vipD");
 
     // Ejemplo: mostrar en consola
-    console.log({
-        nombre,
-        subtitulo,
-        fecha,
-        fechaPreventa,
-        hora,
-        imagen,
-        general,
-        generalD,
-        preferente,
-        preferenteD,
-        vip,
-        vipD
-    });
+    // console.log({
+    //     nombre,
+    //     subtitulo,
+    //     fecha,
+    //     fechaPreventa,
+    //     hora,
+    //     imagen,
+    //     general,
+    //     generalD,
+    //     preferente,
+    //     preferenteD,
+    //     vip,
+    //     vipD
+    // });
 
     // Enviando al backend
     const enviarDatos = {
@@ -491,12 +489,12 @@ document.getElementById("Modal-Baile").addEventListener("submit", async function
             body: JSON.stringify(enviarDatos)
         });
         const respuesta = await res.json();
-        console.log("📥 Respuesta servidor:", respuesta);
+        // console.log("📥 Respuesta servidor:", respuesta);
 
         // Cargando la imagen
         const idEvento = respuesta.idEvento; 
         const imagen = data.get("imagen"); 
-        console.log(imagen && imagen.size > 0);
+        // console.log(imagen && imagen.size > 0);
         if (imagen && imagen.size > 0) {
             const imageFormData = new FormData();
             imageFormData.append("imagen", imagen);
@@ -508,7 +506,7 @@ document.getElementById("Modal-Baile").addEventListener("submit", async function
                 body: imageFormData
             });
         } else {
-            console.log("No se seleccionó imagen, se usara una por defecto");
+            // console.log("No se seleccionó imagen, se usara una por defecto");
         }
 
         alerta = await Swal.fire({
@@ -582,10 +580,10 @@ document.getElementById("Modal-Edita-Trova").addEventListener("submit", async fu
           Laterales: lateralesD
         }
       };
-      console.log(typeof(idEvento));
+      //console.log(typeof(idEvento));
       const entero = parseInt(idEvento);
-      console.log(typeof(entero));
-      console.log("Enviando:", enviarDatos);
+      //console.log(typeof(entero));
+      //console.log("Enviando:", enviarDatos);
 
       const response = await fetch(`/cambio/${idEvento}`, {
         method: "PUT",
@@ -596,7 +594,7 @@ document.getElementById("Modal-Edita-Trova").addEventListener("submit", async fu
       });
       //subiendo imagen para actualizar
         const imagen = data.get("imagen"); 
-        console.log(imagen && imagen.size > 0);
+        // console.log(imagen && imagen.size > 0);
         if (imagen && imagen.size > 0) {
             
             const imageFormData = new FormData();
@@ -609,7 +607,7 @@ document.getElementById("Modal-Edita-Trova").addEventListener("submit", async fu
                 body: imageFormData
             });
         } else {
-            console.log("No se seleccionó imagen, se usara una por defecto");
+            // console.log("No se seleccionó imagen, se usara una por defecto");
         }
 
       if (!response.ok) {
@@ -684,10 +682,10 @@ document.getElementById("Modal-Edita-Baile").addEventListener("submit", async fu
           General: generalD,
         }
       };
-      console.log(typeof(idEvento));
-      const entero = parseInt(idEvento);
-      console.log(typeof(entero));
-      console.log("Enviando:", enviarDatos);
+    //   console.log(typeof(idEvento));
+    //   const entero = parseInt(idEvento);
+    //   console.log(typeof(entero));
+    //   console.log("Enviando:", enviarDatos);
 
       const response = await fetch(`/cambio/${idEvento}`, {
         method: "PUT",
@@ -703,7 +701,7 @@ document.getElementById("Modal-Edita-Baile").addEventListener("submit", async fu
       }
 
       const result = await response.json();
-      console.log("Evento actualizado:", result);
+    //   console.log("Evento actualizado:", result);
 
       alerta = await Swal.fire({
             title: 'Finca la colorada dice:',

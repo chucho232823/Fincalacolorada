@@ -604,7 +604,7 @@ input[type=number] {
     border-radius: 6px;
     cursor: pointer;
     text-decoration: none;
-    margin-top: 20px;
+    margin: 20px 0;
     justify-self: center;
 }
 

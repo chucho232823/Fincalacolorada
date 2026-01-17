@@ -87,9 +87,12 @@ function generarExcel() {
 
 const volver = document.getElementById('volver');
 
-volver.addEventListener("click",() => {
-    window.location.href = "/"
-})
+
+volver.addEventListener("click", () => {
+  window.history.length > 1
+    ? window.history.back()
+    : window.location.href = "/";
+});
 
 
 async function eliminaReserva(codigo) {
