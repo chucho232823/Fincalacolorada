@@ -507,9 +507,8 @@ mesas.forEach(mesa => {
             hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
             
             let preventa = new Date(fechaPreventa);
-            preventa = preventa.setDate(preventa.getDate() + 1);
-
             preventa.setHours(0, 0, 0, 0);
+            preventa = preventa.setDate(preventa.getDate() + 1);
             for (let i = 0; i < sillas.length; i++) {
                 if(sillas[i].classList.contains('activa')){
                     const precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa) && b.silla === sillas[i].id)
