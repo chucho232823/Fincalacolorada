@@ -505,12 +505,14 @@ mesas.forEach(mesa => {
             let totalMesa = 0;  
             const hoy = new Date();
             hoy.setHours(0, 0, 0, 0); // elimina la hora para comparar solo fechas
+            const preventa = new Date(fechaPreventa);
+            preventa.setHours(0, 0, 0, 0);
             for (let i = 0; i < sillas.length; i++) {
                 if(sillas[i].classList.contains('activa')){
                     const precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa) && b.silla === sillas[i].id)
                     console.log(`Precio preventa: ${precioSilla.precio} Precio normal: ${precioSilla.precioD}`)
-                    console.log(`Hoy: ${hoy} fecha Preventa: ${fechaPreventa}`)
-                    if(fechaPreventa < hoy){
+                    console.log(`Hoy: ${hoy} fecha Preventa: ${preventa}`)
+                    if(preventa < hoy){
                         totalMesa += precioSilla.precio;
                     }else{
                         totalMesa += precioSilla.precioD;
