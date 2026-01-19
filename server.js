@@ -1139,7 +1139,7 @@ async function actualizarImagenEvento(idEvento, nombreImagen) {
  * Funcion para guardar el pdf en el servidor
  */
 // filename PDF evento_01/1-0
-async function uploadToFtp(rutaLocal, nombreRemoto, accion,idEvento) {
+/*async function uploadToFtp(rutaLocal, nombreRemoto, accion,idEvento) {
     const client = new ftp.Client();
 
     try {
@@ -1175,6 +1175,32 @@ async function uploadToFtp(rutaLocal, nombreRemoto, accion,idEvento) {
 
     } catch (error) {
         console.error("Error al subir el archivo:", error);
+    } finally {
+        client.close();
+    }
+} */
+async function uploadToFtp(rutaLocal, nombreRemoto, accion, idEvento, codigoReserva) {
+    const client = new ftp.Client();
+    try {
+        await client.access({
+            host: ftpHost,
+            user: ftpUser,
+            password: ftpPass,
+        });
+
+        if (accion === "PDF") {
+            // Ruta: boletos/evento_ID/CODIGO_RESERVA
+            const rutaRemota = `${ftpDir}boletos/evento_${idEvento}/${codigoReserva}`;
+            
+            // Asegurar que la carpeta exista en el FTP
+            await client.ensureDir(rutaRemota); 
+            await client.uploadFrom(rutaLocal, nombreRemoto);
+        } else if (accion === "IMG") {
+            await client.cd(`${ftpDir}img`);
+            await client.uploadFrom(rutaLocal, nombreRemoto);
+        }
+    } catch (error) {
+        console.error("Error FTP:", error);
     } finally {
         client.close();
     }
@@ -1253,7 +1279,7 @@ app.post('/subir-imagen', (req, res) => {
 /**
  * Generacion de boletos con pdf
  */
-app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
+/*app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
   const { idEvento, codigo } = req.params;
 
   const query = `
@@ -1425,7 +1451,106 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
     console.error('❌ Error al generar el PDF:', error);
     res.status(500).json({ error: 'Error al generar el PDF' });
   }
+});*/
+
+app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
+    const { idEvento, codigo } = req.params;
+
+    const query = `
+    SELECT 
+        r.nombre, r.apellido, e.nombre AS titulo, e.fecha, e.hora,
+        m.numero AS numero_mesa, 
+        s.letra AS letra_silla 
+    FROM 
+        mesa m 
+    INNER JOIN 
+        silla s ON m.idMesa = s.idMesa
+    INNER JOIN 
+        reserva r ON s.codigo = r.codigo
+    INNER JOIN 
+        precioEvento p ON m.idPrecio = p.idPrecio
+    INNER JOIN 
+        evento e ON p.idEvento = e.idEvento
+    WHERE 
+        r.codigo = ? AND e.idEvento = ?;
+    `;
+
+    try {
+        const [results] = await pool.query(query, [codigo, idEvento]);
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'No se encontró información' });
+        }
+
+        // --- PREPARACIÓN COMÚN ---
+        const titulo = results[0].titulo;
+        const nombreCompleto = `${results[0].nombre.split(" ")[0].toUpperCase()} ${results[0].apellido.split(" ")[0].toUpperCase()}`;
+        const [horas, minutos] = results[0].hora.split(':');
+        const fechaObj = new Date(results[0].fecha);
+        const fechap = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit' }).format(fechaObj);
+
+        // Directorio local: public/boletosEventos/evento_ID/CODIGO_RESERVA
+        const dirLocal = path.join(__dirname, 'public', 'boletosEventos', `evento_${idEvento}`, `${codigo}`);
+        if (!fs.existsSync(dirLocal)) {
+            fs.mkdirSync(dirLocal, { recursive: true });
+        }
+
+        // Cargar fuentes y plantilla una sola vez para optimizar
+        const plantillaPath = path.join(__dirname, 'public', 'bplantilla', 'plantilla.pdf');
+        const pdfPlantillaBytes = fs.readFileSync(plantillaPath);
+        const fontsDir = path.join(__dirname, 'public', 'fonts');
+        const fontBold = fs.readFileSync(path.join(fontsDir, 'Hind-Bold.ttf'));
+        const fontRegular = fs.readFileSync(path.join(fontsDir, 'Hind-Regular.ttf'));
+
+        // --- GENERACIÓN INDIVIDUAL POR SILLA ---
+        for (const row of results) {
+            const pdfDoc = await PDFDocument.load(pdfPlantillaBytes);
+            pdfDoc.registerFontkit(fontkit);
+            
+            const hBold = await pdfDoc.embedFont(fontBold);
+            const hRegular = await pdfDoc.embedFont(fontRegular);
+            const page = pdfDoc.getPages()[0];
+
+            // TÍTULO
+            page.drawText(`${titulo}`, { x: 235, y: 250, size: 36, font: hBold, color: rgb(1, 1, 1) });
+
+            // FECHA / HORA
+            page.drawText(`${fechap} - ${horas}:${minutos}H`, { x: 235, y: 160, size: 32, font: hRegular, color: rgb(1, 1, 1) });
+
+            // NOMBRE
+            page.drawText(nombreCompleto, { x: 235, y: 90, size: 28, font: hRegular, color: rgb(1, 1, 1) });
+
+            // MESA Y SILLA ÚNICA
+            const textoAsiento = `Mesa ${row.numero_mesa} - Silla ${row.letra_silla}`;
+            page.drawText(textoAsiento, { x: 235, y: 55, size: 28, font: hRegular, color: rgb(1, 1, 1) });
+
+            // CÓDIGO DE RESERVA
+            page.drawText(`#${codigo}`, { x: 700, y: 300, size: 28, font: hRegular, color: rgb(1, 1, 1) });
+
+            // TEXTO VERTICAL (Ticket lateral)
+            const textoVertical = `Mesa ${row.numero_mesa}\nSilla ${row.letra_silla}`;
+            page.drawText(textoVertical, {
+                x: 940, y: 45, size: 24, font: hRegular,
+                rotate: degrees(90), color: rgb(1, 1, 1)
+            });
+
+            // Guardar localmente
+            const nombreArchivo = `Mesa_${row.numero_mesa}_Silla_${row.letra_silla}.pdf`;
+            const outputPath = path.join(dirLocal, nombreArchivo);
+            const finalPdfBytes = await pdfDoc.save();
+            fs.writeFileSync(outputPath, finalPdfBytes);
+
+            // Subir a FTP (Se crea la carpeta en el FTP también)
+            await uploadToFtp(outputPath, nombreArchivo, "PDF", idEvento, codigo);
+        }
+
+        res.status(200).json({ message: `Se generaron ${results.length} boletos correctamente` });
+    } catch (error) {
+        console.error('❌ Error al generar los PDFs:', error);
+        res.status(500).json({ error: 'Error al generar los PDFs' });
+    }
 });
+
 
 /**
  * Generacion de reporte
