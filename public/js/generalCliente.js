@@ -744,6 +744,7 @@ compra.addEventListener('click', async () => {
     // Resultado esperado: [ ['315', '316'] ]
     
     for (let i = 0; i < cantidad; i++) {
+        console.log("Consecutivas finales:", consecutivas);
         const sillasSobrantes = consecutivas[i].length >= 4 ? 2 : 1;
         juntar.innerHTML = juntar.innerHTML +
         `Puede solicitar juntar las mesas ${consecutivas[i]} pero para ello debe comprar al menos ${consecutivas[i].length*4-sillasSobrantes} boletos entre ambas mesas<br>`;
