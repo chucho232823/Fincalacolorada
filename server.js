@@ -1205,7 +1205,7 @@ async function uploadToFtp(rutaLocal, nombreRemoto, accion,idEvento) {
 //     } finally {
 //         client.close();
 //     }
-}
+//}
 
 /**
  * Subir la imagen al servidor
