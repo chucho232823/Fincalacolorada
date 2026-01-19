@@ -591,6 +591,58 @@ function agruparClavesConsecutivas(mapa) {
 }
 
 /**
+ * obtener sillas
+ */
+async function obtenerEstadoSilla(idEvento, mesa, letra) {
+    try {
+        const resp = await fetch(`/api/verificar-silla/${idEvento}/${mesa}/${letra}`);
+        if (!resp.ok) throw new Error("Error en la consulta");
+        return await resp.json();
+    } catch (error) {
+        console.error("Error al verificar:", error);
+        return null;
+    }
+}
+
+/**
+ * 
+ */
+async function buscarPrimeraSillaOcupada(idEvento, idsValidos) {
+    const letras = ['A', 'B', 'C', 'D'];
+    
+    // 1. Recorremos las mesas detectadas como válidas anteriormente
+    for (const mesaId of idsValidos) {
+        console.log(`Buscando ocupación en Mesa: ${mesaId}...`);
+
+        // 2. Ciclo de 4 para las letras A, B, C, D
+        for (const letra of letras) {
+            const datosSilla = await obtenerEstadoSilla(idEvento, mesaId, letra);
+
+            if (datosSilla) {
+                const { estado, bloqueada, enEspera } = datosSilla;
+
+                // 3. Verificamos si la silla está ocupada por cualquier razón
+                // Si cualquiera de estos es 1 (o true), significa que NO está libre
+                if (estado === 1 || bloqueada === 1 || enEspera === 1) {
+                    console.log(`📍 Primera silla ocupada encontrada: Mesa ${mesaId}, Silla ${letra}`);
+                    
+                    // Retornamos inmediatamente al encontrar la primera
+                    return {
+                        mesa: mesaId,
+                        letra: letra,
+                        motivo: estado === 1 ? 'Vendida' : (bloqueada === 1 ? 'Bloqueada' : 'En Espera')
+                    };
+                }
+            }
+        }
+    }
+
+    // 4. Si recorre todo y todas están en (0, 0, 0)
+    console.log("No se encontraron sillas ocupadas en el rango seleccionado.");
+    return null;
+}
+
+/**
  * funcion para mejor visualizacion de la compra
 */
 let consecutivas = [];
@@ -665,6 +717,40 @@ compra.addEventListener('click', async () => {
 
     console.log("Todos los IDs que cumplen ambas condiciones:", idsValidos);
     //Verificar si esa mesa ya tiene sillas ocupadas
+    async function buscarPrimeraSillaOcupada(idEvento, idsValidos) {
+    const letras = ['A', 'B', 'C', 'D'];
+    
+    // 1. Recorremos las mesas detectadas como válidas anteriormente
+    for (const mesaId of idsValidos) {
+        console.log(`Buscando ocupación en Mesa: ${mesaId}...`);
+
+        // 2. Ciclo de 4 para las letras A, B, C, D
+        for (const letra of letras) {
+            const datosSilla = await obtenerEstadoSilla(idEvento, mesaId, letra);
+
+            if (datosSilla) {
+                const { estado, bloqueada, enEspera } = datosSilla;
+
+                // 3. Verificamos si la silla está ocupada por cualquier razón
+                // Si cualquiera de estos es 1 (o true), significa que NO está libre
+                if (estado === 1 || bloqueada === 1 || enEspera === 1) {
+                    console.log(`📍 Primera silla ocupada encontrada: Mesa ${mesaId}, Silla ${letra}`);
+                    
+                    // Retornamos inmediatamente al encontrar la primera
+                    return {
+                        mesa: mesaId,
+                        letra: letra,
+                        motivo: estado === 1 ? 'Vendida' : (bloqueada === 1 ? 'Bloqueada' : 'En Espera')
+                    };
+                }
+            }
+        }
+    }
+
+    // 4. Si recorre todo y todas están en (0, 0, 0)
+    console.log("No se encontraron sillas ocupadas en el rango seleccionado.");
+    return null;
+}
 
     for (let i = 0; i < cantidad; i++) {
         const sillasSobrantes = consecutivas[i].length >= 4 ? 2 : 1;

@@ -423,6 +423,29 @@ app.get('/estado-silla/:idEvento', async (req, res) => {
     return res.status(500).send('Error en el servidor');
   }
 });
+
+app.get('/api/verificar-silla/:idEvento/:mesa/:letra', async (req, res) => {
+    const { idEvento, mesa, letra } = req.params;
+    const query = `
+        SELECT s.estado, s.bloqueada, s.enEspera
+        FROM evento e 
+        JOIN precioEvento p ON e.idEvento = p.idEvento
+        JOIN mesa m ON p.idPrecio = m.idPrecio
+        JOIN silla s ON m.idMesa = s.idMesa
+        WHERE e.idEvento = ? AND m.numero = ? AND s.letra = ?;
+    `;
+    try {
+        const [rows] = await pool.query(query, [idEvento, mesa, letra]);
+        if (rows.length > 0) {
+            res.json(rows[0]);
+        } else {
+            res.status(404).json({ error: "Silla no encontrada" });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Puerto en que correrá el servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
