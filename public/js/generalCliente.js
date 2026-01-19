@@ -607,39 +607,27 @@ async function obtenerEstadoSilla(idEvento, mesa, letra) {
 /**
  * 
  */
-async function buscarPrimeraSillaOcupada(idEvento, idsValidos) {
+async function verificarOcupacionEnMesa(idEvento, mesaId) {
     const letras = ['A', 'B', 'C', 'D'];
     
-    // 1. Recorremos las mesas detectadas como válidas anteriormente
-    for (const mesaId of idsValidos) {
-        console.log(`Buscando ocupación en Mesa: ${mesaId}...`);
+    // Solo recorre las letras de LA mesa que recibe por parámetro
+    for (const letra of letras) {
+        const datosSilla = await obtenerEstadoSilla(idEvento, mesaId, letra);
 
-        // 2. Ciclo de 4 para las letras A, B, C, D
-        for (const letra of letras) {
-            const datosSilla = await obtenerEstadoSilla(idEvento, mesaId, letra);
+        if (datosSilla) {
+            const { estado, bloqueada, enEspera } = datosSilla;
 
-            if (datosSilla) {
-                const { estado, bloqueada, enEspera } = datosSilla;
-
-                // 3. Verificamos si la silla está ocupada por cualquier razón
-                // Si cualquiera de estos es 1 (o true), significa que NO está libre
-                if (estado === 1 || bloqueada === 1 || enEspera === 1) {
-                    console.log(`📍 Primera silla ocupada encontrada: Mesa ${mesaId}, Silla ${letra}`);
-                    
-                    // Retornamos inmediatamente al encontrar la primera
-                    return {
-                        mesa: mesaId,
-                        letra: letra,
-                        motivo: estado === 1 ? 'Vendida' : (bloqueada === 1 ? 'Bloqueada' : 'En Espera')
-                    };
-                }
+            if (estado === 1 || bloqueada === 1 || enEspera === 1) {
+                return {
+                    ocupada: true,
+                    letra: letra,
+                    motivo: estado === 1 ? 'Vendida' : (bloqueada === 1 ? 'Bloqueada' : 'En Espera')
+                };
             }
         }
     }
-
-    // 4. Si recorre todo y todas están en (0, 0, 0)
-    console.log("No se encontraron sillas ocupadas en el rango seleccionado.");
-    return null;
+    // Si termina las 4 letras y nada está ocupado
+    return { ocupada: false };
 }
 
 /**
@@ -716,16 +704,29 @@ compra.addEventListener('click', async () => {
     });
 
     console.log("Todos los IDs que cumplen ambas condiciones:", idsValidos);
-    //Verificar si esa mesa ya tiene sillas ocupadas
-    if(idsValidos.length > 0){
-         const ocupada = await buscarPrimeraSillaOcupada(sembrado, idsValidos);
-        if (ocupada) {
-            alert(`Atención: La Mesa ${ocupada.mesa} - Silla ${ocupada.letra} ya se encuentra ${ocupada.motivo}.`);
-            // Aquí puedes ejecutar tu lógica adicional
+    let mesasNoJuntables = [];
+
+    // El ciclo ahora vive aquí afuera
+    for (const mesaId of idsValidos) {
+        console.log(`Analizando Mesa ${mesaId}...`);
+        
+        // Llamamos a la función para esta mesa específica
+        const resultado = await verificarOcupacionEnMesa(sembrado, mesaId);
+
+        if (resultado.ocupada) {
+            console.log(`⚠️ Mesa ${mesaId} no disponible. Silla ${resultado.letra} está ${resultado.motivo}.`);
+            
+            // La agregamos a tu lista de descartadas
+            mesasNoJuntables.push(mesaId);
+            
+            // Si quieres detenerte al encontrar la PRIMERA mesa ocupada de toda la lista, usa 'break'
+            // Si quieres encontrar TODAS las mesas ocupadas en la lista, no pongas break.
         } else {
-            console.log("Todas las sillas revisadas están libres.");
+            console.log(`Mesa ${mesaId} está totalmente libre.`);
         }
     }
+
+    console.log("Mesas que NO se pueden juntar:", mesasNoJuntables);
    
     for (let i = 0; i < cantidad; i++) {
         const sillasSobrantes = consecutivas[i].length >= 4 ? 2 : 1;
