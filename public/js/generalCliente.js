@@ -650,23 +650,20 @@ compra.addEventListener('click', async () => {
     console.log(consecutivas);
     console.log(controlFila);
     //Encontrar la mesa con menos sillas
-    let idEncontrado = null;
+    let idsValidos = [];
 
-    // Recorremos cada array dentro de 'consecutivas'
-    for (const grupo of consecutivas) {
-        // 'grupo' es cada array, ej: ['313', '314', '315', '316']
-        
-        // Buscamos dentro de ese grupo si alguno tiene valor < 4 en controlFila
-        idEncontrado = grupo.find(id => {
-            const valor = controlFila.get(id);
-            return valor !== undefined && valor < 4;
-        });
+    // Aplanamos 'consecutivas' para tener una lista única de IDs a verificar
+    // .flat() convierte [[313, 314], [213]] en [313, 314, 213]
+    const listaIdsAProbar = consecutivas.flat();
 
-        // Si encontramos uno, detenemos el bucle principal
-        if (idEncontrado) break;
-    }
+    // Filtramos basándonos en controlFila
+    idsValidos = listaIdsAProbar.filter(id => {
+        const valor = controlFila.get(id);
+        // Verificamos que exista en el Map y que sea menor a 4
+        return valor !== undefined && valor < 4;
+    });
 
-    console.log("ID que cumple ambas condiciones:", idEncontrado);
+    console.log("Todos los IDs que cumplen ambas condiciones:", idsValidos);
     //Verificar si esa mesa ya tiene sillas ocupadas
 
     for (let i = 0; i < cantidad; i++) {
