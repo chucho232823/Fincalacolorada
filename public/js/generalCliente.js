@@ -647,6 +647,7 @@ compra.addEventListener('click', async () => {
     //console.log(`posibles juntadas ${cantidad}`);
     const juntar = document.querySelector('.confirma-compra span');
     juntar.innerHTML = '';
+    console.log(consecutivas)
     for (let i = 0; i < cantidad; i++) {
         const sillasSobrantes = consecutivas[i].length >= 4 ? 2 : 1;
         juntar.innerHTML = juntar.innerHTML +
