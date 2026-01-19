@@ -396,7 +396,7 @@ mesas.forEach(mesa => {
                 alerta = await Swal.fire({
                     title: 'Finca la colorada dice:',
                     text:'Para seleccionar mas sillas aumenta el numero de boletos',
-                    icon: 'success', // puede ser 'success', 'error', 'warning', 'info', 'question'
+                    icon: 'warning', // puede ser 'success', 'error', 'warning', 'info', 'question'
                     confirmButtonColor: '#68AAFC',
                     confirmButtonText: 'ACEPTAR',
                     allowOutsideClick: false,
@@ -512,8 +512,8 @@ mesas.forEach(mesa => {
             for (let i = 0; i < sillas.length; i++) {
                 if(sillas[i].classList.contains('activa')){
                     const precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa) && b.silla === sillas[i].id)
-                    console.log(`Precio preventa: ${precioSilla.precio} Precio normal: ${precioSilla.precioD}`)
-                    console.log(`Hoy: ${hoy} fecha Preventa: ${preventa}`)
+                    //console.log(`Precio preventa: ${precioSilla.precio} Precio normal: ${precioSilla.precioD}`)
+                    //console.log(`Hoy: ${hoy} fecha Preventa: ${preventa}`)
                     if(preventa < hoy){
                         totalMesa += precioSilla.precioD;
                     }else{
@@ -647,7 +647,8 @@ compra.addEventListener('click', async () => {
     //console.log(`posibles juntadas ${cantidad}`);
     const juntar = document.querySelector('.confirma-compra span');
     juntar.innerHTML = '';
-    console.log(consecutivas)
+    console.log(consecutivas);
+    console.log(controlFila);
     for (let i = 0; i < cantidad; i++) {
         const sillasSobrantes = consecutivas[i].length >= 4 ? 2 : 1;
         juntar.innerHTML = juntar.innerHTML +
