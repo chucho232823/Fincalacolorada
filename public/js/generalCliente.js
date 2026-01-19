@@ -727,7 +727,22 @@ compra.addEventListener('click', async () => {
     }
 
     console.log("Mesas que NO se pueden juntar:", mesasNoJuntables);
-   
+
+    // 1. Filtramos los sub-arreglos
+    consecutivas = consecutivas
+        .map(grupo => {
+            // Quitamos de cada grupo las mesas que estén en mesasNoJuntables
+            return grupo.filter(mesa => !mesasNoJuntables.includes(mesa));
+        })
+        .filter(grupo => {
+            // Solo dejamos los grupos que aún tengan 2 o más mesas
+            // (Si quedó con 1 sola mesa, ya no es "consecutiva", se elimina)
+            return grupo.length >= 2;
+        });
+
+    console.log("Consecutivas finales:", consecutivas);
+    // Resultado esperado: [ ['315', '316'] ]
+    
     for (let i = 0; i < cantidad; i++) {
         const sillasSobrantes = consecutivas[i].length >= 4 ? 2 : 1;
         juntar.innerHTML = juntar.innerHTML +
