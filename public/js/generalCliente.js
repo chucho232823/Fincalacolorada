@@ -683,7 +683,6 @@ compra.addEventListener('click', async () => {
     //console.log(lista);
     const fondo = document.querySelector('.fondo-compra');
     // viendo sillas activas
-    const cantidad = consecutivas.length;
     //console.log(`posibles juntadas ${cantidad}`);
     const juntar = document.querySelector('.confirma-compra span');
     juntar.innerHTML = '';
@@ -742,7 +741,7 @@ compra.addEventListener('click', async () => {
 
     console.log("Consecutivas finales:", consecutivas);
     // Resultado esperado: [ ['315', '316'] ]
-    
+    const cantidad = consecutivas.length;
     for (let i = 0; i < cantidad; i++) {
         console.log("Consecutivas finales:", consecutivas);
         const sillasSobrantes = consecutivas[i].length >= 4 ? 2 : 1;
