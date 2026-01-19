@@ -717,41 +717,16 @@ compra.addEventListener('click', async () => {
 
     console.log("Todos los IDs que cumplen ambas condiciones:", idsValidos);
     //Verificar si esa mesa ya tiene sillas ocupadas
-    async function buscarPrimeraSillaOcupada(idEvento, idsValidos) {
-    const letras = ['A', 'B', 'C', 'D'];
-    
-    // 1. Recorremos las mesas detectadas como válidas anteriormente
-    for (const mesaId of idsValidos) {
-        console.log(`Buscando ocupación en Mesa: ${mesaId}...`);
-
-        // 2. Ciclo de 4 para las letras A, B, C, D
-        for (const letra of letras) {
-            const datosSilla = await obtenerEstadoSilla(idEvento, mesaId, letra);
-
-            if (datosSilla) {
-                const { estado, bloqueada, enEspera } = datosSilla;
-
-                // 3. Verificamos si la silla está ocupada por cualquier razón
-                // Si cualquiera de estos es 1 (o true), significa que NO está libre
-                if (estado === 1 || bloqueada === 1 || enEspera === 1) {
-                    console.log(`📍 Primera silla ocupada encontrada: Mesa ${mesaId}, Silla ${letra}`);
-                    
-                    // Retornamos inmediatamente al encontrar la primera
-                    return {
-                        mesa: mesaId,
-                        letra: letra,
-                        motivo: estado === 1 ? 'Vendida' : (bloqueada === 1 ? 'Bloqueada' : 'En Espera')
-                    };
-                }
-            }
+    if(idsValidos.length > 0){
+         const ocupada = await buscarPrimeraSillaOcupada(idEvento, idsValidos);
+        if (ocupada) {
+            alert(`Atención: La Mesa ${ocupada.mesa} - Silla ${ocupada.letra} ya se encuentra ${ocupada.motivo}.`);
+            // Aquí puedes ejecutar tu lógica adicional
+        } else {
+            console.log("Todas las sillas revisadas están libres.");
         }
     }
-
-    // 4. Si recorre todo y todas están en (0, 0, 0)
-    console.log("No se encontraron sillas ocupadas en el rango seleccionado.");
-    return null;
-}
-
+   
     for (let i = 0; i < cantidad; i++) {
         const sillasSobrantes = consecutivas[i].length >= 4 ? 2 : 1;
         juntar.innerHTML = juntar.innerHTML +
