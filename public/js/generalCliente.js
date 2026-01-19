@@ -718,7 +718,7 @@ compra.addEventListener('click', async () => {
     console.log("Todos los IDs que cumplen ambas condiciones:", idsValidos);
     //Verificar si esa mesa ya tiene sillas ocupadas
     if(idsValidos.length > 0){
-         const ocupada = await buscarPrimeraSillaOcupada(idEvento, idsValidos);
+         const ocupada = await buscarPrimeraSillaOcupada(sembrado, idsValidos);
         if (ocupada) {
             alert(`Atención: La Mesa ${ocupada.mesa} - Silla ${ocupada.letra} ya se encuentra ${ocupada.motivo}.`);
             // Aquí puedes ejecutar tu lógica adicional
