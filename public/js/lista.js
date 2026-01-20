@@ -86,37 +86,59 @@ descargar.forEach(boleto => {
 // }
 
 async function generarExcel() {
-    console.log("idEvento: ", idEvento);
-    console.log("nombre: ", nombreEvento);
-    console.log("fecha: ", fecha);
-
     try {
-        console.log("Obteniendo datos para el reporte...");
-        
         const response = await fetch(`/api/reporte-ventas/${idEvento}`);
-        
-        if (!response.ok) {
-            throw new Error("No se pudo obtener la información del servidor");
-        }
-
+        if (!response.ok) throw new Error("No se pudo obtener la información");
         const datos = await response.json();
 
-        // Imprimimos en consola para verificar el conteo
-        console.log("--- DATOS RECIBIDOS PARA EXCEL ---");
-        console.table(datos); // .table muestra los datos en formato de tabla en consola
-
         if (datos.length === 0) {
-            alert("No hay ventas registradas para este evento.");
+            alert("No hay ventas registradas.");
             return;
         }
 
-        // Aquí es donde irá tu lógica para crear el archivo Excel
-        // Usando librerías como SheetJS (XLSX)
-        console.log("Los datos están listos. Ahora puedes procesar el Excel.");
+        const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES');
+
+        // 1. Transformar los datos para el Excel
+        const datosProcesados = datos.map(fila => {
+            // Lógica: Si preventa === 1 usa 'precio', si no usa 'precioD'
+            const precioElegido = fila.preventa === 1 ? fila.precio : fila.precioD;
+            const montoCalculado = precioElegido * fila.total_sillas;
+
+            return {
+                "Evento ID": fila.idEvento,
+                "Mesa": fila.numero,
+                "Cant. Sillas": fila.total_sillas,
+                "Tipo de Pago": fila.tipoPago,
+                "Código Reserva": fila.codigo,
+                "Precio Unit.": precioElegido,
+                "Preventa": fila.preventa === 1 ? "Sí" : "No",
+                "Monto Total": montoCalculado // La última columna que pediste
+            };
+        });
+
+        // 2. Crear el libro y la hoja de trabajo
+        const wb = XLSX.utils.book_new();
+        
+        // 3. Crear encabezado personalizado (Nombre y Fecha)
+        const titulo = [[`Evento: ${nombreEvento}`, `Fecha: ${fechaFormateada}`], []]; 
+        
+        // 4. Combinar título con los datos
+        // origin: "A3" deja las primeras dos filas para el título
+        const ws = XLSX.utils.json_to_sheet(datosProcesados, { origin: "A3" });
+        XLSX.utils.sheet_add_aoa(ws, titulo, { origin: "A1" });
+
+        // 5. Ajustar anchos de columna (opcional pero recomendado)
+        ws['!cols'] = [{ wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 25 }, { wch: 15 }, { wch: 12 }, { wch: 10 }, { wch: 15 }];
+
+        // 6. Generar archivo y descargar
+        XLSX.utils.book_append_sheet(wb, ws, "Reporte Ventas");
+        XLSX.writeFile(wb, `Reporte_${nombreEvento.replace(/ /g, '_')}.xlsx`);
+
+        console.log("Excel generado exitosamente");
 
     } catch (error) {
-        console.error("Error al generar reporte:", error);
-        alert("Hubo un error al obtener los datos.");
+        console.error("Error:", error);
+        alert("Hubo un error al generar el archivo.");
     }
 }
 
