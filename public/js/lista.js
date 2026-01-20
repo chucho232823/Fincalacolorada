@@ -87,6 +87,8 @@ descargar.forEach(boleto => {
 
 async function generarExcel() {
     console.log("idEvento: ", idEvento);
+    console.log("nombre: ", nombreEvento);
+    console.log("fecha: ", fecha);
 
     try {
         console.log("Obteniendo datos para el reporte...");

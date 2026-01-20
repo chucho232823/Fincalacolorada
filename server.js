@@ -780,7 +780,7 @@ app.get('/lista/:idEvento', requireAuth, async (req, res) => {
     ORDER BY r.nombre;
   `;
 
-  const queryNombreEvento = `SELECT nombre FROM evento WHERE idEvento = ?;`;
+  const queryNombreEvento = `SELECT nombre, fecha FROM evento WHERE idEvento = ?;`;
 
   try {
     // Obtener las reservas
@@ -794,6 +794,7 @@ app.get('/lista/:idEvento', requireAuth, async (req, res) => {
     }
 
     const nombreEvento = eventoResultado[0].nombre;
+    const fecha = eventoResultada[0].fecha;
 
     // Obtener el conteo de boletos para cada reserva
     const reservasConBoletos = await Promise.all(
@@ -820,6 +821,7 @@ app.get('/lista/:idEvento', requireAuth, async (req, res) => {
     res.render('lista', {
       reservas: reservasConBoletos,
       nombreEvento,
+      fecha,
       idEvento
     });
 
