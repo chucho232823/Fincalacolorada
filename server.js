@@ -1803,7 +1803,8 @@ app.get('/api/reporte-ventas/:idEvento', async (req, res) => {
         INNER JOIN silla s USING(idMesa)
         INNER JOIN reserva r USING(codigo)
         WHERE e.idEvento = ? AND s.estado = true
-        GROUP BY r.codigo, m.numero;
+        GROUP BY r.codigo, m.numero
+        ORDER BY m.numero;
     `;
 
     try {
