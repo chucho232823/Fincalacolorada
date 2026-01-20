@@ -1782,3 +1782,34 @@ app.post(`/cancelar-evento/:idEvento`, async (req, res) => {
     res.sendStatus(400);
   }
 });
+
+app.get('/api/reporte-ventas/:idEvento', async (req, res) => {
+    const { idEvento } = req.params;
+    
+    const query = `
+        SELECT 
+            e.idEvento, 
+            m.numero, 
+            COUNT(s.letra) AS total_sillas,
+            r.tipoPago, 
+            r.codigo, 
+            pe.precio, 
+            pe.precioD
+        FROM mesa m
+        INNER JOIN precioEvento pe USING(idPrecio) 
+        INNER JOIN evento e USING(idEvento)
+        INNER JOIN tipoMesa tm USING(idTipoMesa)
+        INNER JOIN silla s USING(idMesa)
+        INNER JOIN reserva r USING(codigo)
+        WHERE e.idEvento = ? AND s.estado = true
+        GROUP BY r.codigo, m.numero;
+    `;
+
+    try {
+        const [results] = await pool.query(query, [idEvento]);
+        res.json(results);
+    } catch (error) {
+        console.error("Error en reporte:", error);
+        res.status(500).json({ error: "Error al obtener los datos" });
+    }
+});

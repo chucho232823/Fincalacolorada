@@ -68,22 +68,56 @@ descargar.forEach(boleto => {
     });
 });
 
-function generarExcel() {
-  const datos = reservas.map(r => ({
-    Nombre: r.nombre,
-    Teléfono: r.telefono,
-    Código: r.codigo,
-    Boletos: r.boletos,
-    Juntar: r.juntar ? 'Sí' : 'No'
-  }));
+// function generarExcel() {
+//   const datos = reservas.map(r => ({
+//     Nombre: r.nombre,
+//     Teléfono: r.telefono,
+//     Código: r.codigo,
+//     Boletos: r.boletos,
+//     Juntar: r.juntar ? 'Sí' : 'No'
+//   }));
 
-  const hoja = XLSX.utils.json_to_sheet(datos);
-  const libro = XLSX.utils.book_new();
+//   const hoja = XLSX.utils.json_to_sheet(datos);
+//   const libro = XLSX.utils.book_new();
 
-  XLSX.utils.book_append_sheet(libro, hoja, 'Reservas');
+//   XLSX.utils.book_append_sheet(libro, hoja, 'Reservas');
 
-  XLSX.writeFile(libro, `Reservas ${nombreEvento}.xlsx`);
+//   XLSX.writeFile(libro, `Reservas ${nombreEvento}.xlsx`);
+// }
+
+async function generarExcel() {
+    console.log("idEvento: ", idEvento);
+
+    try {
+        console.log("Obteniendo datos para el reporte...");
+        
+        const response = await fetch(`/api/reporte-ventas/${idEvento}`);
+        
+        if (!response.ok) {
+            throw new Error("No se pudo obtener la información del servidor");
+        }
+
+        const datos = await response.json();
+
+        // Imprimimos en consola para verificar el conteo
+        console.log("--- DATOS RECIBIDOS PARA EXCEL ---");
+        console.table(datos); // .table muestra los datos en formato de tabla en consola
+
+        if (datos.length === 0) {
+            alert("No hay ventas registradas para este evento.");
+            return;
+        }
+
+        // Aquí es donde irá tu lógica para crear el archivo Excel
+        // Usando librerías como SheetJS (XLSX)
+        console.log("Los datos están listos. Ahora puedes procesar el Excel.");
+
+    } catch (error) {
+        console.error("Error al generar reporte:", error);
+        alert("Hubo un error al obtener los datos.");
+    }
 }
+
 
 const volver = document.getElementById('volver');
 
