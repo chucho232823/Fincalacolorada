@@ -794,7 +794,7 @@ app.get('/lista/:idEvento', requireAuth, async (req, res) => {
     }
 
     const nombreEvento = eventoResultado[0].nombre;
-    const fecha = eventoResultada[0].fecha;
+    const fecha = eventoResultado[0].fecha;
 
     // Obtener el conteo de boletos para cada reserva
     const reservasConBoletos = await Promise.all(
