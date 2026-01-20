@@ -1794,7 +1794,8 @@ app.get('/api/reporte-ventas/:idEvento', async (req, res) => {
             r.tipoPago, 
             r.codigo, 
             pe.precio, 
-            pe.precioD
+            pe.precioD,
+            r.preventa
         FROM mesa m
         INNER JOIN precioEvento pe USING(idPrecio) 
         INNER JOIN evento e USING(idEvento)
