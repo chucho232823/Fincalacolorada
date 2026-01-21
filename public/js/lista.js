@@ -128,7 +128,14 @@ async function generarExcel() {
         const ws = XLSX.utils.json_to_sheet(datosProcesados, { origin: "A4" });
 
         // 4. Agregar el encabezado superior en A1
-        XLSX.utils.sheet_add_aoa(ws, encabezadoSuperior, { origin: "H1" });
+        XLSX.utils.sheet_add_aoa(ws, encabezadoSuperior, { origin: "C1" });
+
+        ws['!merges'] = [
+            // Combinar Fila 1 (r:0): desde Columna C (c:2) hasta Columna F (c:5)
+            { s: { r: 0, c: 2 }, e: { r: 0, c: 4 } }, 
+            // Combinar Fila 2 (r:1): desde Columna C (c:2) hasta Columna F (c:5)
+            { s: { r: 1, c: 2 }, e: { r: 1, c: 4 } }
+        ];
 
         // 5. Ajustar anchos de columna para que el texto no se corte
         ws['!cols'] = [
