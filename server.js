@@ -1308,6 +1308,109 @@ app.post('/subir-imagen', (req, res) => {
 app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
     const { idEvento, codigo } = req.params;
 
+    const query = `
+        SELECT 
+            r.nombre, r.apellido, r.preventa, e.nombre AS titulo, e.fecha, e.hora,
+            m.numero AS numero_mesa, p.precio, p.precioD,
+            s.letra AS letra_silla 
+        FROM 
+            mesa m 
+        INNER JOIN 
+            silla s ON m.idMesa = s.idMesa
+        INNER JOIN 
+            reserva r ON s.codigo = r.codigo
+        INNER JOIN 
+            precioEvento p ON m.idPrecio = p.idPrecio
+        INNER JOIN 
+            evento e ON p.idEvento = e.idEvento
+        WHERE 
+            r.codigo = ? AND e.idEvento = ?;
+    `;
+
+    try {
+        const [results] = await pool.query(query, [codigo, idEvento]);
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'No se encontró información' });
+        }
+
+        const { titulo, nombre, apellido, hora, fecha, preventa, precio, precioD } = results[0];
+        const precioFinal = preventa === 1 ? precio : precioD;
+        const [horas, minutos] = hora.split(':');
+        const fechap = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit' }).format(new Date(fecha));
+
+        // 1. Crear un documento PDF nuevo (vacío)
+        const pdfDoc = await PDFDocument.create();
+        pdfDoc.registerFontkit(fontkit);
+
+        // 2. Cargar la plantilla base para copiar sus páginas
+        const plantillaBytes = fs.readFileSync(path.join(__dirname, 'public', 'bplantilla', 'plantilla.pdf'));
+        const plantillaDoc = await PDFDocument.load(plantillaBytes);
+        
+        // 3. Cargar fuentes
+        const fontsDir = path.join(__dirname, 'public', 'fonts');
+        const HindBold = await pdfDoc.embedFont(fs.readFileSync(path.join(fontsDir, 'Hind-Bold.ttf')));
+        const HindReg = await pdfDoc.embedFont(fs.readFileSync(path.join(fontsDir, 'Hind-Regular.ttf')));
+
+        // --- BUCLE: Crear una página por cada silla encontrada ---
+        for (const row of results) {
+            // Copiar la primera página de la plantilla al nuevo documento
+            const [copiedPage] = await pdfDoc.copyPages(plantillaDoc, [0]);
+            const page = pdfDoc.addPage(copiedPage);
+
+            // TÍTULO
+            page.drawText(`${titulo}`, {
+                x: 235, y: 250, size: 36, font: HindBold,
+                maxWidth: 600, lineHeight: 38, color: rgb(1, 1, 1)
+            });
+
+            // FECHA Y HORA
+            page.drawText(`${fechap} - ${horas}:${minutos}H`, {
+                x: 235, y: 160, size: 32, font: HindReg, color: rgb(1, 1, 1)
+            });
+
+            // NOMBRE CLIENTE
+            const nombreCliente = `${nombre.split(" ")[0].toUpperCase()} ${apellido.split(" ")[0].toUpperCase()}`;
+            page.drawText(nombreCliente, {
+                x: 235, y: 90, size: 28, font: HindReg, color: rgb(1, 1, 1)
+            });
+
+            // MESA Y SILLA INDIVIDUAL (Esta página es solo para ESTA silla)
+            page.drawText(`Mesa ${row.numero_mesa} - Silla ${row.letra_silla}`, {
+                x: 235, y: 55, size: 28, font: HindReg, color: rgb(1, 1, 1)
+            });
+
+            // CÓDIGO Y PRECIO
+            page.drawText(`#${codigo}`, { x: 700, y: 300, size: 28, font: HindReg, color: rgb(1, 1, 1) });
+            page.drawText(`$${precioFinal}`, { x: 700, y: 270, size: 24, font: HindBold, color: rgb(1, 1, 1) });
+
+            // TEXTO VERTICAL (Talón)
+            page.drawText(`Mesa ${row.numero_mesa}\nSilla ${row.letra_silla}`, {
+                x: 940, y: 45, size: 28, font: HindReg,
+                rotate: degrees(90), color: rgb(1, 1, 1)
+            });
+        }
+
+        // 4. Guardar archivo final con todas las páginas
+        const dir = path.join(__dirname, 'public', 'boletosEventos', `evento_${idEvento}`);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+        const outputPath = path.join(dir, `${codigo}.pdf`);
+        const finalPdfBytes = await pdfDoc.save();
+        fs.writeFileSync(outputPath, finalPdfBytes);
+
+        await uploadToFtp(outputPath, `${codigo}.pdf`, "PDF", idEvento);
+        res.status(200).json({ message: 'PDF generado correctamente con páginas individuales' });
+
+    } catch (error) {
+        console.error('❌ Error al generar el PDF:', error);
+        res.status(500).json({ error: 'Error al generar el PDF' });
+    }
+});
+
+/*app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
+    const { idEvento, codigo } = req.params;
+
     // 1. Consulta SQL con lógica de precios y preventa
     const query = `
         SELECT 
@@ -1454,7 +1557,7 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
         console.error('❌ Error al generar el PDF:', error);
         res.status(500).json({ error: 'Error al generar el PDF' });
     }
-});
+}); */
 
 /* app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
   const { idEvento, codigo } = req.params;
