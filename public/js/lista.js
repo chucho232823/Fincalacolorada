@@ -98,14 +98,17 @@ async function generarExcel() {
         const datosProcesados = datos.map(fila => {
             const precioElegido = fila.preventa === 1 ? fila.precio : fila.precioD;
             const montoCalculado = precioElegido * fila.total_sillas;
-
+            const tipoPago = fila.tipoPago === "Mostrador(Transferencia)" ? "Transferencia" :
+                             fila.tipoPago === "Mostrador(Baucher)" ? "Baucher" :
+                             fila.tipoPago === "Mostrador(Efectivo)" ? "Efectivo" :
+                             "Linea";
             // Aquí personalizas los títulos (las llaves del objeto serán los encabezados)
             return {
                 // "ID": fila.idEvento,
                 "Mesa": fila.numero,
                 "No. P": fila.total_sillas,
                 "Monto": montoCalculado,
-                "Método de Pago": fila.tipoPago,
+                "Método de Pago": tipoPago,
                 "Código": fila.codigo,
                 "Precio Unit.": precioElegido,
                 "Preventa": fila.preventa === 1 ? "Si" : "No"
@@ -130,11 +133,11 @@ async function generarExcel() {
         // 5. Ajustar anchos de columna para que el texto no se corte
         ws['!cols'] = [
             // { wch: 6 },  // ID
-            { wch: 15 }, // Número de Mesa
+            { wch: 8 }, // Número de Mesa
             { wch: 8 },  // Sillas
-            { wch: 25 }, // Método de Pago
+            { wch: 15 }, // Método de Pago
             { wch: 12 }, // Código
-            { wch: 12 }, // Precio Unit.
+            { wch: 8 }, // Precio Unit.
             { wch: 15 }, // Estado Preventa
             { wch: 15 }  // Monto Final
         ];
