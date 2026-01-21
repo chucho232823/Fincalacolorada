@@ -125,22 +125,22 @@ async function generarExcel() {
         ];
 
         // 3. Crear la hoja iniciando en A4 para dejar espacio al encabezado
-        const ws = XLSX.utils.json_to_sheet(datosProcesados, { origin: "B4" });
+        const ws = XLSX.utils.json_to_sheet(datosProcesados, { origin: "A4" });
 
         // 4. Agregar el encabezado superior en A1
-        XLSX.utils.sheet_add_aoa(ws, encabezadoSuperior, { origin: "A1" });
+        XLSX.utils.sheet_add_aoa(ws, encabezadoSuperior, { origin: "H1" });
 
         // 5. Ajustar anchos de columna para que el texto no se corte
         ws['!cols'] = [
             // { wch: 6 },  // ID
-            { wch: 20 },
             { wch: 8 }, // Número de Mesa
             { wch: 8 },  // Sillas
             { wch: 8 }, // Método de Pago
             { wch: 15 }, // Código
             { wch: 8 }, // Precio Unit.
             { wch: 12 }, // Estado Preventa
-            { wch: 12 }  // Monto Final
+            { wch: 12 },  // Monto Final
+            { wch: 25 }, //Titulo y fecha
         ];
 
         // 6. Generar archivo
