@@ -1324,7 +1324,7 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
         INNER JOIN 
             evento e ON p.idEvento = e.idEvento
         WHERE 
-            r.codigo = ? AND e.idEvento = ?;
+            r.codigo = ? AND e.idEvento = ? AND s.bloqueada = 0;
     `;
 
     try {
