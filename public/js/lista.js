@@ -135,11 +135,11 @@ async function generarExcel() {
             // { wch: 6 },  // ID
             { wch: 8 }, // Número de Mesa
             { wch: 8 },  // Sillas
-            { wch: 15 }, // Método de Pago
-            { wch: 12 }, // Código
+            { wch: 8 }, // Método de Pago
+            { wch: 15 }, // Código
             { wch: 8 }, // Precio Unit.
-            { wch: 15 }, // Estado Preventa
-            { wch: 15 }  // Monto Final
+            { wch: 12 }, // Estado Preventa
+            { wch: 12 }  // Monto Final
         ];
 
         // 6. Generar archivo
