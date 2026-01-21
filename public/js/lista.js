@@ -88,57 +88,63 @@ descargar.forEach(boleto => {
 async function generarExcel() {
     try {
         const response = await fetch(`/api/reporte-ventas/${idEvento}`);
-        if (!response.ok) throw new Error("No se pudo obtener la información");
         const datos = await response.json();
 
-        if (datos.length === 0) {
-            alert("No hay ventas registradas.");
-            return;
-        }
+        // Formateo de fecha larga
+        const opcionesFecha = { day: 'numeric', month: 'long', year: 'numeric' };
+        const fechaTexto = new Date(fecha).toLocaleDateString('es-ES', opcionesFecha);
 
-        const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES');
-
-        // 1. Transformar los datos para el Excel
+        // 1. Transformar datos con nombres de columnas personalizados
         const datosProcesados = datos.map(fila => {
-            // Lógica: Si preventa === 1 usa 'precio', si no usa 'precioD'
             const precioElegido = fila.preventa === 1 ? fila.precio : fila.precioD;
             const montoCalculado = precioElegido * fila.total_sillas;
 
+            // Aquí personalizas los títulos (las llaves del objeto serán los encabezados)
             return {
-                "Evento ID": fila.idEvento,
+                // "ID": fila.idEvento,
                 "Mesa": fila.numero,
-                "Cant. Sillas": fila.total_sillas,
-                "Tipo de Pago": fila.tipoPago,
-                "Código Reserva": fila.codigo,
+                "No. P": fila.total_sillas,
+                "Monto": montoCalculado,
+                "Método de Pago": fila.tipoPago,
+                "Código": fila.codigo,
                 "Precio Unit.": precioElegido,
-                "Preventa": fila.preventa === 1 ? "Sí" : "No",
-                "Monto Total": montoCalculado // La última columna que pediste
+                "Preventa": fila.preventa === 1 ? "Si" : "No"
             };
         });
 
-        // 2. Crear el libro y la hoja de trabajo
         const wb = XLSX.utils.book_new();
-        
-        // 3. Crear encabezado personalizado (Nombre y Fecha)
-        const titulo = [[`Evento: ${nombreEvento}`, `Fecha: ${fechaFormateada}`], []]; 
-        
-        // 4. Combinar título con los datos
-        // origin: "A3" deja las primeras dos filas para el título
-        const ws = XLSX.utils.json_to_sheet(datosProcesados, { origin: "A3" });
-        XLSX.utils.sheet_add_aoa(ws, titulo, { origin: "A1" });
 
-        // 5. Ajustar anchos de columna (opcional pero recomendado)
-        ws['!cols'] = [{ wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 25 }, { wch: 15 }, { wch: 12 }, { wch: 10 }, { wch: 15 }];
+        // 2. Título superior (Fila 1: Nombre del Evento, Fila 2: Fecha escrita)
+        const encabezadoSuperior = [
+            [`EVENTO: ${nombreEvento.toUpperCase()}`],
+            [`FECHA: ${fechaTexto.toUpperCase()}`],
+            [] // Fila vacía de separación
+        ];
 
-        // 6. Generar archivo y descargar
-        XLSX.utils.book_append_sheet(wb, ws, "Reporte Ventas");
+        // 3. Crear la hoja iniciando en A4 para dejar espacio al encabezado
+        const ws = XLSX.utils.json_to_sheet(datosProcesados, { origin: "A4" });
+
+        // 4. Agregar el encabezado superior en A1
+        XLSX.utils.sheet_add_aoa(ws, encabezadoSuperior, { origin: "A1" });
+
+        // 5. Ajustar anchos de columna para que el texto no se corte
+        ws['!cols'] = [
+            // { wch: 6 },  // ID
+            { wch: 15 }, // Número de Mesa
+            { wch: 8 },  // Sillas
+            { wch: 25 }, // Método de Pago
+            { wch: 12 }, // Código
+            { wch: 12 }, // Precio Unit.
+            { wch: 15 }, // Estado Preventa
+            { wch: 15 }  // Monto Final
+        ];
+
+        // 6. Generar archivo
+        XLSX.utils.book_append_sheet(wb, ws, "Ventas");
         XLSX.writeFile(wb, `Reporte_${nombreEvento.replace(/ /g, '_')}.xlsx`);
-
-        console.log("Excel generado exitosamente");
 
     } catch (error) {
         console.error("Error:", error);
-        alert("Hubo un error al generar el archivo.");
     }
 }
 
