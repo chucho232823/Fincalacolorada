@@ -1306,6 +1306,157 @@ app.post('/subir-imagen', (req, res) => {
  * Generacion de boletos con pdf
  */
 app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
+    const { idEvento, codigo } = req.params;
+
+    // 1. Consulta SQL con lógica de precios y preventa
+    const query = `
+        SELECT 
+            r.nombre, r.apellido, r.preventa, e.nombre AS titulo, e.fecha, e.hora,
+            m.numero AS numero_mesa, p.precio, p.precioD,
+            s.letra AS letra_silla 
+        FROM 
+            mesa m 
+        INNER JOIN 
+            silla s ON m.idMesa = s.idMesa
+        INNER JOIN 
+            reserva r ON s.codigo = r.codigo
+        INNER JOIN 
+            precioEvento p ON m.idPrecio = p.idPrecio
+        INNER JOIN 
+            evento e ON p.idEvento = e.idEvento
+        WHERE 
+            r.codigo = ? AND e.idEvento = ?;
+    `;
+
+    const mesasMap = new Map();
+
+    try {
+        // 2. Ejecutar consulta
+        const [results] = await pool.query(query, [codigo, idEvento]);
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'No se encontró información para este código y evento' });
+        }
+
+        // 3. Extraer datos base (usamos el primer registro para datos generales)
+        const { titulo, nombre, apellido, hora, fecha, preventa, precio, precioD } = results[0];
+
+        // Lógica de Precio: Si preventa es 1 usa precio (preventa), si es 0 usa precioD (normal)
+        const precioFinal = preventa === 1 ? precio : precioD;
+
+        const [horas, minutos] = hora.split(':');
+        const fechaObj = new Date(fecha);
+        const fechap = new Intl.DateTimeFormat('es-ES', {
+            day: '2-digit',
+            month: '2-digit'
+        }).format(fechaObj);
+
+        // 4. Agrupar sillas por mesa
+        results.forEach(row => {
+            if (!mesasMap.has(row.numero_mesa)) {
+                mesasMap.set(row.numero_mesa, []);
+            }
+            mesasMap.get(row.numero_mesa).push(row.letra_silla);
+        });
+
+        // 5. Cargar plantilla y configurar fuentes
+        const plantillaPath = path.join(__dirname, 'public', 'bplantilla', 'plantilla.pdf');
+        const pdfBytes = fs.readFileSync(plantillaPath);
+        const pdfDoc = await PDFDocument.load(pdfBytes);
+        pdfDoc.registerFontkit(fontkit);
+
+        const fontsDir = path.join(__dirname, 'public', 'fonts');
+        const Hind = {
+            bold: await pdfDoc.embedFont(fs.readFileSync(path.join(fontsDir, 'Hind-Bold.ttf'))),
+            regular: await pdfDoc.embedFont(fs.readFileSync(path.join(fontsDir, 'Hind-Regular.ttf')))
+        };
+
+        const page = pdfDoc.getPages()[0];
+
+        // --- DIBUJAR TEXTOS EN EL PDF ---
+
+        // TÍTULO DEL EVENTO
+        page.drawText(`${titulo}`, {
+            x: 235, y: 250, size: 36, font: Hind.bold,
+            maxWidth: 600, lineHeight: 38, color: rgb(1, 1, 1)
+        });
+
+        // FECHA Y HORA
+        page.drawText(`${fechap} - ${horas}:${minutos}H`, {
+            x: 235, y: 160, size: 32, font: Hind.regular, color: rgb(1, 1, 1)
+        });
+
+        // NOMBRE DEL CLIENTE
+        const nombreCliente = `${nombre.split(" ")[0].toUpperCase()} ${apellido.split(" ")[0].toUpperCase()}`;
+        page.drawText(nombreCliente, {
+            x: 235, y: 90, size: 28, font: Hind.regular, color: rgb(1, 1, 1)
+        });
+
+        // MESA Y ASIENTOS (Ajuste dinámico según cantidad de mesas)
+        let yPos = 55;
+        let tamFuente = 28;
+        let espaciado = 25;
+
+        if (mesasMap.size > 2) { tamFuente = 20; espaciado = 20; }
+        if (mesasMap.size > 3) { tamFuente = 12; espaciado = 14; }
+
+        mesasMap.forEach((sillas, mesa) => {
+            const textoMesa = `Mesa ${mesa} - ${sillas.sort().join('-')}`;
+            page.drawText(textoMesa, {
+                x: 235, y: yPos, size: tamFuente, font: Hind.regular, color: rgb(1, 1, 1)
+            });
+            yPos -= espaciado;
+        });
+
+        // CÓDIGO DE RESERVA
+        page.drawText(`#${codigo}`, {
+            x: 700, y: 300, size: 28, font: Hind.regular, color: rgb(1, 1, 1)
+        });
+
+        // PRECIO (Seleccionado por lógica de preventa)
+        page.drawText(`$${precioFinal}`, {
+            x: 700, y: 270, size: 24, font: Hind.bold, color: rgb(1, 1, 1)
+        });
+
+        // TEXTO VERTICAL (Talón de control)
+        let xVert = 940;
+        let tamVert = 28;
+        let espVert = 50;
+
+        if (mesasMap.size > 2) { tamVert = 14; espVert = 40; }
+
+        mesasMap.forEach((sillas, mesa) => {
+            const textoVert = `Mesa ${mesa}\n${sillas.sort().join('-')}`;
+            page.drawText(textoVert, {
+                x: xVert, y: 45, size: tamVert, font: Hind.regular,
+                rotate: degrees(90), color: rgb(1, 1, 1)
+            });
+            xVert += espVert;
+        });
+
+        // 6. Guardar archivo localmente
+        const dir = path.join(__dirname, 'public', 'boletosEventos', `evento_${idEvento}`);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+
+        const outputPath = path.join(dir, `${codigo}.pdf`);
+        const finalPdfBytes = await pdfDoc.save();
+        fs.writeFileSync(outputPath, finalPdfBytes);
+
+        // 7. Subir al servidor FTP
+        await uploadToFtp(outputPath, `${codigo}.pdf`, "PDF", idEvento);
+
+        // 8. Respuesta al cliente
+        res.status(200).json({ message: 'PDF generado correctamente' });
+
+    } catch (error) {
+        console.error('❌ Error al generar el PDF:', error);
+        res.status(500).json({ error: 'Error al generar el PDF' });
+    }
+});
+
+/* app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
   const { idEvento, codigo } = req.params;
 
   const query = `
@@ -1477,7 +1628,7 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
     console.error('❌ Error al generar el PDF:', error);
     res.status(500).json({ error: 'Error al generar el PDF' });
   }
-});
+}); */
 
 // app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
 //     const { idEvento, codigo } = req.params;
