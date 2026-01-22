@@ -705,6 +705,101 @@ compra.addEventListener('click', async () => {
     console.log("Todos los IDs que cumplen ambas condiciones:", idsValidos);
     let mesasNoJuntables = [];
 
+    const sillasBloqueadas = [];
+    ////////////////////////////////////////////////////////////////////////
+    controlFila.forEach(async (num, mesa) => {
+    console.log(`mesa: ${mesa} Reservas: ${num}`);
+    // console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`);
+    if (num === 3 && !(mesa >= 215 && mesa <= 219)) {
+        const idSilla = ['A', 'B', 'C', 'D'];
+        console.log(listaMesaSilla);
+        //console.log(idSilla);
+        listaMesaSilla.forEach(silla => {
+        if (silla.mesa == mesa) {
+            const indice = idSilla.indexOf(silla.silla);
+            if (indice > -1) {
+            // Borrar 1 elemento a partir de ese índice
+            idSilla.splice(indice, 1);
+            }
+        }
+        });
+        const relleno = {
+        mesa: mesa,
+        silla: idSilla[0]
+        };
+        // await esperaSilla(idSilla[0], mesa, sembrado);
+        // await bloqueo(relleno);
+        sillasBloqueadas.push(relleno);
+    }
+    if (num === 2 && (mesa >= 215 && mesa <= 219)) {
+        const idSilla = ['A', 'B', 'C'];
+        console.log(listaMesaSilla);
+        console.log(idSilla);
+        listaMesaSilla.forEach(silla => {
+        if (silla.mesa == mesa) {
+            const indice = idSilla.indexOf(silla.silla);
+            if (indice > -1) {
+            // Borrar 1 elemento a partir de ese índice
+            idSilla.splice(indice, 1);
+            }
+        }
+        });
+        const relleno = {
+        mesa: mesa,
+        silla: idSilla[0]
+        };
+        // await esperaSilla(idSilla[0], mesa, sembrado);
+        // await bloqueo(relleno);
+        console.log(relleno);
+        sillasBloqueadas.push(relleno); 
+        //console.log(listaMesaSilla);
+        //console.log(relleno);
+    }
+    const buscarMesa = mesa;
+
+        // Buscar la posición donde se encuentra la mesa
+    const indice = consecutivas.findIndex(arr => arr.includes(buscarMesa));
+
+    // Si encontramos la mesa, contamos los valores en esa posición
+    let cantidadValores;
+    console.log(`indice: ${indice}`);
+    console.log(`consecutivas: ${consecutivas[indice]}`);
+    if (indice !== -1) {
+        cantidadValores = consecutivas[indice].length;
+        console.log(cantidadValores); // Muestra el número de valores en la posición
+    } else {
+        console.log('Mesa no encontrada');
+    }
+
+    if(num === 2 && !(mesa >= 215 && mesa <= 219) && cantidadValores >= 4){
+        //aqui se ponen en sillas exra las que falten cuando son mas de 3 mesas
+        console.log("Apartando 4 mesas");
+        const idSilla = ['A', 'B', 'C', 'D'];
+        console.log(listaMesaSilla);
+        //console.log(idSilla);
+        listaMesaSilla.forEach(silla => {
+        if (silla.mesa == mesa) {
+            const indice = idSilla.indexOf(silla.silla);
+            if (indice > -1) {
+            // Borrar 1 elemento a partir de ese índice
+            idSilla.splice(indice, 1);
+            }
+        }
+        });
+        for (let index = 0; index < idSilla.length; index++) {
+        const relleno = {
+            mesa: mesa,
+            silla: idSilla[index]
+        };     
+        // await esperaSilla(idSilla[index], mesa, sembrado);
+        // await bloqueo(relleno);
+        sillasBloqueadas.push(relleno);
+        }    
+    }
+    })
+    ///////////////////////////////////////////////////////////////////////
+
+    console.log(`Sillas a bloquear: ${sillasBloqueadas}`);
     // El ciclo ahora vive aquí afuera
     for (const mesaId of idsValidos) {
         console.log(`Analizando Mesa ${mesaId}...`);
