@@ -799,7 +799,7 @@ compra.addEventListener('click', async () => {
     })
     ///////////////////////////////////////////////////////////////////////
 
-    console.log(`Sillas a bloquear: ${sillasBloqueadas}`);
+    console.log("Sillas a bloquear:", sillasBloqueadas);
     // El ciclo ahora vive aquí afuera
     for (const mesaId of idsValidos) {
         console.log(`Analizando Mesa ${mesaId}...`);
