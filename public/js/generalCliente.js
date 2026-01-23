@@ -717,7 +717,9 @@ compra.addEventListener('click', async () => {
             listaMesaSilla.forEach(silla => {
                 if (silla.mesa == mesa) {
                     const indice = idSilla.indexOf(silla.silla); 
+                    console.log(`Mesa: ${silla.mesa} Silla: ${silla.silla}`)
                     if (indice > -1) {
+                        consoloe.log(`Esta silla esta en la lista: ${silla.silla}`);
                         idSilla.splice(indice, 1);
                     }
                 }
@@ -734,12 +736,13 @@ compra.addEventListener('click', async () => {
             console.log(idSilla);
             listaMesaSilla.forEach(silla => {
             if (silla.mesa == mesa) {
-                const indice = idSilla.indexOf(silla.silla);
-                if (indice > -1) {
-                // Borrar 1 elemento a partir de ese índice
-                idSilla.splice(indice, 1);
+                    const indice = idSilla.indexOf(silla.silla); 
+                    console.log(`Mesa: ${silla.mesa} Silla: ${silla.silla}`)
+                    if (indice > -1) {
+                        consoloe.log(`Esta silla esta en la lista: ${silla.silla}`);
+                        idSilla.splice(indice, 1);
+                    }
                 }
-            }
             });
             const relleno = {
                 mesa: mesa,
@@ -771,12 +774,13 @@ compra.addEventListener('click', async () => {
             //console.log(idSilla);
             listaMesaSilla.forEach(silla => {
             if (silla.mesa == mesa) {
-                const indice = idSilla.indexOf(silla.silla);
-                if (indice > -1) {
-                // Borrar 1 elemento a partir de ese índice
-                idSilla.splice(indice, 1);
+                    const indice = idSilla.indexOf(silla.silla); 
+                    console.log(`Mesa: ${silla.mesa} Silla: ${silla.silla}`)
+                    if (indice > -1) {
+                        consoloe.log(`Esta silla esta en la lista: ${silla.silla}`);
+                        idSilla.splice(indice, 1);
+                    }
                 }
-            }
             });
             for (let index = 0; index < idSilla.length; index++) {
                 const relleno = {
