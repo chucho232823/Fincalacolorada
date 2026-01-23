@@ -715,6 +715,7 @@ compra.addEventListener('click', async () => {
             console.log(listaMesaSilla);
             //console.log(idSilla);
             listaMesaSilla.forEach(silla => {
+                console.log(`Mesa: ${mesa} MesaSilla: ${silla.mesa}`)
                 if (silla.mesa == mesa) {
                     const indice = idSilla.indexOf(silla.silla); 
                     console.log(`Mesa: ${silla.mesa} Silla: ${silla.silla}`)
