@@ -552,6 +552,7 @@ const fondo = document.querySelector('.fondoCompra');
 let listaMesaSilla = [];
 let precios = [];
 let total;
+const sillasBloqueadas = [];
 
 /**
  * Funcion para obtener las mesas consecutivas, obviar las mesas de 2 y 3 sillas
@@ -823,7 +824,7 @@ compra.addEventListener('click', async () => {
     //confirma.appendChild(lista);
     document.querySelector('.confirma-compra h3').innerHTML = `Total a pagar: $${total}`;
     
-    const sillasBloqueadas = [];
+    
     const sillasEspera = [];
     ////////////////////////////////////////////////////////////////////////
     controlFila.forEach(async (num, mesa) => {
