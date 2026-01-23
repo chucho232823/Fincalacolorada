@@ -824,6 +824,7 @@ compra.addEventListener('click', async () => {
     document.querySelector('.confirma-compra h3').innerHTML = `Total a pagar: $${total}`;
     
     const sillasBloqueadas = [];
+    const sillasEspera = [];
     ////////////////////////////////////////////////////////////////////////
     controlFila.forEach(async (num, mesa) => {
         console.log(`mesa: ${mesa} Reservas: ${num}`);
@@ -837,6 +838,11 @@ compra.addEventListener('click', async () => {
                 if (silla.mesa == mesa) {
                     const indice = idSilla.indexOf(silla.silla); 
                     if (indice > -1) {
+                        const relleno = {
+                            mesa: silla.mesa,
+                            silla: silla.silla
+                        };
+                        sillasEspera.push(relleno);
                         idSilla.splice(indice, 1);
                     }
                 }
@@ -859,7 +865,12 @@ compra.addEventListener('click', async () => {
             listaMesaSilla.forEach(silla => {
             if (silla.mesa == mesa) {
                     const indice = idSilla.indexOf(silla.silla); 
-                    if (indice > -1) {;
+                    if (indice > -1) {
+                        const relleno = {
+                            mesa: silla.mesa,
+                            silla: silla.silla
+                        };
+                        sillasEspera.push(relleno);
                         idSilla.splice(indice, 1);
                     }
                 }
@@ -900,7 +911,11 @@ compra.addEventListener('click', async () => {
             if (silla.mesa == mesa) {
                     const indice = idSilla.indexOf(silla.silla); 
                     if (indice > -1) {
-                        console.log(`Esta silla esta en la lista: ${silla.silla}`);
+                        const relleno = {
+                            mesa: silla.mesa,
+                            silla: silla.silla
+                        };
+                        sillasEspera.push(relleno);
                         idSilla.splice(indice, 1);
                     }
                 }
@@ -916,6 +931,7 @@ compra.addEventListener('click', async () => {
     })
 
     console.log("Sillas a bloquear:", sillasBloqueadas);
+    console.log("Sillas a espera:", sillasEspera);
     ///////////////////////////////////////////////////////////////////////
 
     //confirma.appendChild(totalCompra);
@@ -1078,7 +1094,9 @@ document.querySelector('.confirma-compra').addEventListener('click', function (e
             tipo: tipo,
             consecutivas: consecutivas,
             agrupadasPorMesa: agrupadasPorMesa,
-            tipoPago, tipoPago
+            tipoPago: tipoPago,
+            sillasEspera: sillasEspera,
+            sillasBloqueadas: sillasBloqueadas
         });
         //Enviar los datos
         form.submit();
