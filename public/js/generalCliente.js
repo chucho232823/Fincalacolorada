@@ -715,19 +715,18 @@ compra.addEventListener('click', async () => {
             console.log(listaMesaSilla);
             //console.log(idSilla);
             listaMesaSilla.forEach(silla => {
-            if (silla.mesa == mesa) {
-                const indice = idSilla.indexOf(silla.silla);
-                if (indice > -1) {
-                // Borrar 1 elemento a partir de ese índice
-                idSilla.splice(indice, 1);
+                if (silla.mesa == mesa) {
+                    const indice = idSilla.indexOf(silla.silla); 
+                    if (indice > -1) {
+                        idSilla.splice(indice, 1);
+                    }
                 }
-            }
             });
             const relleno = {
                 mesa: mesa,
                 silla: idSilla[0]
             };
-            console.log(relleno);
+            console.log("Relleno: ",relleno);
         }
         if (num === 2 && (mesa >= 215 && mesa <= 219)) {
             const idSilla = ['A', 'B', 'C'];
@@ -746,7 +745,7 @@ compra.addEventListener('click', async () => {
                 mesa: mesa,
                 silla: idSilla[0]
             };
-            console.log(relleno);
+            console.log("Relleno: ",relleno);
         }
         const buscarMesa = mesa;
 
@@ -784,7 +783,7 @@ compra.addEventListener('click', async () => {
                     mesa: mesa,
                     silla: idSilla[index]
                 };     
-                console.log(relleno);
+                console.log("Relleno: ",relleno);
             }    
         }
     })
