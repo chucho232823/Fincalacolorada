@@ -846,7 +846,7 @@ compra.addEventListener('click', async () => {
                 mesa: mesa,
                 silla: idSilla[0]
             };
-            const infoSilla = await verificaEstadoSilla(idEvento, relleno.mesa, relleno.silla);
+            const infoSilla = await verificaEstadoSilla(sembrado, relleno.mesa, relleno.silla);
             if(infoSilla.estado){
                 console.log("Esta silla no se puede bloquear");
             }
