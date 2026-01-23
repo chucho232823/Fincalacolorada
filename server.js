@@ -1356,8 +1356,8 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
         for (const row of results) {
             // Copiar la primera página de la plantilla al nuevo documento
             // console.log(row);
-            const precioFinal = preventa === 1 ? precio : precioD;
-            console.log(`Precio Preventa: ${precio} Precio: ${precioD} Precio Final: ${precioFinal}`)
+            const precioFinal = row.preventa === 1 ? row.precio : row.precioD;
+            console.log(`Precio Preventa: ${row.precio} Precio: ${row.precioD} Precio Final: ${precioFinal}`)
             const [copiedPage] = await pdfDoc.copyPages(plantillaDoc, [0]);
             const page = pdfDoc.addPage(copiedPage);
 
