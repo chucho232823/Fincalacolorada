@@ -630,6 +630,33 @@ async function verificarOcupacionEnMesa(idEvento, mesaId) {
     return { ocupada: false };
 }
 
+
+/**
+ * Verificacion de la disponibilidad de la silla
+ */
+async function verificaEstadoSilla(idEvento, mesa, silla) {
+    try {
+        // Realizamos la petición al endpoint que creaste
+        const response = await fetch(`/api/verificar-silla/${idEvento}/${mesa}/${silla}`);
+        
+        if (!response.ok) {
+            if (response.status === 404) {
+                console.warn("La silla no existe en la base de datos.");
+            }
+            return null; 
+        }
+
+        const data = await response.json();
+        
+        // Retornamos el objeto con: estado, bloqueada, enEspera
+        return data; 
+
+    } catch (error) {
+        console.error("Error en la comunicación con el servidor:", error);
+        return null;
+    }
+}
+
 /**
  * funcion para mejor visualizacion de la compra
 */
@@ -814,10 +841,15 @@ compra.addEventListener('click', async () => {
                     }
                 }
             });
+            //Comprobar que la otra silla este disponible
             const relleno = {
                 mesa: mesa,
                 silla: idSilla[0]
             };
+            const infoSilla = await verificaEstadoSilla(idEvento, relleno.mesa, relleno.silla);
+            if(infoSilla.estado){
+                console.log("Esta silla no se puede bloquear");
+            }
             sillasBloqueadas.push(relleno);
         }
         if (num === 2 && (mesa >= 215 && mesa <= 219)) {
