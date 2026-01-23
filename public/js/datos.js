@@ -154,6 +154,42 @@ let sillasExtra = [];
 //   }
 // })
 
+/**
+ * Bloqueando sillas
+ */
+const bloqueo = async (silla) => {
+  silla.mesa = parseInt(silla.mesa);
+  //console.log(`silla ${silla} bloqueada!!!`);
+  try {
+    //sembrado tiene el id del evento)
+    const response = await fetch(`/bloqueo/${sembrado}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json' // Indicamos que el cuerpo de la solicitud es JSON
+      },
+      body: JSON.stringify({
+        silla
+      }) // Convertimos el objeto 'datos' a JSON
+    });
+
+    // Verificamos si la respuesta es exitosa
+    if (!response.ok) {
+      throw new Error(`Error al reservar: ${response.statusText}`);
+    }
+
+    // Convertimos la respuesta en JSON (si es necesario)
+    //const result = await response.json();
+    
+    //console.log('Reserva exitosa:', result.message);
+    //alert(result.message); // Por ejemplo, alertamos el mensaje
+
+  } catch (error) {
+    console.error('Error en la solicitud:', error);
+    alert('Hubo un problema al intentar hacer la reserva.');
+    console.log(error);
+  }
+};
+
 sillasBloqueadas.forEach(silla =>{
     //faltan las sillas a bloquear
     const sem = sembrado;
@@ -234,42 +270,6 @@ const reservarMesa = async (silla,codigo) => {
   } catch (error) {
     console.error('Error en la solicitud:', error);
     alert('Hubo un problema al intentar hacer la reserva.');
-  }
-};
-
-/**
- * Bloqueando sillas
- */
-const bloqueo = async (silla) => {
-  silla.mesa = parseInt(silla.mesa);
-  //console.log(`silla ${silla} bloqueada!!!`);
-  try {
-    //sembrado tiene el id del evento)
-    const response = await fetch(`/bloqueo/${sembrado}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json' // Indicamos que el cuerpo de la solicitud es JSON
-      },
-      body: JSON.stringify({
-        silla
-      }) // Convertimos el objeto 'datos' a JSON
-    });
-
-    // Verificamos si la respuesta es exitosa
-    if (!response.ok) {
-      throw new Error(`Error al reservar: ${response.statusText}`);
-    }
-
-    // Convertimos la respuesta en JSON (si es necesario)
-    //const result = await response.json();
-    
-    //console.log('Reserva exitosa:', result.message);
-    //alert(result.message); // Por ejemplo, alertamos el mensaje
-
-  } catch (error) {
-    console.error('Error en la solicitud:', error);
-    alert('Hubo un problema al intentar hacer la reserva.');
-    console.log(error);
   }
 };
 
