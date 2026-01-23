@@ -9,6 +9,7 @@ const controlFila = window.controlFila;
 const consecutivas = window.consecutivas;
 const agrupadasPorMesa = window.agrupadasPorMesa;
 const tipoPago = window.tipoPago;
+const sillasBloqueadas = window.sillasBloqueadas;
 let mesasJuntadas = [];
 let cancelarLiberacion = false;
 // console.log("tipo Pago",tipoPago);
@@ -60,96 +61,104 @@ async function esperaSilla( letra, numeroMesa, idEvento ) {
 }
 
 let sillasExtra = [];
-controlFilaReconstruido.forEach(async (num, mesa) => {
-  console.log(`mesa: ${mesa} Reservas: ${num}`);
-  // console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`);
+// controlFilaReconstruido.forEach(async (num, mesa) => {
+//   console.log(`mesa: ${mesa} Reservas: ${num}`);
+//   // console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`);
 
-  if (num === 3 && !(mesa >= 215 && mesa <= 219)) {
-    const idSilla = ['A', 'B', 'C', 'D'];
-    console.log(listaMesaSilla);
-    //console.log(idSilla);
-    listaMesaSilla.forEach(silla => {
-      if (silla.mesa == mesa) {
-        const indice = idSilla.indexOf(silla.silla);
-        if (indice > -1) {
-          // Borrar 1 elemento a partir de ese índice
-          idSilla.splice(indice, 1);
-        }
-      }
-    });
-    const relleno = {
-      mesa: mesa,
-      silla: idSilla[0]
-    };
-    await esperaSilla(idSilla[0], mesa, sembrado);
-    await bloqueo(relleno);
-    sillasExtra.push(relleno);
-  }
-  if (num === 2 && (mesa >= 215 && mesa <= 219)) {
-    const idSilla = ['A', 'B', 'C'];
-    console.log(listaMesaSilla);
-    console.log(idSilla);
-    listaMesaSilla.forEach(silla => {
-      if (silla.mesa == mesa) {
-        const indice = idSilla.indexOf(silla.silla);
-        if (indice > -1) {
-          // Borrar 1 elemento a partir de ese índice
-          idSilla.splice(indice, 1);
-        }
-      }
-    });
-    const relleno = {
-      mesa: mesa,
-      silla: idSilla[0]
-    };
-    await esperaSilla(idSilla[0], mesa, sembrado);
-    await bloqueo(relleno);
-    console.log(relleno);
-    sillasExtra.push(relleno); 
-    //console.log(listaMesaSilla);
-    //console.log(relleno);
-  }
-  const buscarMesa = mesa;
+//   if (num === 3 && !(mesa >= 215 && mesa <= 219)) {
+//     const idSilla = ['A', 'B', 'C', 'D'];
+//     console.log(listaMesaSilla);
+//     //console.log(idSilla);
+//     listaMesaSilla.forEach(silla => {
+//       if (silla.mesa == mesa) {
+//         const indice = idSilla.indexOf(silla.silla);
+//         if (indice > -1) {
+//           // Borrar 1 elemento a partir de ese índice
+//           idSilla.splice(indice, 1);
+//         }
+//       }
+//     });
+//     const relleno = {
+//       mesa: mesa,
+//       silla: idSilla[0]
+//     };
+//     await esperaSilla(idSilla[0], mesa, sembrado);
+//     await bloqueo(relleno);
+//     sillasExtra.push(relleno);
+//   }
+//   if (num === 2 && (mesa >= 215 && mesa <= 219)) {
+//     const idSilla = ['A', 'B', 'C'];
+//     console.log(listaMesaSilla);
+//     console.log(idSilla);
+//     listaMesaSilla.forEach(silla => {
+//       if (silla.mesa == mesa) {
+//         const indice = idSilla.indexOf(silla.silla);
+//         if (indice > -1) {
+//           // Borrar 1 elemento a partir de ese índice
+//           idSilla.splice(indice, 1);
+//         }
+//       }
+//     });
+//     const relleno = {
+//       mesa: mesa,
+//       silla: idSilla[0]
+//     };
+//     await esperaSilla(idSilla[0], mesa, sembrado);
+//     await bloqueo(relleno);
+//     console.log(relleno);
+//     sillasExtra.push(relleno); 
+//     //console.log(listaMesaSilla);
+//     //console.log(relleno);
+//   }
+//   const buscarMesa = mesa;
 
-    // Buscar la posición donde se encuentra la mesa
-  const indice = consecutivas.findIndex(arr => arr.includes(buscarMesa));
+//     // Buscar la posición donde se encuentra la mesa
+//   const indice = consecutivas.findIndex(arr => arr.includes(buscarMesa));
 
-  // Si encontramos la mesa, contamos los valores en esa posición
-  let cantidadValores;
-  console.log(`indice: ${indice}`);
-  console.log(`consecutivas: ${consecutivas[indice]}`);
-  if (indice !== -1) {
-    cantidadValores = consecutivas[indice].length;
-    console.log(cantidadValores); // Muestra el número de valores en la posición
-  } else {
-    console.log('Mesa no encontrada');
-  }
+//   // Si encontramos la mesa, contamos los valores en esa posición
+//   let cantidadValores;
+//   console.log(`indice: ${indice}`);
+//   console.log(`consecutivas: ${consecutivas[indice]}`);
+//   if (indice !== -1) {
+//     cantidadValores = consecutivas[indice].length;
+//     console.log(cantidadValores); // Muestra el número de valores en la posición
+//   } else {
+//     console.log('Mesa no encontrada');
+//   }
 
-  if(num === 2 && !(mesa >= 215 && mesa <= 219) && cantidadValores >= 4){
-    //aqui se ponen en sillas exra las que falten cuando son mas de 3 mesas
-    console.log("Apartando 4 mesas");
-    const idSilla = ['A', 'B', 'C', 'D'];
-    console.log(listaMesaSilla);
-    //console.log(idSilla);
-    listaMesaSilla.forEach(silla => {
-      if (silla.mesa == mesa) {
-        const indice = idSilla.indexOf(silla.silla);
-        if (indice > -1) {
-          // Borrar 1 elemento a partir de ese índice
-          idSilla.splice(indice, 1);
-        }
-      }
-    });
-    for (let index = 0; index < idSilla.length; index++) {
-      const relleno = {
-        mesa: mesa,
-        silla: idSilla[index]
-      };     
-      await esperaSilla(idSilla[index], mesa, sembrado);
-      await bloqueo(relleno);
-      sillasExtra.push(relleno);
-    }    
-  }
+//   if(num === 2 && !(mesa >= 215 && mesa <= 219) && cantidadValores >= 4){
+//     //aqui se ponen en sillas exra las que falten cuando son mas de 3 mesas
+//     console.log("Apartando 4 mesas");
+//     const idSilla = ['A', 'B', 'C', 'D'];
+//     console.log(listaMesaSilla);
+//     //console.log(idSilla);
+//     listaMesaSilla.forEach(silla => {
+//       if (silla.mesa == mesa) {
+//         const indice = idSilla.indexOf(silla.silla);
+//         if (indice > -1) {
+//           // Borrar 1 elemento a partir de ese índice
+//           idSilla.splice(indice, 1);
+//         }
+//       }
+//     });
+//     for (let index = 0; index < idSilla.length; index++) {
+//       const relleno = {
+//         mesa: mesa,
+//         silla: idSilla[index]
+//       };     
+//       await esperaSilla(idSilla[index], mesa, sembrado);
+//       await bloqueo(relleno);
+//       sillasExtra.push(relleno);
+//     }    
+//   }
+// })
+
+sillasBloqueadas.forEach(silla =>{
+    //faltan las sillas a bloquear
+    const sem = sembrado;
+    //console.log('sillas puestas en espera');
+    esperaSilla(silla.silla,silla.mesa,sem);
+    bloqueo(silla.silla,silla.mesa,sem);
 })
 
 listaMesaSilla.forEach(silla =>{
@@ -175,12 +184,12 @@ function liberaTodasLasSillas(listaMesaSilla, idEvento) {
 
   navigator.sendBeacon(`/liberar-sillas/${idEvento}`, payload);
 }
-console.log("Sillas Extra: ", sillasExtra);
+console.log("Sillas Extra: ", sillasBloqueadas);
 console.log("lista mesa silla",listaMesaSilla);
  
 function manejarLiberacion() {
   if (cancelarLiberacion) return;
-  liberaTodasLasSillas(sillasExtra,sembrado);
+  liberaTodasLasSillas(sillasBloqueadas,sembrado);
   liberaTodasLasSillas(listaMesaSilla, sembrado);
 }
 
