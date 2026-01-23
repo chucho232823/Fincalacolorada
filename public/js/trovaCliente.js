@@ -594,6 +594,7 @@ const fondo = document.querySelector('.fondoCompra');
 let listaMesaSilla = [];
 let precios = [];
 let total;
+const sillasBloqueadas = [];
 
 /**
  * Funcion para obtener las mesas consecutivas, obviar las mesas de 2 y 3 sillas
@@ -629,6 +630,73 @@ function agruparClavesConsecutivas(mapa) {
 
   // Convertir los números a strings para coincidir con las claves originales
   return secuencias.map(secuencia => secuencia.map(String));
+}
+
+/**
+ * obtener sillas
+ */
+async function obtenerEstadoSilla(idEvento, mesa, letra) {
+    try {
+        const resp = await fetch(`/api/verificar-silla/${idEvento}/${mesa}/${letra}`);
+        if (!resp.ok) throw new Error("Error en la consulta");
+        return await resp.json();
+    } catch (error) {
+        console.error("Error al verificar:", error);
+        return null;
+    }
+}
+
+/**
+ * 
+ */
+async function verificarOcupacionEnMesa(idEvento, mesaId) {
+    const letras = ['A', 'B', 'C', 'D'];
+    
+    // Solo recorre las letras de LA mesa que recibe por parámetro
+    for (const letra of letras) {
+        const datosSilla = await obtenerEstadoSilla(idEvento, mesaId, letra);
+
+        if (datosSilla) {
+            const { estado, bloqueada, enEspera } = datosSilla;
+
+            if (estado === 1 || bloqueada === 1 || enEspera === 1) {
+                return {
+                    ocupada: true,
+                    letra: letra,
+                    motivo: estado === 1 ? 'Vendida' : (bloqueada === 1 ? 'Bloqueada' : 'En Espera')
+                };
+            }
+        }
+    }
+    // Si termina las 4 letras y nada está ocupado
+    return { ocupada: false };
+}
+
+
+/**
+ * Verificacion de la disponibilidad de la silla
+ */
+async function verificaEstadoSilla(idEvento, mesa, silla) {
+    try {
+        // Realizamos la petición al endpoint que creaste
+        const response = await fetch(`/api/verificar-silla/${idEvento}/${mesa}/${silla}`);
+        
+        if (!response.ok) {
+            if (response.status === 404) {
+                console.warn("La silla no existe en la base de datos.");
+            }
+            return null; 
+        }
+
+        const data = await response.json();
+        
+        // Retornamos el objeto con: estado, bloqueada, enEspera
+        return data; 
+
+    } catch (error) {
+        console.error("Error en la comunicación con el servidor:", error);
+        return null;
+    }
 }
 
 let consecutivas = [];
@@ -687,9 +755,67 @@ compra.addEventListener('click', async () => {
     //console.log(`posibles juntadas ${cantidad}`);
     const juntar = document.querySelector('.confirma-compra span');
     juntar.innerHTML = '';
-    for (let i = 0; i < cantidad; i++) {
+    console.log(consecutivas);
+    console.log(controlFila);
+    //Encontrar la mesa con menos sillas
+    let idsValidos = [];
+
+    // Aplanamos 'consecutivas' para tener una lista única de IDs a verificar
+    // .flat() convierte [[313, 314], [213]] en [313, 314, 213]
+    const listaIdsAProbar = consecutivas.flat();
+
+    // Filtramos basándonos en controlFila
+    idsValidos = listaIdsAProbar.filter(id => {
+        const valor = controlFila.get(id);
+        // Verificamos que exista en el Map y que sea menor a 4
+        return valor !== undefined && valor < 4;
+    });
+
+    console.log("Todos los IDs que cumplen ambas condiciones:", idsValidos);
+    let mesasNoJuntables = [];
+
+    // El ciclo ahora vive aquí afuera
+    for (const mesaId of idsValidos) {
+        console.log(`Analizando Mesa ${mesaId}...`);
+        
+        // Llamamos a la función para esta mesa específica
+        const resultado = await verificarOcupacionEnMesa(sembrado, mesaId);
+
+        if (resultado.ocupada) {
+            console.log(`⚠️ Mesa ${mesaId} no disponible. Silla ${resultado.letra} está ${resultado.motivo}.`);
+            
+            // La agregamos a tu lista de descartadas
+            mesasNoJuntables.push(mesaId);
+            
+            // Si quieres detenerte al encontrar la PRIMERA mesa ocupada de toda la lista, usa 'break'
+            // Si quieres encontrar TODAS las mesas ocupadas en la lista, no pongas break.
+        } else {
+            console.log(`Mesa ${mesaId} está totalmente libre.`);
+        }
+    }
+
+    console.log("Mesas que NO se pueden juntar:", mesasNoJuntables);
+
+    // 1. Filtramos los sub-arreglos
+    consecutivas = consecutivas
+        .map(grupo => {
+            // Quitamos de cada grupo las mesas que estén en mesasNoJuntables
+            return grupo.filter(mesa => !mesasNoJuntables.includes(mesa));
+        })
+        .filter(grupo => {
+            // Solo dejamos los grupos que aún tengan 2 o más mesas
+            // (Si quedó con 1 sola mesa, ya no es "consecutiva", se elimina)
+            return grupo.length >= 2;
+        });
+
+    console.log("Consecutivas finales:", consecutivas);
+    // Resultado esperado: [ ['315', '316'] ]
+    const cant = consecutivas.length;
+    for (let i = 0; i < cant; i++) {
+        console.log("Consecutivas finales:", consecutivas);
+        const sillasSobrantes = consecutivas[i].length >= 4 ? 2 : 1;
         juntar.innerHTML = juntar.innerHTML +
-        `Puede solicitar juntar las mesas ${consecutivas[i]} pero para ello debe comprar al menos ${consecutivas[i].length*4-1} boletos entre ambas mesas\n`;
+        `Puede solicitar juntar las mesas ${consecutivas[i]} pero para ello debe comprar al menos ${consecutivas[i].length*4-sillasSobrantes} boletos entre ambas mesas<br>`;
     }
     //console.log('compra: ');
     sillasActivas.forEach(silla => {
@@ -742,6 +868,100 @@ compra.addEventListener('click', async () => {
     //confirma.appendChild(lista);
     document.querySelector('.confirma-compra h3').innerHTML = `Total a pagar: $${total}`;
     
+     ////////////////////////////////////////////////////////////////////////
+    controlFila.forEach(async (num, mesa) => {
+        console.log(`mesa: ${mesa} Reservas: ${num}`);
+        // console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`);
+        if (num === 3 && !(mesa >= 215 && mesa <= 219)) {
+            const idSilla = ['A', 'B', 'C', 'D'];
+            
+            console.log(listaMesaSilla.length);
+            //console.log(idSilla);
+            listaMesaSilla.forEach(silla => {
+                if (silla.mesa == mesa) {
+                    const indice = idSilla.indexOf(silla.silla); 
+                    if (indice > -1) {
+                        idSilla.splice(indice, 1);
+                    }
+                }
+            });
+            //Comprobar que la otra silla este disponible
+            const relleno = {
+                mesa: mesa,
+                silla: idSilla[0]
+            };
+            const infoSilla = await verificaEstadoSilla(sembrado, relleno.mesa, relleno.silla);
+            if(infoSilla.estado)
+                console.log("Esta silla no se puede bloquear");
+            else
+                sillasBloqueadas.push(relleno);
+        }
+        if (num === 2 && (mesa >= 215 && mesa <= 219)) {
+            const idSilla = ['A', 'B', 'C'];
+            console.log(listaMesaSilla);
+            console.log(idSilla);
+            listaMesaSilla.forEach(silla => {
+            if (silla.mesa == mesa) {
+                    const indice = idSilla.indexOf(silla.silla); 
+                    if (indice > -1) {
+                        idSilla.splice(indice, 1);
+                    }
+                }
+            });
+            const relleno = {
+                mesa: mesa,
+                silla: idSilla[0]
+            };
+            const infoSilla = await verificaEstadoSilla(sembrado, relleno.mesa, relleno.silla);
+            if(infoSilla.estado)
+                console.log("Esta silla no se puede bloquear");
+            else
+                sillasBloqueadas.push(relleno);
+        }
+        const buscarMesa = mesa;
+
+            // Buscar la posición donde se encuentra la mesa
+        const indice = consecutivas.findIndex(arr => arr.includes(buscarMesa));
+
+        // Si encontramos la mesa, contamos los valores en esa posición
+        let cantidadValores;
+        console.log(`indice: ${indice}`);
+        console.log(`consecutivas: ${consecutivas[indice]}`);
+        if (indice !== -1) {
+            cantidadValores = consecutivas[indice].length;
+            console.log(cantidadValores); // Muestra el número de valores en la posición
+        } else {
+            console.log('Mesa no encontrada');
+        }
+
+        if(num === 2 && !(mesa >= 215 && mesa <= 219) && cantidadValores >= 4){
+            //aqui se ponen en sillas exra las que falten cuando son mas de 3 mesas
+            console.log("Apartando 4 mesas");
+            const idSilla = ['A', 'B', 'C', 'D'];
+            console.log(listaMesaSilla);
+            //console.log(idSilla);
+            listaMesaSilla.forEach(silla => {
+            if (silla.mesa == mesa) {
+                    const indice = idSilla.indexOf(silla.silla); 
+                    if (indice > -1) {
+                        console.log(`Esta silla esta en la lista: ${silla.silla}`);
+                        idSilla.splice(indice, 1);
+                    }
+                }
+            });
+            for (let index = 0; index < idSilla.length; index++) {
+                const relleno = {
+                    mesa: mesa,
+                    silla: idSilla[index]
+                };
+                sillasBloqueadas.push(relleno);
+            }    
+        }
+    })
+
+    console.log("Sillas en espera:", listaMesaSilla);
+    console.log("Sillas a bloquear:", sillasBloqueadas);
+    ///////////////////////////////////////////////////////////////////////
 
     //confirma.appendChild(totalCompra);
     confirma.style.display = 'flex';
