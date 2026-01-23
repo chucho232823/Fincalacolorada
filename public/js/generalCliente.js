@@ -831,18 +831,13 @@ compra.addEventListener('click', async () => {
         // console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`);
         if (num === 3 && !(mesa >= 215 && mesa <= 219)) {
             const idSilla = ['A', 'B', 'C', 'D'];
-            console.log(listaMesaSilla);
+            
             console.log(listaMesaSilla.length);
             //console.log(idSilla);
             listaMesaSilla.forEach(silla => {
                 if (silla.mesa == mesa) {
                     const indice = idSilla.indexOf(silla.silla); 
                     if (indice > -1) {
-                        const relleno = {
-                            mesa: silla.mesa,
-                            silla: silla.silla
-                        };
-                        sillasEspera.push(relleno);
                         idSilla.splice(indice, 1);
                     }
                 }
@@ -859,18 +854,13 @@ compra.addEventListener('click', async () => {
                 sillasBloqueadas.push(relleno);
         }
         if (num === 2 && (mesa >= 215 && mesa <= 219)) {
-            const idSilla = ['A', 'B', 'C'];
+            const idSilla = ['A', 'B', 'C'];/
             console.log(listaMesaSilla);
             console.log(idSilla);
             listaMesaSilla.forEach(silla => {
             if (silla.mesa == mesa) {
                     const indice = idSilla.indexOf(silla.silla); 
                     if (indice > -1) {
-                        const relleno = {
-                            mesa: silla.mesa,
-                            silla: silla.silla
-                        };
-                        sillasEspera.push(relleno);
                         idSilla.splice(indice, 1);
                     }
                 }
@@ -911,11 +901,7 @@ compra.addEventListener('click', async () => {
             if (silla.mesa == mesa) {
                     const indice = idSilla.indexOf(silla.silla); 
                     if (indice > -1) {
-                        const relleno = {
-                            mesa: silla.mesa,
-                            silla: silla.silla
-                        };
-                        sillasEspera.push(relleno);
+                        console.log(`Esta silla esta en la lista: ${silla.silla}`);
                         idSilla.splice(indice, 1);
                     }
                 }
@@ -930,8 +916,8 @@ compra.addEventListener('click', async () => {
         }
     })
 
+    console.log("Sillas en espera:", listaMesaSilla);
     console.log("Sillas a bloquear:", sillasBloqueadas);
-    console.log("Sillas a espera:", sillasEspera);
     ///////////////////////////////////////////////////////////////////////
 
     //confirma.appendChild(totalCompra);
