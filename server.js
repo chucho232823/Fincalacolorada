@@ -680,7 +680,8 @@ app.post('/datos', (req,res) => {
     const consecutivas = reserva.consecutivas;
     const agrupadasPorMesa = reserva.agrupadasPorMesa;
     const tipoPago = reserva.tipoPago;
-    res.render( 'datos' , {nombre, sembrado, listaMesaSilla, controlFila, tipo, consecutivas, agrupadasPorMesa, tipoPago} );
+    const sillasBloqueadas = reserva.sillasBloqueadas;
+    res.render( 'datos' , {nombre, sembrado, listaMesaSilla, controlFila, tipo, consecutivas, agrupadasPorMesa, tipoPago, sillasBloqueadas} );
 })
 
 /**
