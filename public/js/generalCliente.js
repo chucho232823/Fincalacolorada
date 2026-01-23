@@ -813,7 +813,7 @@ compra.addEventListener('click', async () => {
                     const indice = idSilla.indexOf(silla.silla); 
                     console.log(`Mesa: ${silla.mesa} Silla: ${silla.silla}`)
                     if (indice > -1) {
-                        consoloe.log(`Esta silla esta en la lista: ${silla.silla}`);
+                        console.log(`Esta silla esta en la lista: ${silla.silla}`);
                         idSilla.splice(indice, 1);
                     }
                 }
@@ -833,7 +833,7 @@ compra.addEventListener('click', async () => {
                     const indice = idSilla.indexOf(silla.silla); 
                     console.log(`Mesa: ${silla.mesa} Silla: ${silla.silla}`)
                     if (indice > -1) {
-                        consoloe.log(`Esta silla esta en la lista: ${silla.silla}`);
+                        console.log(`Esta silla esta en la lista: ${silla.silla}`);
                         idSilla.splice(indice, 1);
                     }
                 }
@@ -871,7 +871,7 @@ compra.addEventListener('click', async () => {
                     const indice = idSilla.indexOf(silla.silla); 
                     console.log(`Mesa: ${silla.mesa} Silla: ${silla.silla}`)
                     if (indice > -1) {
-                        consoloe.log(`Esta silla esta en la lista: ${silla.silla}`);
+                        console.log(`Esta silla esta en la lista: ${silla.silla}`);
                         idSilla.splice(indice, 1);
                     }
                 }
