@@ -14,9 +14,10 @@ let mesasJuntadas = [];
 let cancelarLiberacion = false;
 // console.log("tipo Pago",tipoPago);
 // PASO 1: Convertir el objeto a un array de pares [ [clave, valor], ... ]
-// console.log(listaMesaSilla);
+console.log("Sillas a en espera", listaMesaSilla);
+console.log("Sillas a bloquear", sillasBloqueadas)
 // console.log(typeof(listaMesaSilla));
-console.log(consecutivas);
+// console.log(consecutivas);
 // console.log(agrupadasPorMesa);
 // console.log(sembrado);
 // console.log(nombreEvento);
