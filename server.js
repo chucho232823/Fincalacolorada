@@ -1336,7 +1336,6 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
         }
 
         const { titulo, nombre, apellido, hora, fecha, preventa, precio, precioD } = results[0];
-        const precioFinal = preventa === 1 ? precio : precioD;
         const [horas, minutos] = hora.split(':');
         const fechap = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit' }).format(new Date(fecha));
 
@@ -1356,7 +1355,9 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
         // --- BUCLE: Crear una página por cada silla encontrada ---
         for (const row of results) {
             // Copiar la primera página de la plantilla al nuevo documento
-            console.log(row);
+            // console.log(row);
+            const precioFinal = preventa === 1 ? precio : precioD;
+            console.log(`Precio Preventa: ${precio} Precio: ${precioD} Precio Final: ${precioFinal}`)
             const [copiedPage] = await pdfDoc.copyPages(plantillaDoc, [0]);
             const page = pdfDoc.addPage(copiedPage);
 
