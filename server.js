@@ -1356,6 +1356,7 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
         // --- BUCLE: Crear una página por cada silla encontrada ---
         for (const row of results) {
             // Copiar la primera página de la plantilla al nuevo documento
+            console.log(row);
             const [copiedPage] = await pdfDoc.copyPages(plantillaDoc, [0]);
             const page = pdfDoc.addPage(copiedPage);
 
