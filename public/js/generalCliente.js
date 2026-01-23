@@ -847,10 +847,10 @@ compra.addEventListener('click', async () => {
                 silla: idSilla[0]
             };
             const infoSilla = await verificaEstadoSilla(sembrado, relleno.mesa, relleno.silla);
-            if(infoSilla.estado){
+            if(infoSilla.estado)
                 console.log("Esta silla no se puede bloquear");
-            }
-            sillasBloqueadas.push(relleno);
+            else
+                sillasBloqueadas.push(relleno);
         }
         if (num === 2 && (mesa >= 215 && mesa <= 219)) {
             const idSilla = ['A', 'B', 'C'];
@@ -868,7 +868,11 @@ compra.addEventListener('click', async () => {
                 mesa: mesa,
                 silla: idSilla[0]
             };
-            sillasBloqueadas.push(relleno);
+            const infoSilla = await verificaEstadoSilla(sembrado, relleno.mesa, relleno.silla);
+            if(infoSilla.estado)
+                console.log("Esta silla no se puede bloquear");
+            else
+                sillasBloqueadas.push(relleno);
         }
         const buscarMesa = mesa;
 
