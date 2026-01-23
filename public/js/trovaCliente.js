@@ -1138,7 +1138,8 @@ document.querySelector('.confirma-compra').addEventListener('click', function (e
             tipo: tipo,
             consecutivas: consecutivas,
             agrupadasPorMesa: agrupadasPorMesa,
-            tipoPago, tipoPago
+            tipoPago: tipoPago,
+            sillasBloqueadas: sillasBloqueadas
         });
         //Enviar los datos
         form.submit();

@@ -824,8 +824,6 @@ compra.addEventListener('click', async () => {
     //confirma.appendChild(lista);
     document.querySelector('.confirma-compra h3').innerHTML = `Total a pagar: $${total}`;
     
-    
-    const sillasEspera = [];
     ////////////////////////////////////////////////////////////////////////
     controlFila.forEach(async (num, mesa) => {
         console.log(`mesa: ${mesa} Reservas: ${num}`);
