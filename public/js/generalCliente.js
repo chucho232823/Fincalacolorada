@@ -712,25 +712,26 @@ compra.addEventListener('click', async () => {
         // console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`);
         if (num === 3 && !(mesa >= 215 && mesa <= 219)) {
             const idSilla = ['A', 'B', 'C', 'D'];
-
-            // Usamos un for clásico, es más difícil que falle por temas de prototipos
-            for (let i = 0; i < listaMesaSilla.length; i++) {
-                let sillaItem = listaMesaSilla[i];
-                console.log(`Vuelta ${i} - Mesa en item: ${sillaItem.mesa} vs Mesa buscada: ${mesa}`);
-                // Forzamos a ambos a ser String para evitar fallos de tipo
-                if (String(sillaItem.mesa) === String(mesa)) {
-                    const indice = idSilla.indexOf(sillaItem.silla); 
+            console.log(listaMesaSilla);
+            console.log(listaMesaSilla.length);
+            //console.log(idSilla);
+            listaMesaSilla.forEach(silla => {
+                console.log("aaaaaaaaaaaaaaaaa")
+                console.log(`Mesa: ${mesa} MesaSilla: ${silla.mesa}`)
+                if (silla.mesa == mesa) {
+                    const indice = idSilla.indexOf(silla.silla); 
+                    console.log(`Mesa: ${silla.mesa} Silla: ${silla.silla}`)
                     if (indice > -1) {
-                        console.log("Silla elegida:", sillaItem.silla);
+                        consoloe.log(`Esta silla esta en la lista: ${silla.silla}`);
                         idSilla.splice(indice, 1);
                     }
                 }
-            }
+            });
             const relleno = {
                 mesa: mesa,
                 silla: idSilla[0]
             };
-            console.log("Relleno:", relleno);
+            console.log("Relleno: ",relleno);
         }
         if (num === 2 && (mesa >= 215 && mesa <= 219)) {
             const idSilla = ['A', 'B', 'C'];
