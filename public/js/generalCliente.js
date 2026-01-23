@@ -854,7 +854,7 @@ compra.addEventListener('click', async () => {
                 sillasBloqueadas.push(relleno);
         }
         if (num === 2 && (mesa >= 215 && mesa <= 219)) {
-            const idSilla = ['A', 'B', 'C'];/
+            const idSilla = ['A', 'B', 'C'];
             console.log(listaMesaSilla);
             console.log(idSilla);
             listaMesaSilla.forEach(silla => {
