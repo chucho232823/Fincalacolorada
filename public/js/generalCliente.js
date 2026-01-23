@@ -704,8 +704,7 @@ compra.addEventListener('click', async () => {
 
     console.log("Todos los IDs que cumplen ambas condiciones:", idsValidos);
     let mesasNoJuntables = [];
-
-    console.log("Sillas a bloquear:", sillasBloqueadas);
+  
     // El ciclo ahora vive aquí afuera
     for (const mesaId of idsValidos) {
         console.log(`Analizando Mesa ${mesaId}...`);
@@ -796,7 +795,6 @@ compra.addEventListener('click', async () => {
 
     //confirma.appendChild(lista);
     document.querySelector('.confirma-compra h3').innerHTML = `Total a pagar: $${total}`;
-
     
     const sillasBloqueadas = [];
     ////////////////////////////////////////////////////////////////////////
@@ -887,8 +885,9 @@ compra.addEventListener('click', async () => {
             }    
         }
     })
+
+    console.log("Sillas a bloquear:", sillasBloqueadas);
     ///////////////////////////////////////////////////////////////////////
-    
 
     //confirma.appendChild(totalCompra);
     confirma.style.display = 'flex';
