@@ -828,9 +828,8 @@ compra.addEventListener('click', async () => {
     controlFila.forEach(async (num, mesa) => {
         console.log(`mesa: ${mesa} Reservas: ${num}`);
         // console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`);
-        if (num === 3 && !(mesa >= 215 && mesa <= 219)) {
+        if (!(mesa >= 215 && mesa <= 219)) {
             const idSilla = ['A', 'B', 'C', 'D'];
-            
             console.log(listaMesaSilla.length);
             //console.log(idSilla);
             listaMesaSilla.forEach(silla => {
@@ -849,8 +848,11 @@ compra.addEventListener('click', async () => {
             const infoSilla = await verificaEstadoSilla(sembrado, relleno.mesa, relleno.silla);
             if(infoSilla.estado)
                 console.log("Esta silla no se puede bloquear");
-            else
-                sillasBloqueadas.push(relleno);
+            else{
+                if(idSilla.length = 1)
+                    sillasBloqueadas.push(relleno);
+            }
+                
         }
         if (num === 2 && (mesa >= 215 && mesa <= 219)) {
             const idSilla = ['A', 'B', 'C'];
