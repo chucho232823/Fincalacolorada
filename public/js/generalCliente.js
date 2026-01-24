@@ -670,6 +670,7 @@ compra.addEventListener('click', async () => {
     // Obtener todas las sillas activas
     listaMesaSilla = [];
     agrupadasPorMesa = {};
+    sillasBloqueadas = [];
     const sillasActivas = document.querySelectorAll('.chair.activa, .chair3.activa, .chair2.activa');
     total = 0;
     document.querySelector('.confirma-compra ul').innerHTML = '';
@@ -840,6 +841,14 @@ compra.addEventListener('click', async () => {
                     }
                 }
             });
+
+            //Revisando resto de la mesa
+            for (let i = 0; i < idSilla.length; i++) {
+                const estado = await obtenerEstadoSilla(sembrado, mesa, idSilla);
+                console.log(idSilla[i]);  // Imprime cada valor en el array
+                console.log("Estado: ", estado);
+            }
+
             //Comprobar que la otra silla este disponible
             const relleno = {
                 mesa: mesa,

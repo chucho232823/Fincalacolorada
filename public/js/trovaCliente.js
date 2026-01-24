@@ -710,6 +710,7 @@ compra.addEventListener('click', async () => {
     
     listaMesaSilla = [];
     agrupadasPorMesa = {};
+    sillasBloqueadas = [];
     const sillasActivas = document.querySelectorAll('.chair.activa, .chair3.activa, .chair2.activa');
     total = 0;
     document.querySelector('.confirma-compra ul').innerHTML = '';
