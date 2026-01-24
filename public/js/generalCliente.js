@@ -849,7 +849,7 @@ compra.addEventListener('click', async () => {
             if(infoSilla.estado)
                 console.log("Esta silla no se puede bloquear");
             else{
-                if(idSilla.length = 1)
+                if(idSilla.length === 1)
                     sillasBloqueadas.push(relleno);
             }
                 
