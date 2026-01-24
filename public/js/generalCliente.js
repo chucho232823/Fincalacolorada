@@ -843,7 +843,7 @@ compra.addEventListener('click', async () => {
             });
             //Revisando resto de la mesa
             for (let i = 0; i < idSilla.length; i++) {
-                const estado = await obtenerEstadoSilla(sembrado, mesa, idSilla);
+                const estado = await obtenerEstadoSilla(sembrado, mesa, idSilla[i]);
                 console.log(idSilla[i]);  // Imprime cada valor en el array
                 console.log("Estado: ", estado);
             }
