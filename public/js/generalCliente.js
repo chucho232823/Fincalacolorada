@@ -552,7 +552,7 @@ const fondo = document.querySelector('.fondoCompra');
 let listaMesaSilla = [];
 let precios = [];
 let total;
-const sillasBloqueadas = [];
+let sillasBloqueadas = [];
 
 /**
  * Funcion para obtener las mesas consecutivas, obviar las mesas de 2 y 3 sillas
@@ -841,7 +841,6 @@ compra.addEventListener('click', async () => {
                     }
                 }
             });
-
             //Revisando resto de la mesa
             for (let i = 0; i < idSilla.length; i++) {
                 const estado = await obtenerEstadoSilla(sembrado, mesa, idSilla);
