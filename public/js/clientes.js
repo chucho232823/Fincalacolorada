@@ -31,9 +31,11 @@ fetch("/listado-de-eventos")
             nombre: evento.nombre,
             tipo: evento.tipo,
             fecha: evento.fecha,
+            fechaP: evento.fechaP,
             hora: evento.hora,
             subtitulo: evento.subtitulo,
-            imagen: evento.imagen
+            imagen: evento.imagen,
+            estado: evento.estado
         }
         datosEventos.push(ev);
         if(evento.estado === "cancelado")
