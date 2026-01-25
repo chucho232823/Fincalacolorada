@@ -36,6 +36,7 @@ const arrayDePares = Object.entries(controlFila);
 
 // PASO 2: Reconstruir el Map
 const controlFilaReconstruido = new Map(arrayDePares);
+console.log(controlFila);
 console.log(controlFilaReconstruido);
 
 /**
@@ -397,13 +398,12 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas,ti
     }
     
     // const resultado = await response.json();
-
     for (const silla of listaMesaSilla){
         const cod = codigo;
         await reservarMesa(silla,cod);
     }
 
-    for(const silla of sillasExtra){
+    for(const silla of sillasBloqueadas){
        const cod = codigo;
        await reservarMesa(silla,cod);
     }
@@ -421,7 +421,8 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas,ti
           codigo,
           idEvento: sembrado,
           total: sumatoria,
-          nombre: nombreEvento
+          nombre: nombreEvento,
+
         })
       }
     );

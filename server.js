@@ -220,7 +220,7 @@ cron.schedule('* * * * *', async () => {
         enEspera = false,
         enEsperaDesde = NULL
     WHERE enEspera = true
-      AND enEsperaDesde < NOW() - INTERVAL 5 MINUTE;
+    AND enEsperaDesde < NOW() - INTERVAL 5 MINUTE;
   `;
   
   try {
@@ -603,8 +603,6 @@ app.put('/reservar/:idEvento', async (req, res) => {
     AND s.letra = ?;
   `;
 
-    "    AND s.le...' at line 5"
-
   try {
     // Ejecutar la consulta usando pool.query y await
     const [result] = await pool.query(query, [codigo, mesa, parseInt(idEvento), sil]);
@@ -627,6 +625,50 @@ app.put('/reservar/:idEvento', async (req, res) => {
  * Bloqueo de sillas para apartar mesa
  */
 app.put('/bloqueo/:idEvento', async (req, res) => {
+  const { idEvento } = req.params;
+  const { silla } = req.body;
+  const mesa = silla.mesa;
+  const sil = silla.silla;
+
+  // Validación básica
+  if (!mesa || !sil || isNaN(mesa) || typeof sil !== 'string') {
+    return res.status(400).json({ error: 'Los parámetros mesa y silla deben ser números válidos' });
+  }
+
+  // Consulta para bloquear la silla
+  const query = `
+    UPDATE silla s
+    JOIN mesa m ON m.idMesa = s.idMesa
+    JOIN precioEvento p ON p.idPrecio = m.idPrecio
+    JOIN evento e ON e.idEvento = p.idEvento
+    SET s.bloqueada = true
+    WHERE m.numero = ?
+    AND e.idEvento = ?
+    AND s.letra = ?;
+  `; 
+
+  try {
+    // Ejecutar la consulta usando async/await
+    const [result] = await pool.query(query, [mesa, parseInt(idEvento), sil]);
+
+    // Verificar si la consulta afectó alguna fila
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'No se encontró el registro con los datos proporcionados' });
+    }
+
+    // Respuesta exitosa
+    res.status(200).json({ message: 'Bloqueo de silla realizado' });
+  } catch (err) {
+    // Manejo de errores
+    console.error('Error al actualizar:', err);
+    res.status(500).json({ error: 'Error al actualizar los datos' });
+  }
+});
+
+/**
+ * Confirma bloqueo
+ */
+app.put('/confirma-bloqueo/:idEvento', async (req, res) => {
   const { idEvento } = req.params;
   const { silla } = req.body;
   const mesa = silla.mesa;
