@@ -23,6 +23,7 @@ console.log("Sillas a bloquear", sillasBloqueadas)
 // console.log(nombreEvento);
 
 let sumatoria = 0;
+console.log(agrupadasPorMesa);
 Object.values(agrupadasPorMesa).forEach((grupo) => {
     sumatoria += grupo.total;
     // console.log(`${grupo.sillas} - ${grupo.total}`);
@@ -422,7 +423,7 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas,ti
           idEvento: sembrado,
           total: sumatoria,
           nombre: nombreEvento,
-
+          listaSilla: controlFila,
         })
       }
     );
