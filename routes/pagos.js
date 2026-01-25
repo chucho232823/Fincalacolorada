@@ -23,8 +23,6 @@ router.post('/crear-pago', async (req, res) => {
         modo: 'directo' // 👈 clave
       });
     }
-    
-    console.log(detalles)
 
     const itemsDesglosados = detalles.map(item => ({
         title: `Mesa ${item.mesa} - ${item.cantidadSillas} Sillas`, // 👈 Aquí va el texto que quieres ver
@@ -32,6 +30,8 @@ router.post('/crear-pago', async (req, res) => {
         unit_price: Number(item.subtotal) / 1, // El precio de ese grupo de sillas
         currency_id: 'MXN'
     }));
+
+    console.log(itemsDesglosados)
 
     const preferenceData = {
       items: itemsDesglosados,
