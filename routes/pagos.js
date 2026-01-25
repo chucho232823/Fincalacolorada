@@ -25,7 +25,7 @@ router.post('/crear-pago', async (req, res) => {
     }
 
     const itemsDesglosados = detalles.map(item => ({
-        title: `Mesa ${item.mesa} - ${item.cantidadSillas} Sillas`, // 👈 Aquí va el texto que quieres ver
+        title: `Mesa ${item.mesa} - Sillas ${item.cantidadSillas}`, // 👈 Aquí va el texto que quieres ver
         quantity: 1,
         unit_price: Number(item.subtotal) / 1, // El precio de ese grupo de sillas
         currency_id: 'MXN'
