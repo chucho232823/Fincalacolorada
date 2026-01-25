@@ -594,7 +594,7 @@ const fondo = document.querySelector('.fondoCompra');
 let listaMesaSilla = [];
 let precios = [];
 let total;
-const sillasBloqueadas = [];
+let sillasBloqueadas = [];
 
 /**
  * Funcion para obtener las mesas consecutivas, obviar las mesas de 2 y 3 sillas
