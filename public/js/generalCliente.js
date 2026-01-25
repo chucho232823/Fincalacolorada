@@ -642,7 +642,7 @@ async function verificaEstadoSilla(idEvento, mesa, silla) {
         
         if (!response.ok) {
             if (response.status === 404) {
-                console.warn("La silla no existe en la base de datos.");
+                console.warn(`La silla ${mesa}: ${silla} no existe en la base de datos.`);
             }
             return null; 
         }
