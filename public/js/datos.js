@@ -434,7 +434,7 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas,ti
           idEvento: sembrado,
           total: sumatoria,
           nombre: nombreEvento,
-          listaSilla: controlFila,
+          detalles: detalleFinal
         })
       }
     );

@@ -8,11 +8,11 @@ const mpClient = require('../services/mercadopago');
  */
 router.post('/crear-pago', async (req, res) => {
   try {
-    const { codigo, idEvento, total, nombre } = req.body;
+    const { codigo, idEvento, total, nombre, detalles} = req.body;
 
-    if (!codigo || !idEvento || !total) {
-      return res.status(400).json({ error: 'Datos incompletos' });
-    }
+     if (!codigo || !idEvento || !total || !detalles) {
+         return res.status(400).json({ error: 'Datos incompletos' });
+     }
     // console.log('--- DEBUG PAGO ---');
     // console.log('Todo el objeto session:', req.session);
     // console.log('ID de sesión:', req.sessionID);
@@ -24,19 +24,15 @@ router.post('/crear-pago', async (req, res) => {
       });
     }
     
+    const itemsDesglosados = detalles.map(item => ({
+        title: `Mesa ${item.mesa} - ${item.cantidadSillas} Sillas`, // 👈 Aquí va el texto que quieres ver
+        quantity: 1,
+        unit_price: Number(item.subtotal) / 1, // El precio de ese grupo de sillas
+        currency_id: 'MXN'
+    }));
+
     const preferenceData = {
-      items: [
-        {
-          title: `Reserva para: ${nombre}`,
-          quantity: 1,
-          unit_price: Number(total),
-          currency_id: 'MXN'
-          // title: `TEST PAGO`,
-          // quantity: 1,
-          // unit_price: 1,
-          // currency_id: 'MXN'
-        }
-      ],
+      items: itemsDesglosados,
 
       // 🔑 Identificador único
       external_reference: codigo,
