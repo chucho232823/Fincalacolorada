@@ -41,6 +41,17 @@ console.log(controlFila);
 console.log(controlFilaReconstruido);
 
 /**
+ * Detalles finales
+ */
+const detalleFinal = Object.keys(controlFila).map(mesaId => ({
+  mesa: mesaId,
+  cantidadSillas: controlFila[mesaId],
+  subtotal: agrupadasPorMesa[mesaId].total
+}));
+
+console.log(detalleFinal);
+
+/**
  * Poniendo sillas en espera
  */
 async function esperaSilla( letra, numeroMesa, idEvento ) {
@@ -397,7 +408,7 @@ async function enviarDatos(codigo, nombre, apellidos, telefono, mesasJuntadas,ti
     if (!response.ok) {
       throw new Error('Error al crear la reserva');
     }
-    
+
     // const resultado = await response.json();
     for (const silla of listaMesaSilla){
         const cod = codigo;
