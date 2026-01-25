@@ -24,6 +24,8 @@ router.post('/crear-pago', async (req, res) => {
       });
     }
     
+    console.log(detalles)
+
     const itemsDesglosados = detalles.map(item => ({
         title: `Mesa ${item.mesa} - ${item.cantidadSillas} Sillas`, // 👈 Aquí va el texto que quieres ver
         quantity: 1,
