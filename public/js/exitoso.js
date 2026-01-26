@@ -50,7 +50,7 @@ const mostrarBotonDescarga = (url) => {
         </a>
     `;
     // Iniciar descarga automática
-    document.getElementById('seccion-correo').style.display = 'block';
+    // document.getElementById('seccion-correo').style.display = 'block';
     window.location.href = url;
 };
 
