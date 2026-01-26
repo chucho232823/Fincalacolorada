@@ -1202,7 +1202,7 @@ fetch(`/precios/${sembrado}`)
 
         // 3. Mostrar la fecha de preventa (usando la del primer registro)
         const f = new Date(data[0].fechaP);
-        f.setDate(fPreventa.getDate() + 1);
+        f.setDate(f.getDate() + 1);
         const fechaFormateada = f.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
         fechaContenedor.innerHTML = `<strong>Preventa Hasta:</strong> ${fechaFormateada}`;
         fechaContenedor.style.display = 'block';
