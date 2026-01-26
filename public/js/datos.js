@@ -41,13 +41,23 @@ console.log(controlFila);
 console.log(controlFilaReconstruido);
 
 /**
+ * Detalles finales segunda version
+ */
+
+/**
  * Detalles finales
  */
-const detalleFinal = Object.keys(controlFila).map(mesaId => ({
-  mesa: mesaId,
-  cantidadSillas: controlFila[mesaId],
-  subtotal: agrupadasPorMesa[mesaId].total
-}));
+const detalleFinal = Object.keys(controlFila).map(mesaId => {
+    // Obtenemos las sillas y las unimos con una coma (ej: "A, B")
+    const listaSillas = agrupadasPorMesa[mesaId].sillas.join(', ');
+
+    return {
+        mesa: mesaId,
+        letrasSillas: listaSillas, // Nueva propiedad
+        cantidadSillas: controlFila[mesaId],
+        subtotal: agrupadasPorMesa[mesaId].total
+    };
+});
 
 console.log(detalleFinal);
 

@@ -24,12 +24,24 @@ router.post('/crear-pago', async (req, res) => {
       });
     }
 
+    const montoDeseado = detalles.reduce((acc, item) => acc + Number(item.subtotal), 0);
+    const totalConComision = (montoDeseado + 4.64) / (1 - 0.040484);
+    const totalFinalRedondeado = Math.ceil(totalConComision);
+    const cargoServicio = totalFinalRedondeado - montoDeseado;
+
     const itemsDesglosados = detalles.map(item => ({
-        title: `Mesa ${item.mesa} - Sillas ${item.cantidadSillas}`, // 👈 Aquí va el texto que quieres ver
+        title: `Mesa: ${item.mesa} Silla(s): ${item.letrasSillas}`, // 👈 Aquí va el texto que quieres ver
         quantity: 1,
         unit_price: Number(item.subtotal) / 1, // El precio de ese grupo de sillas
         currency_id: 'MXN'
     }));
+
+    itemsDesglosados.push({
+        title: "Cargo por Servicio",
+        quantity: 1,
+        unit_price: cargoServicio, // Este monto cubre la comisión de MP + el redondeo
+        currency_id: 'MXN'
+    });
 
     console.log(itemsDesglosados)
 

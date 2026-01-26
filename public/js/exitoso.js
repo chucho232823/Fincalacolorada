@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const mostrarBotonDescarga = (url) => {
         contenedor.innerHTML = `
             <p>✅ ¡Tu boleto está listo!</p>.
-            <p>Si tu boleto no se descarga automaticamente dar click en el boton para descargarlo</p>
+            <p>Si tu boleto <span style="font-weight: bold;">no se descarga automaticamente</span> dar click en el <span style="font-weight: bold;">boton para descargarlo</span></p>
             <a href="${url}" class="btn-descarga">
                📥 Descargar Boleto PDF
             </a>

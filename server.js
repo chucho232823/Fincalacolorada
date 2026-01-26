@@ -141,6 +141,20 @@ app.get('/eventosPasados', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'private', 'eventosPasados.html'));
 });
 
+// --- MANEJO DE ERROR 404 (Ruta no encontrada) ---
+// Si el código llega aquí, es porque ninguna ruta de arriba coincidió
+app.use((req, res, next) => {
+    res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
+    // O si usas un motor de plantillas como EJS: res.status(404).render('404');
+});
+
+// --- MANEJO DE ERROR 500 (Error interno del servidor) ---
+// Este middleware especial tiene 4 parámetros (err, req, res, next)
+app.use((err, req, res, next) => {
+    console.error(err.stack); // Registra el error en la consola
+    res.status(500).send('¡Algo salió mal en el servidor!');
+});
+
 // function requireAuthApi(req, res, next) {
 //   if (req.session?.auth) {
 //     return next();
