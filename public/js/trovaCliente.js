@@ -1179,6 +1179,8 @@ fetch(`/precios/${sembrado}`)
     const theadRow = document.querySelector('#tablaPrecios thead tr');
     const fechaContenedor = document.getElementById('fecha-limite-preventa');
 
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
     // Obtenemos fechas de referencia del primer registro
     const fPreventa = new Date(data[0].fechaP);
     fPreventa.setHours(0, 0, 0, 0);
