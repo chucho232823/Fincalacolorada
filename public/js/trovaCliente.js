@@ -1179,8 +1179,15 @@ fetch(`/precios/${sembrado}`)
     const theadRow = document.querySelector('#tablaPrecios thead tr');
     const fechaContenedor = document.getElementById('fecha-limite-preventa');
 
+    // Obtenemos fechas de referencia del primer registro
+    const fPreventa = new Date(data[0].fechaP);
+    fPreventa.setHours(0, 0, 0, 0);
+    fPreventa.setDate(fPreventa.getDate() + 1); // Ajuste de
+    const preventaExpirada = hoy > fPreventa;
+
     // 1. Verificar si hay precios diferentes
-    const hayPreciosDiferentes = data.some(row => row.precio !== row.precioD);
+    const hayPreciosDiferentes = data.some(row => row.precio !== row.precioD)
+                                 && !preventaExpirada;
 
     if (hayPreciosDiferentes) {
         // 2. Agregar la columna "Preventa" al encabezado si no existe
