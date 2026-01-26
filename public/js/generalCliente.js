@@ -1132,8 +1132,61 @@ document.querySelector('.confirma-compra').addEventListener('click', function (e
 /**
  * precios
  */
-
 fetch(`/precios/${sembrado}`)
+.then(res => res.json())
+.then(data => {
+    const tbody = document.querySelector('#tablaPrecios tbody');
+    
+    // 1. Constante que es TRUE si en ALGUNA fila los precios son diferentes
+    const hayPreciosDiferentes = data.some(row => row.precio !== row.precioD);
+    
+    console.log('¿Hay precios diferentes?', hayPreciosDiferentes);
+
+    data.forEach(row => {
+        const tr = document.createElement('tr');
+
+        // Lógica de fecha para el precio actual
+        const fechaPreventa = new Date(row.fechaP);
+        fechaPreventa.setHours(0, 0, 0, 0);
+        fechaPreventa.setDate(fechaPreventa.getDate() + 1);
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+        
+        const precioActual = (fechaPreventa < hoy) ? row.precioD : row.precio;
+
+        // 2. Determinar qué mostrar en la celda de precio
+        let contenidoPrecio = '';
+
+        if (row.precio === row.precioD) {
+            // Si son iguales, solo se muestra el actual (formato original)
+            contenidoPrecio = `$${precioActual}`;
+        } else {
+            // Si son diferentes, mostramos ambos. 
+            // Puedes ajustar el diseño (ej: tachado el que no es preventa o simplemente ambos)
+            contenidoPrecio = `
+                <div class="precios-contenedor">
+                    <span class="precio-preventa">Prev: $${row.precio}</span> | 
+                    <span class="precio-normal">Normal: $${row.precioD}</span>
+                </div>
+            `;
+        }
+
+        tr.innerHTML = `
+        <td>
+            <span id='bolita${row.tipo}'></span>
+            ${row.tipo}
+        </td>
+        <td>${contenidoPrecio}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+})
+.catch(err => {
+    console.error('Error al cargar los precios:', err);
+});
+
+
+/*fetch(`/precios/${sembrado}`)
 .then(res => res.json())
 .then(data => {
 const tbody = document.querySelector('#tablaPrecios tbody');
@@ -1160,7 +1213,7 @@ data.forEach(row => {
 })
 .catch(err => {
 console.error('Error al cargar los precios:', err);
-});
+});*/
 
 document.getElementById('inicio').addEventListener('click',(e) => {
     e.preventDefault();
