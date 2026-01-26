@@ -2130,3 +2130,43 @@ app.get('/api/reporte-ventas/:idEvento', async (req, res) => {
         res.status(500).json({ error: "Error al obtener los datos" });
     }
 });
+
+router.post('/api/enviar-boleto-email', async (req, res) => {
+    const { email, codigo, idEvento } = req.body;
+    
+    // Ruta donde se guardó el PDF (debe coincidir con la de tu función generarPDFBoleto)
+    const pdfPath = path.join(__dirname, '..', 'public', 'boletosEventos', `evento_${idEvento}`, `${codigo}.pdf`);
+
+    if (!fs.existsSync(pdfPath)) {
+        return res.status(404).json({ error: 'Archivo no encontrado' });
+    }
+
+    // Configuración de transporte (Ejemplo con Gmail)
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER, // Tu correo
+            pass: process.env.EMAIL_PASS  // Tu contraseña de aplicación
+        }
+    });
+
+    try {
+        await transporter.sendMail({
+            from: '"Taquilla Finca La Colorada" <tu-correo@gmail.com>',
+            to: email,
+            subject: 'Tu Boleto para el Evento',
+            text: `Hola, adjuntamos tu boleto con código ${codigo}. ¡Te esperamos!`,
+            attachments: [
+                {
+                    filename: `Boleto_${codigo}.pdf`,
+                    path: pdfPath
+                }
+            ]
+        });
+
+        res.json({ message: 'Email enviado' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al enviar email' });
+    }
+});
