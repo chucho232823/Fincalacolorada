@@ -17,6 +17,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error verificando sesión', error);
     }
 });
+
+const overlay = document.getElementById('cargando');
+
+overlay.addEventListener('click', (e) => {
+  e.stopPropagation();
+});
+
+
 function generateTables(container, totalTables, tablesPerColumn, numFila, zona, chairsPerTable = 4) {
     for (let col = 0; col < Math.ceil(totalTables / tablesPerColumn); col++) {
         
@@ -668,6 +676,7 @@ let agrupadasPorMesa = {};
  */
 compra.addEventListener('click', async () => {
     // Obtener todas las sillas activas
+    overlay.style.display = 'flex';
     listaMesaSilla = [];
     agrupadasPorMesa = {};
     sillasBloqueadas = [];
@@ -705,6 +714,7 @@ compra.addEventListener('click', async () => {
                 confirmButton: 'alert-boton'
             },
         });
+        overlay.style.display = 'none';
         return;
     }
 
@@ -938,6 +948,7 @@ compra.addEventListener('click', async () => {
     ///////////////////////////////////////////////////////////////////////
 
     //confirma.appendChild(totalCompra);
+    overlay.style.display = 'none';
     confirma.style.display = 'flex';
     fondo.style.position = 'fixed';
     document.querySelector('.main-container').style.pointerEvents = 'none';
