@@ -1176,54 +1176,72 @@ fetch(`/precios/${sembrado}`)
 .then(res => res.json())
 .then(data => {
     const tbody = document.querySelector('#tablaPrecios tbody');
-    
-    // 1. Constante que es TRUE si en ALGUNA fila los precios son diferentes
+    const theadRow = document.querySelector('#tablaPrecios thead tr');
+    const fechaContenedor = document.getElementById('fecha-limite-preventa');
+
+    // 1. Verificar si hay precios diferentes
     const hayPreciosDiferentes = data.some(row => row.precio !== row.precioD);
-    
-    console.log('¿Hay precios diferentes?', hayPreciosDiferentes);
+
+    if (hayPreciosDiferentes) {
+        // 2. Agregar la columna "Preventa" al encabezado si no existe
+        if (theadRow.cells.length === 2) {
+            const th = document.createElement('th');
+            th.textContent = 'Preventa';
+            // Insertar antes de la columna "Precio" para que Precio sea el final
+            theadRow.insertBefore(th, theadRow.cells[1]);
+        }
+
+        // 3. Mostrar la fecha de preventa (usando la del primer registro)
+        const f = new Date(data[0].fechaP);
+        const fechaFormateada = f.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+        fechaContenedor.innerHTML = `<strong>Preventa Hasta:</strong> ${fechaFormateada}`;
+        fechaContenedor.style.display = 'block';
+    } else {
+        // Si no hay diferencias, ocultamos el texto de la fecha
+        fechaContenedor.style.display = 'none';
+    }
 
     data.forEach(row => {
         const tr = document.createElement('tr');
-
-        // Lógica de fecha para el precio actual
+        
+        // Lógica de fecha para determinar el precio vigente
         const fechaPreventa = new Date(row.fechaP);
         fechaPreventa.setHours(0, 0, 0, 0);
         fechaPreventa.setDate(fechaPreventa.getDate() + 1);
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0);
         
-        const precioActual = (fechaPreventa < hoy) ? row.precioD : row.precio;
-
-        // 2. Determinar qué mostrar en la celda de precio
-        let contenidoPrecio = '';
-
-        if (row.precio === row.precioD) {
-            // Si son iguales, solo se muestra el actual (formato original)
-            contenidoPrecio = `$${precioActual}`;
+        const esPeriodoPreventa = hoy <= fechaPreventa;
+// <td style="${!esPeriodoPreventa ? 'color: #d32f2f; font-weight: bold;' : ''}">
+// <td style="${esPeriodoPreventa ? 'color: #28a745; font-weight: bold;' : 'text-decoration: line-through; color: gray;'}">
+        if (hayPreciosDiferentes) {
+            // DISEÑO CON 3 COLUMNAS
+            tr.innerHTML = `
+                <td>
+                    <span id='bolita${row.tipo}'></span>
+                    ${row.tipo}
+                </td>
+                <td>
+                    $${row.precio}
+                </td>
+                <td>
+                    $${row.precioD}
+                </td>
+            `;
         } else {
-            // Si son diferentes, mostramos ambos. 
-            // Puedes ajustar el diseño (ej: tachado el que no es preventa o simplemente ambos)
-            contenidoPrecio = `
-                <div class="precios-contenedor">
-                    <span class="precio-preventa">Prev: $${row.precio}</span> | 
-                    <span class="precio-normal">Normal: $${row.precioD}</span>
-                </div>
+            // DISEÑO ORIGINAL CON 2 COLUMNAS
+            tr.innerHTML = `
+                <td>
+                    <span id='bolita${row.tipo}'></span>
+                    ${row.tipo}
+                </td>
+                <td>$${row.precioD}</td>
             `;
         }
-
-        tr.innerHTML = `
-        <td>
-            <span id='bolita${row.tipo}'></span>
-            ${row.tipo}
-        </td>
-        <td>${contenidoPrecio}</td>
-        `;
         tbody.appendChild(tr);
     });
 })
-.catch(err => {
-    console.error('Error al cargar los precios:', err);
-});
+.catch(err => console.error('Error:', err));
 
 
 /*fetch(`/precios/${sembrado}`)
