@@ -1108,6 +1108,7 @@ function verificarSillas() {
                 '417', '427', '437',
                 '447', '457', '467',
             ]);
+            console.log("verificando mesa:", mesa.id);
             if(idsValidos.has(mesa.id) && mesa.children.length === 4){
                 const chair = document.createElement('div');
                 chair.id = 'D'
