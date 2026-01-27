@@ -1114,6 +1114,19 @@ function verificarSillas() {
                 chair.id = 'D'
                 chair.classList.add('chair');
                 // verificacion del estado de la silla
+                fetch(`/estado-silla/${sembrado}?mesa=${mesa.id}&silla=${chair.id}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Error en la solicitud');
+                    return res.json();
+                })
+                .then(data => {
+                    // console.log('Estado de la silla:', data);
+                    if(data[0].estado || data[0].bloqueada || data[0].enEspera)
+                        chair.classList.add('ocupada');    
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                });
                 mesa.appendChild(chair);
 
                 // --- LÓGICA DE INTERCAMBIO ---
