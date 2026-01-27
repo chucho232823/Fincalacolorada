@@ -1086,16 +1086,43 @@ async function cargarEstadoSillas() {
  */
 function verificarSillas() {
   mesas.forEach(mesa => {
-    const sillas = mesa.querySelectorAll(':scope > div');
-    let cont = 0;
-    sillas.forEach(silla => {
-      if (silla.classList.contains('ocupada')) {
-        //console.log(`Silla ${silla.id} ocupada en mesa ${mesa.id}`);
-        cont++;
-      }
-    });
-    if(cont >= sillas.length)
-        mesa.classList.add('mesaOcupada');
+        const sillas = mesa.querySelectorAll(':scope > div');
+        let cont = 0;
+        sillas.forEach(silla => {
+        if (silla.classList.contains('ocupada')) {
+            //console.log(`Silla ${silla.id} ocupada en mesa ${mesa.id}`);
+            cont++;
+        }
+        });
+        if(cont >= sillas.length)
+            mesa.classList.add('mesaOcupada');
+  
+        if(cont == 2){
+            const idsValidos = new Set([
+                '411', '412', '413',
+                '421', '422', '423',
+                '431', '432', '433',
+                '441', '442', '443',
+                '451', '452', '453',
+                '461', '462', '463',
+                '417', '427', '437',
+                '447', '457', '467',
+            ]);
+            if(idsValidos.has(mesa.id) && mesa.children.length === 4){
+                const chair = document.createElement('div');
+                chair.id = 'D'
+                chair.classList.add('chair');
+                // verificacion del estado de la silla
+                mesa.appendChild(chair);
+                // Seleccionar todos los hijos con clase "chair2 activa"
+                const sillasL = mesa.querySelectorAll(".chair3");
+                // Recorrer y cambiar la clase
+                sillasL.forEach((silla) => {
+                    silla.classList.remove("chair3");
+                    silla.classList.add("chair");
+                });
+            }
+        }
   });
 }
 
