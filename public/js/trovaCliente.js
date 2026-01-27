@@ -561,8 +561,8 @@ mesas.forEach(mesa => {
             for (let i = 0; i < sillas.length; i++) {
                 if(sillas[i].classList.contains('activa')){
                     const precioSilla = precios.find(b => parseInt(b.mesa) === parseInt(mesa) && b.silla === sillas[i].id)
-                    console.log(`Precio preventa: ${precioSilla.precio} Precio normal: ${precioSilla.precioD}`)
-                    console.log(`Hoy: ${hoy} fecha Preventa: ${preventa}`)
+                    // console.log(`Precio preventa: ${precioSilla.precio} Precio normal: ${precioSilla.precioD}`)
+                    // console.log(`Hoy: ${hoy} fecha Preventa: ${preventa}`)
                     if(preventa < hoy){
                         totalMesa += precioSilla.precioD;
                     }else{
@@ -1108,13 +1108,32 @@ function verificarSillas() {
                 '417', '427', '437',
                 '447', '457', '467',
             ]);
-            console.log("verificando mesa:", mesa.id);
+            // console.log("verificando mesa:", mesa.id);
             if(idsValidos.has(mesa.id) && mesa.children.length === 4){
                 const chair = document.createElement('div');
                 chair.id = 'D'
                 chair.classList.add('chair');
                 // verificacion del estado de la silla
                 mesa.appendChild(chair);
+
+                // --- LÓGICA DE INTERCAMBIO ---
+                const sillaB = mesa.querySelector('#B');
+                const sillaD = mesa.querySelector('#D');
+
+                if (sillaB && sillaD) {
+                    // Usamos un marcador temporal para saber dónde estaba B
+                    const temp = document.createTextNode("");
+                    sillaB.parentNode.insertBefore(temp, sillaB);
+
+                    // Movemos B a donde está D
+                    sillaD.parentNode.insertBefore(sillaB, sillaD);
+
+                    // Movemos D a donde estaba B (donde dejamos el marcador)
+                    temp.parentNode.insertBefore(sillaD, temp);
+
+                    // Borramos el marcador
+                    temp.parentNode.removeChild(temp);
+                }
                 // Seleccionar todos los hijos con clase "chair2 activa"
                 const sillasL = mesa.querySelectorAll(".chair3");
                 // Recorrer y cambiar la clase
@@ -1432,6 +1451,25 @@ function seleccionarBoletos() {
                 });
                 mesa.appendChild(chair);
                 // Seleccionar todos los hijos con clase "chair2 activa"
+                // --- LÓGICA DE INTERCAMBIO ---
+                const sillaB = mesa.querySelector('#B');
+                const sillaD = mesa.querySelector('#D');
+
+                if (sillaB && sillaD) {
+                    // Usamos un marcador temporal para saber dónde estaba B
+                    const temp = document.createTextNode("");
+                    sillaB.parentNode.insertBefore(temp, sillaB);
+
+                    // Movemos B a donde está D
+                    sillaD.parentNode.insertBefore(sillaB, sillaD);
+
+                    // Movemos D a donde estaba B (donde dejamos el marcador)
+                    temp.parentNode.insertBefore(sillaD, temp);
+
+                    // Borramos el marcador
+                    temp.parentNode.removeChild(temp);
+                }
+                
                 const sillasL = mesa.querySelectorAll(".chair3");
                 // Recorrer y cambiar la clase
                 sillasL.forEach((silla) => {
