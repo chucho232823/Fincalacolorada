@@ -174,7 +174,12 @@ function generateTablesHorizontal(container, totalTables, tablesPerRow, numFila,
                 table.appendChild(chair);
             }
         } else if(chairsPerTable == 2){
-            table.classList.add('table','preferente','dos');
+            console.log(container);
+            if(container.classList.contains(".footer-izq")){
+                table.classList.add('table','laterales','dos');
+            }else{
+                table.classList.add('table','preferente','dos');
+            }
             span.classList.add('numMesa');
             table.id = (numFila); 
             span.textContent = numFila++;
