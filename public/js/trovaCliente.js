@@ -174,7 +174,6 @@ function generateTablesHorizontal(container, totalTables, tablesPerRow, numFila,
                 table.appendChild(chair);
             }
         } else if(chairsPerTable == 2){
-            console.log(container);
             if(container.classList.contains("footer-izq")){
                 table.classList.add('table','laterales','dos');
             }else{
