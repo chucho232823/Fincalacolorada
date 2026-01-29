@@ -419,7 +419,7 @@ mesas.forEach(mesa => {
                 alerta = await Swal.fire({
                     title: 'Finca la colorada dice:',
                     text:'Para seleccionar mas sillas aumenta el numero de boletos',
-                    icon: 'success', // puede ser 'success', 'error', 'warning', 'info', 'question'
+                    icon: 'warning', // puede ser 'success', 'error', 'warning', 'info', 'question'
                     confirmButtonColor: '#68AAFC',
                     confirmButtonText: 'ACEPTAR',
                     allowOutsideClick: false,
@@ -897,7 +897,7 @@ compra.addEventListener('click', async () => {
         // console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`);
         if (num === 2 && idsMesas.has(mesa)) {
             //aqui se ponen en sillas exra las que falten cuando son mas de 3 mesas
-            console.log("Apartando 4 mesas");
+            console.log("Apartando 4 sillas");
             const idSilla = ['A', 'B', 'C', 'D'];
             console.log(listaMesaSilla);
             //console.log(idSilla);

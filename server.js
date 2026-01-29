@@ -1420,7 +1420,7 @@ app.get('/creaPDFBoleto/:idEvento/:codigo', async (req, res) => {
             // TÍTULO
             page.drawText(`${titulo}`, {
                 x: 235, y: 250, size: 36, font: HindBold,
-                maxWidth: 600, lineHeight: 38, color: rgb(1, 1, 1)
+                maxWidth: 450, lineHeight: 38, color: rgb(1, 1, 1)
             });
 
             // FECHA Y HORA
