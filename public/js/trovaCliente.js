@@ -882,9 +882,47 @@ compra.addEventListener('click', async () => {
     document.querySelector('.confirma-compra h3').innerHTML = `Total a pagar: $${total}`;
     
      ////////////////////////////////////////////////////////////////////////
+     const idsMesas = new Set([
+            '411', '412', '413',
+            '421', '422', '423',
+            '431', '432', '433',
+            '441', '442', '443',
+            '451', '452', '453',
+            '461', '462', '463',
+            '417', '427', '437',
+            '447', '457', '467',
+        ]);
     controlFila.forEach(async (num, mesa) => {
         console.log(`mesa: ${mesa} Reservas: ${num}`);
         // console.log(`consecutivas: ${consecutivas} tamaño: ${consecutivas.length}`);
+        if (num === 2 && idsMesas.has(mesa)) {
+            //aqui se ponen en sillas exra las que falten cuando son mas de 3 mesas
+            console.log("Apartando 4 mesas");
+            const idSilla = ['A', 'B', 'C', 'D'];
+            console.log(listaMesaSilla);
+            //console.log(idSilla);
+            listaMesaSilla.forEach(silla => {
+            if (silla.mesa == mesa) {
+                    const indice = idSilla.indexOf(silla.silla); 
+                    if (indice > -1) {
+                        console.log(`Esta silla esta en la lista: ${silla.silla}`);
+                        idSilla.splice(indice, 1);
+                    }
+                }
+            });
+            for (let index = 0; index < idSilla.length; index++) {
+                const relleno = {
+                    mesa: mesa,
+                    silla: idSilla[index]
+                };
+                const infoSilla = await verificaEstadoSilla(sembrado, relleno.mesa, relleno.silla);
+                if(infoSilla.estado)
+                    console.log("Esta silla no se puede bloquear");
+                else
+                    sillasBloqueadas.push(relleno);
+            }
+        }
+
         if (num === 3 && !(mesa >= 215 && mesa <= 219)) {
             const idSilla = ['A', 'B', 'C', 'D'];
             
@@ -967,7 +1005,11 @@ compra.addEventListener('click', async () => {
                     mesa: mesa,
                     silla: idSilla[index]
                 };
-                sillasBloqueadas.push(relleno);
+                const infoSilla = await verificaEstadoSilla(sembrado, relleno.mesa, relleno.silla);
+                if(infoSilla.estado)
+                    console.log("Esta silla no se puede bloquear");
+                else
+                    sillasBloqueadas.push(relleno);
             }    
         }
     })
