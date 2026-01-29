@@ -1101,65 +1101,6 @@ function verificarSillas() {
         if(cont >= sillas.length)
             mesa.classList.add('mesaOcupada');
   
-        if(cont == 2){
-            const idsValidos = new Set([
-                '411', '412', '413',
-                '421', '422', '423',
-                '431', '432', '433',
-                '441', '442', '443',
-                '451', '452', '453',
-                '461', '462', '463',
-                '417', '427', '437',
-                '447', '457', '467',
-            ]);
-            // console.log("verificando mesa:", mesa.id);
-            if(idsValidos.has(mesa.id) && mesa.children.length === 4){
-                const chair = document.createElement('div');
-                chair.id = 'D'
-                chair.classList.add('chair');
-                // verificacion del estado de la silla
-                fetch(`/estado-silla/${sembrado}?mesa=${mesa.id}&silla=${chair.id}`)
-                .then(res => {
-                    if (!res.ok) throw new Error('Error en la solicitud');
-                    return res.json();
-                })
-                .then(data => {
-                    // console.log('Estado de la silla:', data);
-                    if(data[0].estado || data[0].bloqueada || data[0].enEspera)
-                        chair.classList.add('ocupada');    
-                })
-                .catch(err => {
-                    console.error('Error:', err);
-                });
-                mesa.appendChild(chair);
-
-                // --- LÓGICA DE INTERCAMBIO ---
-                const sillaB = mesa.querySelector('#B');
-                const sillaD = mesa.querySelector('#D');
-
-                if (sillaB && sillaD) {
-                    // Usamos un marcador temporal para saber dónde estaba B
-                    const temp = document.createTextNode("");
-                    sillaB.parentNode.insertBefore(temp, sillaB);
-
-                    // Movemos B a donde está D
-                    sillaD.parentNode.insertBefore(sillaB, sillaD);
-
-                    // Movemos D a donde estaba B (donde dejamos el marcador)
-                    temp.parentNode.insertBefore(sillaD, temp);
-
-                    // Borramos el marcador
-                    temp.parentNode.removeChild(temp);
-                }
-                // Seleccionar todos los hijos con clase "chair2 activa"
-                const sillasL = mesa.querySelectorAll(".chair3");
-                // Recorrer y cambiar la clase
-                sillasL.forEach((silla) => {
-                    silla.classList.remove("chair3");
-                    silla.classList.add("chair");
-                });
-            }
-        }
   });
 }
 
