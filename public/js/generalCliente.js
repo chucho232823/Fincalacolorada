@@ -140,7 +140,11 @@ function generateTablesHorizontal(container, totalTables, tablesPerRow, numFila,
                 table.appendChild(chair);
             }
         } else if(chairsPerTable == 2){
-            table.classList.add('table','gral','dos');
+            if(container.classList.contains("footer-der")){
+                table.classList.add('table','preferente','dos');
+            }else{
+                table.classList.add('table','gral','dos');
+            }    
             span.classList.add('numMesa');
             table.id = (numFila); 
             span.textContent = numFila++;
