@@ -297,7 +297,7 @@ app.get('/listado-de-eventos', async (req, res) => {
              TIME_FORMAT(e.hora, '%H:%i') AS hora, e.imagen AS imagen, e.subtitulo AS subtitulo 
       FROM evento e
       JOIN tipoEvento t ON e.idTipoEVento = t.idTipoEvento
-      WHERE e.fecha >= CURDATE()
+      WHERE e.fecha >= CURDATE() OR e.estado = "venta"
       ORDER BY e.fecha ASC;
     `;
 
