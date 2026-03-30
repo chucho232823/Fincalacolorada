@@ -349,9 +349,32 @@ let sillasSeleccionadas = 0;
 let sillasMaximas = 2;
 
 /**
- * funcion async para verificar la silla
+ * Aqui la actualizacion por mesa
  */
 
+function actualizarEstadoMesa(mesaElement) {
+    // Seleccionamos las sillas directas de esta mesa
+    const sillas = mesaElement.querySelectorAll(':scope > div');
+    let cont = 0;
+
+    sillas.forEach(silla => {
+        if (silla.classList.contains('ocupada')) {
+            cont++;
+        }
+    });
+
+    // Si el contador es igual al total de sillas, marcamos la mesa
+    if (cont >= sillas.length && sillas.length > 0) {
+        mesaElement.classList.add('mesaOcupada');
+    } //else {
+    //     // Por si acaso una silla se liberó, removemos la clase
+    //     mesaElement.classList.remove('mesaOcupada');
+    // }
+}
+
+/**
+ * funcion async para verificar la silla
+ */
 async function verificarSilla(sembrado, mesa, silla) {
   try {
     const res = await fetch(`/estado-silla/${sembrado}?mesa=${mesa.id}&silla=${silla.id}`);
@@ -365,6 +388,8 @@ async function verificarSilla(sembrado, mesa, silla) {
 
     if (data[0].estado || data[0].bloqueada || data[0].enEspera) {
       silla.classList.add('ocupada');
+      //aqui se verifican individualmente la mesa
+      actualizarEstadoMesa(mesa);
     }
 
   } catch (err) {
